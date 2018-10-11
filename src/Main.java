@@ -1,6 +1,11 @@
+import launchers.Launcher;
+import launchers.MainLauncher;
+
 public class Main {
 
     public static void main(String[] args) {
-        System.out.println("Hello World!");
+        Launcher launcher = new MainLauncher();
+        launcher.launch();
     }
+
 }
