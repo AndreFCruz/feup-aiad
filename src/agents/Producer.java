@@ -11,6 +11,7 @@ public class Producer extends Agent {
     @Override
     protected void setup() {
         super.setup();
+        System.out.println("# Hello world");
     }
 
     @Override

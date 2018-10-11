@@ -8,5 +8,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="jade" level="project" />
+    <orderEntry type="library" name="repast" level="project" />
+    <orderEntry type="library" name="SAJaS" level="project" />
   </component>
 </module>
