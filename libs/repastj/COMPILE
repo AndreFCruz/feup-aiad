@@ -1,0 +1,29 @@
+To compile repast from cvs source, you'll need:
+
+1. The contents of the repast_lib.zip archive in this directory.
+   This contains the third-party libraries used by repast.
+
+2. Ant, a java centric build tool. You can get this from 
+   http://jakarta.apache.org/ant/index.html
+
+3. the latest version of the junit unit testing framework. You can get this
+   from http://www.junit.org.
+
+As mentioned above, repast uses ant as a replacement for make, and 
+build.xml as the replacement for the makefile. You'll need to rename
+the build.foo file in this directory to build.xml and make some
+simple changes to your new build.xml. See build.foo for the details.
+
+Once you've done that, you can compile repast from the console (unix
+or dos terminal) by cd'ing to this directory and running ant
+(i.e. typing ant at the prompt).
+
+If you want to run the tests yourself, the classes are in
+uchicago.src.sim.test and can be run from within junit the usual
+way. See the junit docs for more.
+
+Revision: $Revision: 1.3 $ 
+Last updated: $Date: 2002/08/12 15:24:52 $ 
+
+
+

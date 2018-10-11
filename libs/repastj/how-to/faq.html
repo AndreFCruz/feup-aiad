@@ -1,0 +1,653 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+   <head>
+      <title>
+         Repast FAQ
+      </title>
+      <meta name="generator" content="HTML Tidy, see www.w3.org">
+   </head>
+   <body bgcolor="#ffffff" text="#010101" link="#0000cd" vlink="#668b8b">
+      <center>
+         <h1>
+            Frequently Asked Questions
+         </h1>
+      </center>
+      <h1>
+         Frequently Asked Questions
+      </h1>
+      <p>
+      <ul>
+         <li>
+            <a href="#main_model">How do I make my model the &quot;main&quot;
+            executable class?</a>
+         </li>
+         <li>
+            <a href="#run_jar">How do I make my jar files executable?</a>
+         </li>
+         <li>
+            <a href="#run_jar">How can start my model with &#39;java -jar
+            mymodel.jar&#39;?</a>
+         </li>
+         <li>
+            <a href="#run_jar">How can I start my model by clicking on it (i.e.
+            how can I make it behave like other windows applications)?</a>
+         </li>
+         <li>
+            <a href="#stop_pause">How do I stop or pause my model from within
+            the</a>
+         </li>
+         <li>
+            <a href="#agent_param">My agents display too many parameters when
+            probed. How can I limit them?</a>
+         </li>
+         <li>
+            <a href="#add_button">How do I add my own Button to the Repast
+            toolbar?</a>
+         </li>
+         <li>
+            <a href="#key">I&#39;d like my model to do X when I hit a key. How
+            do I do this?</a>
+         </li>
+         <li>
+            <a href="#button">I&#39;d like my model to do X when I click one of
+            the toolbar buttons. How do I do this?</a>
+         </li>
+         <li>
+            <a href="#text">How can I write some text to the display?</a>
+         </li>
+         <li>
+            <a href="#display">I&#39;d like to make my own Display. What&#39;s
+            the best way to do that?</a>
+         </li>
+         <li>
+            <a href="#edge_dir">I&#39;ve written a network model. What&#39;s
+            that funny square on all the edges?</a>
+         </li>
+         <li>
+            <a href="#probe_update">How do I update my model or agent&#39;s
+            probe panel from within the model or agent?</a>
+         </li>
+         <li>
+            <a href="#probe_update_2">I&#39;d like my probes to update every
+            iteration of the model. How do I do that?</a>
+         </li>
+         <li>
+            <a href="#console">I&#39;d like turn the Repast Console on or off.
+            How do I do that?</a>
+         </li>
+         <li>
+            <a href="#multirun">What is the button with the three arrows?</a>
+         </li>
+         <li>
+            <a href="#threedee">I am wondering if Repast has the capability to
+            do problems in 3-D. I noticed that a centroid program was called
+            using x,y,z, but z was set to 0. Also, all of the grids that I have
+            seen are only 2D. Please advise.</a>
+         </li>
+         <li>
+            <a href="#contact">I would like to request a feature or file a bug
+            report or would generally like to provide feedback, where do I do
+            this?</a>
+         </li>
+      </ul>
+      <hr>
+      <ul>
+         <li>
+            <a name="main_model"></a> 
+            <h3>
+               How do I make my model the &quot;main&quot; executable class?
+            </h3>
+         </li>
+         <li style="list-style: none">
+            Executable classes in java, that is classes that can be run from
+            the command line with <code>java MyClass.class</code> to start an
+            application, must implement the main method. The main method has
+            the following signature <code>public static void main(String[]
+            args)</code>. If you wish your model to be executable then you need
+            to implement this method in your code. The method itself will look
+            something like: 
+<pre>
+<code>public static void main(String[] args) {
+    SimInit init = new SimInit();
+    HeatBugsModel model = new HeatBugsModel();
+    init.loadModel(model, null, false);      
+  }
+</code>  
+</pre>
+            This code creates an instance of the SimInit class (the same class
+            with which you can load your models on the command line), and
+            instance of the model itself. It then uses SimInit to load the
+            model via the loadModel method. The second and third parameters of
+            the loadModel method specify a parameter file and whether or not
+            the model is a batch model. You can either pass values to these
+            parameters via the args array or if you know that this model is a
+            batch model, you can specify the method parameters directly. The
+            following is an example of the later. 
+<pre>
+<code>public static void main(String[] args) {
+    SimInit init = new SimInit();
+    EnnBatchModel model = new EnnBatchModel();
+    init.loadModel(model, &quot;./EnnParams.txt&quot;, true);      
+  }
+</code>  
+</pre>
+            This code snippet is from EnnBatchModel.java in the enn demo (see
+            repast/demo/enn). Here we create an instance of SimInit and the
+            model as above. We then pass a parameter file path and a value of
+            true to the second and third arguments of the loadModel method.
+            With these parameters SimInit would load EnnBatchModel in batch
+            mode, and read the parameters from the EnnParams.txt file. 
+            <p>
+               If you wish to parse the arguments in the args parameter of the
+               main method and pass them to the loadModel, the following shoudl
+               help. For a command line of:
+            </p>
+<pre>
+<code>java -cp c:\repast\lib\repast.jar;. MyModel param.pf true
+</code>  
+</pre>
+            args[0] = param.pf and args[1] = true. And knowing this it should
+            not be hard to parse args[] and extract the appropriate values to
+            pass to the loadModel method. <a name="run_jar"></a>
+         </li>
+         <li>
+            <h3>
+               How do I make my jar files executable?
+            </h3>
+         </li>
+         <li style="list-style: none">
+            See answer to item &quot;How can I start my model by clicking on
+            it.&quot;
+         </li>
+         <li>
+            <h3>
+               How can start my model with &#39;java -jar mymodel.jar&#39;?
+            </h3>
+         </li>
+         <li style="list-style: none">
+            See answer to item &quot;How can I start my model by clicking on
+            it.&quot;
+         </li>
+         <li>
+            <h3>
+               How can I start my model by clicking on it (i.e. how can I make
+               it behave like other windows applications)?
+            </h3>
+         </li>
+         <li style="list-style: none">
+            To do this you must create your own manifest file and then use this
+            manifest file when you create your jar file. A manifest file is
+            simply a plain text file with some special tags that the Java
+            virtual machine knows how to work with. You can include special
+            tags in the mainfest file that tell the Java virtual machine which
+            file in that jar file is the executable &quot;main&quot; class, as
+            well as specifying a classpath. As of Repast 1.3 all the
+            demonstration simulations are run in this way. The following is the
+            manifest file from bugs.jar (the heatbugs demo simulation). 
+<pre>
+<code>Main-Class: uchicago.src.sim.heatBugs.HeatBugsModel
+  Class-Path: ../../lib/repast.jar ../../lib/trove.jar ../../lib/colt.jar 
+  ../../lib/jgl3.1.0.jar ../../lib/excelaccessor_Runtime.jar ../../lib/jmf.jar 
+  ../../lib/jcchart.jar ../../lib/junit.jar ../../lib/plot.jar 
+  ../../lib/xerces.jar
+</code>  
+</pre>
+            The <code>Class-Path:</code>entries should all be one line. Here
+            the main class is uchicago.src.sim.heatBugs.HeatBugsModel and it
+            requires the specified classpath in order to execute correctly. The
+            class path is space delimited here, and the paths of the jar files
+            are defined relative to the bugs.jar file. In this case two
+            directories above the repast/demo/bugs directory in the repast/lib
+            directory. With this manifest file in the bugs.jar archive, we
+            execute the heatbugs simulation with <code>java -jar
+            bugs.jar</code>. This has the added benefit of making the jar file
+            executable when double click under windows. Given the above
+            manifest file, this is directly equivalent to: 
+<pre>
+<code>java -cp  ./bugs.jar;../../lib/repast.jar;../../lib/trove.jar;
+  ../../lib/colt.jar; ../../lib/jgl3.1.0.jar;
+  ../../lib/excelaccessor_Runtime.jar;../../lib/jmf.jar;
+  ../../lib/jcchart.jar;../../lib/junit.jar;../../lib/plot.jar;
+  ../../lib/xerces.jar uchicago.src.sim.heatBugs.HeatBugsModel
+</code>  
+</pre>
+            (Note that as of Repast v.1.3, you no longer start models this way.
+            repast.jar itself contains a manifest file that specifies a
+            classpath containing all the other required jar files. So instead
+            of the above, you can do <code>java -cp
+            ./bugs.jar;../../lib/repast.jar
+            uchicago.src.sim.heatBugs.HeatBugsModel</code>.) 
+            <p>
+               Once you&#39;ve written your manifest file, you need to include
+               it in your jar. If you haven&#39;t yet created your jar file,
+               you can do this all in one step with the &#39;jar&#39; utility
+               that comes with the java development kit.
+            </p>
+<pre>
+<code>jar cfvm my_model.jar mymanifest my_model_dir
+</code>  
+</pre>
+            where my_model.jar is the name of the jar file you are creating,
+            mymanifest is the manifest file you&#39;ve created and my_model_dir
+            is the directory for your actual model. So for heatbugs this looks
+            like: 
+<pre>
+<code>jar cfvm bugs.jar bugs_manifest uchicago/src/sim/heatBugs
+</code>  
+</pre>
+            If your model is in a package (as it should be) its important to
+            jar it from the directory above the first package directory. In the
+            heatbugs case I would run the jar command from the directory in
+            which the uchicago directory resided. 
+            <p>
+               If you already have your classes in a jar file and just want to
+               add the manifest file, replace the &#39;c&#39; in the above
+               command with a &#39;u&#39;.
+            </p>
+            <p>
+               You can inspect the contents of your jar file with <code>jar -tf
+               name_of_jar_file</code>. Your manifest won&#39;t be included in
+               the jar itself as its contents are actually copied into the
+               MANIFEST.MF file.
+            </p>
+            <p>
+               For more information run the jar utility with no arguments and
+               see Sun&#39;s jar <a href=
+               "http://java.sun.com/docs/books/tutorial/jar/index.html">tutorial</a>
+            </p>
+         </li>
+         <li>
+            <a name="stop_pause"></a> 
+            <h3>
+               How do I stop or pause my model from within the model
+            </h3>
+         </li>
+         <li style="list-style: none">
+            As of Repast 1.3, SimModelImpl (and thus all models that inherit
+            from it) implements two new methods: <code>public void
+            stop()</code>and <code>public void pause</code>. You can call these
+            methods from within the model to stop or pause it. Like any other
+            public method, this methods are schedulable so you can schedule
+            your model to pause (or stop) at particular intervals or at
+            specified ticks. For example, 
+<pre>
+<code>int pauseTick = -1;
+  ...
+  private void buildSchedule() {
+    schedule.scheduleActionAt(pauseTick, this, &quot;pause&quot;, Schedule.LAST);
+    ...
+  }
+  
+  public void setPauseTick(int val) {
+    pauseTick = val;
+    schedule.scheduleActionAt(pauseTick, this, &quot;pause&quot;, Schedule.LAST);
+  }
+  
+  public int getPauseTick() {
+    return pauseTick;
+  }
+</code>  
+</pre>
+            will allow you to schedule pauses through the gui.
+         </li>
+         <li>
+            <a name="agent_param"></a> 
+            <h3>
+               My agents display too many parameters when probed. How can I
+               limit them?
+            </h3>
+         </li>
+         <li style="list-style: none">
+            If your agent implements the <code>CustomProbeable</code>interface
+            only those parameters whose names are returned in the String[] from
+            <code>CustomProbeable.getProbedProperties()</code>will be
+            displayed. For example, 
+<pre>
+<code>public class MyAgent implements CustomProbeable {
+  
+    private int age;
+  
+    ...
+  
+    public int getAge() {
+      return age;
+    }
+  
+    public void setAge(int val) {
+      age = val;
+    }
+  
+    public String[] getProbedProperties() {
+      return new String[] {&quot;Age&quot;};
+    }                             
+  }
+  
+</code>  
+</pre>
+            When probed MyAgent classes will now only display the
+            &quot;Age&quot; parameter.
+         </li>
+         <li>
+            <a name="add_button"></a> 
+            <h3>
+               How do I add my own button to the Repast toolbar?
+            </h3>
+         </li>
+         <li style="list-style: none">
+            The following code demonstrates how to do this: 
+<pre>
+<code>public void setup() {
+    
+    ...
+  
+    Controller c = (Controller)this.getController();
+    c.addButton(&quot;Help&quot;, new ActionListener() {
+       public void actionPerformed(ActionEvent evt) {
+         showHelp();
+       }
+    });
+  
+  }
+</code>  
+</pre>
+            Controller has three new methods for adding custom buttons to the
+            toolbar. Using the addButton methods you can add a JButton
+            directly, specify a label and an ActionListener, or specify the
+            path to an Icon and an ActionListener. The above code snippet will
+            add new a JButton with the label &quot;Help&quot; to the toolbar
+            and call the showHelp method whenever it is clicked. You must add
+            new buttons in your model&#39;s setup() method otherwise they will
+            not appear in the toolbar. 
+            <p>
+               If you don&#39;t understand how to work with JButtons, and
+               ActionListeners, you should learn a bit about the Java&#39;s
+               Swing gui toolkit before adding custom buttons to the toolbar.
+            </p>
+         </li>
+         <li>
+            <a name="key"></a> 
+            <h3>
+               I&#39;d like my model to do X when I hit a key. How do I do
+               this?
+            </h3>
+         </li>
+         <li style="list-style: none">
+            You can perform some action in response to key events when either
+            the DisplaySurface, or the Controller (i.e. the Repast toolbar) has
+            focus. Which one you choose depends on which one is more
+            appropriate for your action. For example, if you wish to do
+            something to the display in the DisplaySurface, then you&#39;d hook
+            the key code up to the DisplaySurface. In either case, the code to
+            listen for key events is the same. For example, 
+<pre>
+<code>Controller c = (Controller)this.getController();
+  c.addKeyListener(new KeyAdapter() {
+    public void keyPressed(KeyEvent evt) {
+      if (evt.getKeyCode() == KeyEvent.VK_K) {
+       System.out.println(&quot;k key typed&quot;);
+      }
+    }
+  });
+</code>  
+</pre>
+            will print &quot;k key typed&quot; to the console whenever the
+            toolbar (i.e. the Controller) has focus and the &quot;k&quot; key
+            is pressed. To perform the same action when a DisplaySurface has
+            focus, you&#39;d replace the reference to the Controller with one
+            to your DisplaySurface. So, 
+<pre>
+<code>myDisplaySurface.addKeyListener(new KeyAdapter() {
+    public void keyPressed(KeyEvent evt) {
+      if (evt.getKeyCode() == KeyEvent.VK_K) {
+       System.out.println(&quot;k key typed&quot;);
+      }
+    }
+  });
+</code>  
+</pre>
+            Typically you place this sort code to the setup() method in your
+            model. This ensures that you can listener for key events before
+            your simluation begins to run. Note that KeyAdapter and KeyEvent
+            are in the java.awt.event package, so you&#39;ll have to import
+            them into your model. Adding KeyListeners in this way is standard
+            Java and any Java book can provide more details.
+         </li>
+         <li>
+            <a name="button"></a> 
+            <h3>
+               I&#39;d like my model to do X when I click one of the toolbar
+               buttons. How do I do this?
+            </h3>
+         </li>
+         <li style="list-style: none">
+            By default Repast takes the appropriate action whenever you click
+            one of the toolbar buttons. However, you can also add your own to
+            code to be executed when a button is clicked. You can listen for
+            button clicks on the start, stop, pause, step, and exit buttons.
+            For example, 
+<pre>
+<code>Controller c = (Controller)this.getController();
+  c.addStartListener(new ActionListener() {
+    public void actionPerformed(ActionEvent evt) {
+      System.out.println(&quot;start&quot;);
+    }
+  });
+</code>  
+</pre>
+            This code listens for start button clicks and prints
+            &quot;start&quot; to the console whenever a start button click
+            occurs. Each button has its own add listener method so
+            addStopListener will add code for execution on stop button clicks,
+            addPauseListener for pause button clicks and so on. If you wish to
+            know which button has been clicked (assuming you&#39;ve got the
+            same listener listening to more than one button), the button&#39;s
+            actionCommand reports the buttons name. For example, the code 
+<pre>
+<code>Controller c = (Controller)this.getController();
+  c.addStartListener(new ActionListener() {
+    public void actionPerformed(ActionEvent evt) {
+      javax.swing.JButton b = (javax.swing.JButton)evt.getSource();
+      System.out.println(b.getActionCommand());
+    }
+  });
+</code>  
+</pre>
+            will print &quot;start&quot;, the Start button&#39;s action
+            command, to the console. The exit button&#39;s action command is
+            &quot;exit&quot;, pause is &quot;pause&quot; and so on. Adding
+            listeners to buttons in this way is standard Java and any good book
+            on Java can tell you more.
+         </li>
+         <li>
+            <a name="text"></a> 
+            <h3>
+               How can I write some text to the display?
+            </h3>
+         </li>
+         <li style="list-style: none">
+            If you want to display some text, e.g. some informative message or
+            statistic, on the display. You can use a TextDisplay. See <a href=
+            "./display.html">How to Create Displays</a> for more info, as well
+            as the <a href=
+            "../api/uchicago/src/sim/gui/TextDisplay.html">TextDisplay</a> API
+            docs.
+         </li>
+         <li>
+            <a name="display"></a> 
+            <h3>
+               I&#39;d like to make my own Display. What&#39;s the best way to
+               do that?
+            </h3>
+         </li>
+         <li style="list-style: none">
+            The uchicago.src.sim.gui package contains an abstract Display class
+            that can be used as the base class for new Display classes. See the
+            source for Display.java
+            (repast/src/src/uchicago/src/sim/gui/Display.java) for more.
+         </li>
+         <li>
+            <a name="edge_dir"></a> 
+            <h3>
+               I&#39;ve written a network model. What&#39;s that funny square
+               on all the edges?
+            </h3>
+         </li>
+         <li style="list-style: none">
+            The square indicates edge directionality. The square is closer to
+            the &quot;to&quot; node and farther from the &quot;from&quot; node.
+            If the nodes are too close to each other to determine
+            directionality, you can use the mouse (click and drag) to move the
+            nodes further away.
+         </li>
+         <li>
+            <a name="probe_update"></a> 
+            <h3>
+               How do I update my model or agent&#39;s probe panel from within
+               the model or agent?
+            </h3>
+            Suppose you have two properties connected with each other such that
+            a change to implies a change to other. When you change the first
+            such property in a probe panel (either the agent&#39;s probe panel,
+            or your model&#39;s parameter panel) you&#39;d like the panel to
+            update and display the concommitant change in the second property. 
+            <p>
+               You can update an Object&#39;s probe panel using
+               <tt>ProbeUtilities.updateProbePanel(Object object)</tt> method.
+               The object here is the object whose probe panel you wish to
+               update. So, for example, we could implement the above scenario
+               where a change to parameter X, changed the value of parameter y
+               and we want the parameter (probe) window to display the new
+               value of y, as follows:
+            </p>
+<pre>
+<code>public void setX(int val) {
+    x = val;
+    setY(val / 2);
+    ProbeUtilities.updateProbePanel(this);
+  }
+  
+  public void setY(int val) {
+    y = val;
+  }
+  
+  ...
+  
+</code>  
+</pre>
+            This is also useful for turning various exclusive boolean switches
+            on and off in response to others being set on. 
+            <p>
+               See the API documentation for the ProbeUtilities class for more.
+            </p>
+         </li>
+         <li>
+            <a name="probe_update_2"></a> 
+            <h3>
+               I&#39;d like my probes to update every iteration of the model.
+               How do I do that?
+            </h3>
+         </li>
+         <li style="list-style: none">
+            The context here is that you are running your model in gui mode and
+            that you are probing your agents such that their properties are
+            displayed in a probe window. You&#39;d like these properties to
+            update every tick of the model. This can be done both via the GUI
+            and in code. To turn this on via the gui, switch to the Repast
+            actions tab panel and click on Update Probes. To do this in code,
+            you set the UPDATE_PROBES flag in Controller to true. For example, 
+<pre>
+<code>Controller.UPDATE_PROBES = true;
+</code>  
+</pre>
+            This will update all probes except for that on the model. To update
+            the model probe, you&#39;ll have to call
+            <tt>ProbeUtilities.updateModelProbePanel</tt>. Updating the
+            model&#39;s probe is computationally expensive. 
+            <p>
+               Note that updating probes will slow down your model although
+               considerably less in java 1.4 vs. previous version of java.
+            </p>
+         </li>
+         <li>
+            <h3>
+               <a name="console"></a>I&#39;d like turn the Repast Console on or
+               off. How do I do that?
+            </h3>
+         </li>
+         <li style="list-style: none">
+            Stdout (output written to <code>System.out</code>) and stderr
+            (errors written to <code>System.err</code>) can be redirected to
+            The Repast Console. The Repast Console can be turned on or off via
+            the GUI and in code. To turn it on/off via the GUI, switch to the
+            Repast actions tab panel and click on &quot;Stdout to Console&quot;
+            or &quot;Stderr to Console&quot; to either one on or off. Note that
+            if they are both off then the Repast Console will not appear. To do
+            this in code, you need to set the flags
+            AbstractGUIController.CONSOLE_OUT and
+            AbstractGUIController.CONSOLE_ERR. For example, 
+            <p>
+            </p>
+<pre>
+<code>AbstractGUIController.CONSOLE_ERR = false;
+  AbstractGUIController.CONSOLE_OUT = false;
+</code>  
+</pre>
+            You can do this in the constructor of your model.
+         </li>
+         <li>
+            <a name="multirun"></a> 
+            <h3>
+               What is the button with the three arrows?
+            </h3>
+         </li>
+         <li style="list-style: none">
+            That is the button used to start a batch run through the Repast
+            GUI. More information on this can be found <a href=
+            "./multirun.html">here</a>
+         </li>
+         <li>
+            <a name="threedee"></a> 
+            <h3>
+               I am wondering if Repast has the capability to do problems in
+               3-D. I noticed that a centroid program was called using x,y,z,
+               but z was set to 0. Also, all of the grids that I have seen are
+               only 2D. Please advise.
+            </h3>
+         </li>
+         <li style="list-style: none">
+            At this point, there is not explicit support for 3D spaces in
+            Repast. However, several people have used 3D graphs/displays and
+            spaces on their own. One of the items on our list of things to do
+            is to add 3D support, so hopefully it will happen soon. The
+            references to z-coords in various classes are there so that, in the
+            future, we will be compatible. If anyone has experience with 3D and
+            would be interested in working to add the capability to repast,
+            please email <a href=
+            "mailto:repast-developer@lists.sourceforge.org">repast-developer@lists.sourceforge.org</a>.
+         </li>
+         <li>
+            <a name="contact"></a> 
+            <h3>
+               I would like to request a feature or file a bug report or would
+               generally like to give feedback, where do i do this?
+            </h3>
+         </li>
+         <li style="list-style: none">
+            Repast&#39;s website is found at <a href=
+            "http://repast.sourceforge.net">repast.sourceforge.net</a> and
+            includes information on Repast itself. The primary repast email
+            address is <a href=
+            "mailto:repast@sourceforge.net">repast@sourceforge.net</a>. You can
+            also ask questions on the repast mailing lists, the main list being
+            the repast interest list. Feel free to sign up for or browse this
+            list at <a href=
+            "http://lists.sourceforge.net/lists/listinfo/repast-interest">http://lists.sourceforge.net/lists/listinfo/repast-interest</a>
+            (direct link to the mailing list archives is <a href=
+            "http://sourceforge.net/mailarchive/forum.php?forum_id=4215">here</a>)
+            and email this list through <a href=
+            "mailto:repast-interest@lists.sourceforge.net">repast-interest@lists.sourceforge.net</a>
+         </li>
+      </ul>
+   </body>
+</html>
+

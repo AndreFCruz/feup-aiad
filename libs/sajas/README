@@ -1,0 +1,40 @@
+SAJaS - Simple API for JADE-based Simulations (v0.92b, 2016-Mar-11)
+=============================================
+
+The Simple API for JADE-based Simulations (SAJaS) is a proposal to bridge the 
+gap between MAS simulation and development. SAJaS enhances MABS frameworks 
+with JADE-based features. While empowering MABS modellers with modelling 
+concepts offered by JADE, SAJaS also promotes a quicker development of 
+simulation models for JADE programmers. In fact, the same implementation can, 
+with minor changes, be used as a large scale simulation or as a distributed 
+JADE system. 
+SAJaS provides, for certain kinds of applications, increased simulation 
+performance, as compared to JADE.
+
+COPYRIGHT
+---------
+Copyright (C) 2015-2016 Henrique Lopes Cardoso
+Universidade do Porto
+
+LICENSE
+-------
+SAJaS is free software: you can redistribute it and/or modify it under the 
+terms of the GNU Lesser General Public License as published by the Free 
+Software Foundation, version 3 of the License.
+See files license-gpl and license-lgpl.
+
+CONTACT
+-------
+Any questions, bug reports or feedback can be made to the following contact:
+Henrique Lopes Cardoso -- Faculdade de Engenharia da Universidade do Porto (FEUP)
+E-mail: hlc@fe.up.pt
+
+SYSTEM REQUIREMENTS
+-------------------
+The current version of SAJaS is integrated and has been tested with JADE 4.3.3.
+SAJaS comes with interfaces to Repast3 and Repast Simphony 2.3.1.
+
+PROJECT WEB SITE
+----------------
+https://web.fe.up.pt/~hlc/doku.php?id=sajas
+

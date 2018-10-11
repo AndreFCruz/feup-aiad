@@ -1,0 +1,198 @@
+<html>
+<head>
+<title>Readme for RePast v2.2</title>
+</head>
+
+<body bgcolor="white">
+<h1>
+Readme for RePast v2.2
+</h1>
+<h2>Contents</h2>
+<ul>
+<li><a href="./readme.html#overview">Overview</a></li>
+<li><a href="./readme.html#repast">Why "Repast"</a></li>
+<li><a href="./readme.html#lists">Mailing Lists</a></li>
+<li><a href="./readme.html#requirements">Requirements</a></li>
+<li><a href="./License">License</a></li>
+</ul>
+
+<a name="overview"></a><h3>Overview</h3>
+<table>
+<tr>
+<td width="5%"></td>
+<td>
+<p><b>Scope. </b>
+The University of Chicago's Social Science Research Computing's Repast is a 
+software framework for
+creating agent based simulations using the Java language 
+(<a href="http:./readme.html#requirements">requires</a> version 
+<a href="http://java.sun.com/j2se/1.4/index.jsp">Java</a> 1.4 or greater).
+It provides a 
+library of classes for creating, running, displaying and collecting data
+from an agent based simulation. In addition, Repast can take snapshots of
+running simulations, and create quicktime movies of simulations.
+Repast borrows much from the <a href="http://www.swarm.org">Swarm</a> 
+simulation toolkit and can properly be termed "Swarm-like." In addition, 
+Repast includes such features as run-time model manipulation via 
+gui widgets first found in the
+<a href="http://www.brook.edu/es/dynamics/models/ascape">Ascape</a>
+simulation toolkit.<p> 
+
+On a more technical level, Repast envisions 
+a simulation as a state machine whose state is
+constituted by the collective states of all its components. These 
+components can be divided up into infrastructure and representation. The 
+infrastructure is the various mechanisms that run the simulation, 
+display and collect data and so forth. The representation is what the 
+simulation modeler constructs, the simulation model itself. 
+The state of the infrastructure is then the state of the 
+display, the state of the data collection objects etc. The state of 
+the representation is the state of what is being modeled, the current 
+values of all the agents' variables, the current value of the 
+space or spaces in which they operate, as well as the state of any other 
+representation objects (e.g. aggregate quasi-independent "institution" 
+objects). The history of the simulation as a software phenomenon is the
+history of both these states, while the history of the simlulation as a 
+simulation is the history of the representational states. In Repast as in
+Swarm, any changes to the states of the infrastructural components and 
+the representational components occur through a 
+<a href="http:./docs/api/uchicago/src/sim/engine/Schedule.html">Schedule</a> 
+object. In short then, Repast allows a user to build a simulation 
+as a state machine in which all the changes to the state occur 
+through a schedule. This provides clarity and extensibility both for the 
+simulation writer/user as well as the software designer seeking to extend 
+the toolkit.<p>
+
+<br> 
+</td>
+</tr>
+<tr>
+<td></td>
+<td>
+<p><b>Contents. </b>
+This release consists of the core simulation library,  
+<a href="./readme.html#simcore">repast.jar</a>, the
+optional open source charting classes <a href="./readme.html#plot">
+plot.jar</a>, some additional <a href="./readme.html#libs">libraries</a>, <a href="./readme.html#samples"> 
+eight example simulations</a>, <a href="./readme.html#source">
+source code</a> and <a href="./readme.html#docs">documentation</a>. 
+<ul>
+<li><a name="simcore"><b>repast.jar</b></a> contains the fundamemtal
+simulation classes, such as the schedule mentioned above as well as classes
+for displaying and collecting data. It must be included in the classpath
+whenever a Repast simulation is run. repast.jar can be found in repast/lib
+<p></li>
+
+<li><a name="plot"><b>plot.jar</b></a> contains the optional charting classes.
+This library is the open source charting component of the 
+<a href="http://ptolemy.eecs.berkeley.edu/">Ptlomey</a> project.
+It must be
+included in the classpath if the simulation uses any of the Repast
+graphing classes (<a href="http:./docs/api/uchicago/src/sim/analysis/OpenSequenceGraph.html">OpenSequenceGraph</a>,
+<a href="http:./docs/api/uchicago/src/sim/analysis/OpenHistogram.html">
+OpenHistogram</a>, and 
+<a href="http:./docs/api/uchicago/src/sim/analysis/Plot.html">Plot</a>).
+<p></li>
+<li><a name="libs"><b>Additional Libraries</b></a> Repast requires some
+additional libraries to run. colt.jar is the Colt library of scientific,
+statistical, and numerical functions. The Colt homepage can found 
+<a href="http://nicewww.cern.ch/~hoschek/colt/index.htm">here</a>. 
+Repast uses the Colt library's implementation of the Mersenne Twister 
+for random number generation, but the library can be used for much more.
+jgl3.1.0.jar is an STL like library for Java of which Repast uses only a few
+classes. Both colt.jar and jgl3.1.0.jar must be included in the classpath
+of any repast simulation. jmf.jar, mediaplayer.jar, sound.jar,
+mediaplayer.jar, multiplayer.jar are only required when a movie is
+being created. Of these, Repast only uses jmf.jar, but Sun requires the
+distribution of the entire set. All these can be found in the repast/lib
+directory.<p>
+
+<li><a name="samples"><b>Example Simulations</b></a> This release of
+Repast comes with eight example simulations. See the readme in
+repast/demo for more information. The example simulations can be found
+in sub-directories to the repast/demo directory<p>
+
+<li><a name="source"><b>Source Code</b></a> Repast comes with the source code
+to all the classes found in repast.jar as well as the source to the sample
+simulations. It can be found in repast\src.<p>
+
+<li> <a name="docs"><b>Documentation</b></a> 
+The Repast API
+documentation can be found in repast\docs\api, or click <a
+href="http:./docs/api/index.html">here</a>. Repast also comes with <a
+href="http:./docs/how_to/how_to.html">Repast How-To</a> which provides
+more detail on how to use RePast, as well as a 
+<a href="./docs/how_to/faq.html">FAQ</a> containing answers
+to some frequently asked questions..
+
+</ul>
+</td>
+</tr>
+</table>
+
+<a name="lists"><h3>Mailing Lists</h3></a>
+You can subscribe to the Repast mailing lists through the
+<a href="http://repast.sourceforge.net">Repast</a> home page.
+<p>
+
+<a name="repast"><h3>Why Repast</h3></a>
+<table>
+<tr>
+<td width="5%"></td>
+<td>
+The name Repast is an acronym for <i>REcursive Porous 
+Agent Simulation Toolkit</i>. Our goal with Repast 
+is to move beyond the representation of agents 
+as discrete, self-contained entities in favor of a view of social actors 
+as permeable, interleaved and mutually defining, with cascading and 
+recombinant motives. We intend to support the modeling of belief systems, 
+agents, organizations and institutions as recursive social constructions, 
+where recursiveness includes the way in which longer duration processes 
+define the constraints and opportunities available to shorter duration
+social processes. The fuller goal of the toolkit is to allow
+situated histories to be replayed with altered assumptions.  To achieve 
+this goal, it will be necessary for Repast to provide a feast of advanced 
+features, and it is toward that objective that we work.<p>
+</td>
+</tr>
+</table>
+
+<a name="requirements"><h3>Requirements</h3></a>
+<table>
+<tr>
+<td width="5%"></td>
+<td>
+This release Repast requires at least
+<a href="http://java.sun.com/j2se/1.4/index.jsp">Java</a> version 1.4. 
+</td>
+</tr>
+</table>
+
+<a name="acks"><h3>Acknowledgements</h3></a>
+<table>
+<tr>
+<td width="5%"></td>
+<td>
+This release of RePast uses third-party libraries from several sources. 
+The authors of RePast would like to acknowledge their contribution.
+<ul>
+<li>The ptolemy <a href="http://ptolemy.eecs.berkeley.edu/java/ptplot5.1p1/ptolemy/plot/doc/index.htm">plot</a> library for graphical plot.
+<li>The <a href="http://tilde-hoschek.home.cern.ch/~hoschek/colt/index.htm">Colt</a> library for random number generation.
+<li> The trove library for dynamic bytecode generation. Their required 
+acknowledgement: This product includes software developed by the
+Walt Disney Internet Group (http://opensource.go.com/).
+</ul>
+
+</td>
+</tr>
+</table>
+
+
+
+<hr width="75%">
+To report bugs, request features, etc., contact 
+<a href=mailto:repast@src.uchicago.edu>RePast</a> 
+(repast@src.uchicago.edu)
+
+</body>
+</html>

@@ -1,4 +1,21 @@
 package agents;
 
-public class Producer {
+
+import jade.core.Agent;
+
+public class Producer extends Agent {
+
+    int cumulativeExpenses = 0;
+    int cumulativeEarnings = 0;
+
+    @Override
+    protected void setup() {
+        super.setup();
+    }
+
+    @Override
+    protected void takeDown() {
+        super.takeDown();
+    }
+
 }

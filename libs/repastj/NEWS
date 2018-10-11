@@ -1,0 +1,594 @@
+RePast 2.2
+
+This is primarily a release to distribute the many bug fixes that have
+accumulated since the last release.
+
+Thanks to Thomas Howe, Mike North, Jason Woodard, David O'Sullivan, 
+Laszlo Gulyas, James Macgill, Mark Diggory, Robert Najlis, Luc Girardin
+(and anyone else I may have forgotten) for their contributions and also to 
+Argonne National Laboratory for supporting this release.
+
+
+** New Features
+
+*** Single run batch mode. Can perform a single batch run without a parameter
+file using: uchicago.src.sim.engine.SimInit -b MyBatchModelName
+
+*** Multiple run batch mode. Can perform mulitple batch runs without a parameter
+file using: uchicago.src.sim.engine.SimInit -b MyBatchModelName num_runs
+
+*** New batch parameter file format (the old one still works as well). Email 
+Nick (nick.collier@alumni.bates.edu) for details if interested.
+
+*** Refactored parameter mechanism that makes it much easier to control
+batch runs with custom parameter iterators.
+
+*** Additional refactoring of the controller heirarchy.
+
+*** Console output redirected to repast console window. This can be
+turned on/off with AbstractGUIController.CONSOLE_ERR = true/false and 
+AbstractGUIController.CONSOLE_OUT = true/false.
+
+*** New CallbackSchedule class that allows for the scheduling of methods
+that take arguments
+
+*** Experimental support for "Group" operations; that is, agents can be
+added to a DefaultGroup and this DefaultGroup can be used to execute
+methods, take statistics etc. over all the agents in that group.
+
+*** Removed dependencies on Acme, jgl, and xerces jars.
+
+*** Node / edge drawing order is specifiable
+
+*** Improved support for running distributed simulations; that is,
+for running many simulations on many machines under the control of
+a single computer.
+
+** Bug Fixes
+
+*** Fixed the xml parsing problem with Frame and Chart 
+persistent positioning.
+
+*** Controllers respect the ExitOnExit flag.
+
+*** Fixed snapshot problem on charts and graphs (i.e. "too many colors").
+
+*** Fixed problems with finding the demo and models directory when
+using the "load model" button in the repast toolbar.
+
+*** Fixed problem where gui event queue is assumed to exist on
+all machines. This should fix problems with running batch models
+in a unix enviroment without X11.
+
+*** Misc. small bug fixes.
+
+
+RePast 2.0
+
+Thanks to Tom Howe, Laszlo Gulyas and Mike North for their contributions
+to this release.
+
+Note that there have been some important changes to RePast in this
+version, and users are encouraged to read the UPGRADING document in
+the repast directory.
+
+** New Features
+
+*** New scheduling mechanism allowing for scheduling on doubles and for
+the execution of true threaded background actions.
+
+*** Improved support for GIS, including support for vector gis as a
+spatial network.
+
+*** Improved loading of models through the RePast toolbar.
+
+*** EdgeFactory class for automating aspects of network link creation.
+
+*** Improved network drawing.
+
+*** Easier creation of graph sequences and histogram items through
+dynamic byte code compilation.
+
+*** Draggable resizing of displays surfaces.
+
+*** Support for quicktime movies of graphs and charts.
+
+*** Includes the latest version of the colt library, patched for the
+Normal distribution bug.
+
+*** Refactored core classes to allow more experienced programmers to
+more easily extend RePast.
+
+** Bug Fixes
+
+*** Misc. small bug fixes.
+
+
+Repast 1.4.1
+
+** New Features
+
+*** Easy dynamic updating of probe panels via a check box in the
+RePast Actions panel GUI. Also new ProbeUtilities class makes
+working with probes easier.
+
+*** RangePropertyDescriptors for model / agent properties that
+are limited to some integer within a specifiable range.
+
+*** A "initialize" button that will run the initializing methods
+in your model (buildModel() for SimpleModel models and begin() for
+SimModelImpl based models) and stop before executing any scheduled
+behavior.
+
+*** Sequence graphs can now specify the color and point style
+of their plotted sequences.
+
+*** New plotting class, NetSequenceGraph that makes it easy to plot
+common networks stats (density etc.).
+
+*** Hexagonal spaces. All the previous spaces in RePast (Object2DGrid,
+Object2DTorus etc.) have been given hexagonal counter parts.
+
+*** RasterSpace class for creating spaces from GIS raster files.
+
+*** New methods in DisplaySurface and plotting classes for setting
+their screen locations.
+
+*** More useful methods in DataRecorder.
+
+*** More useful methods in NetworkDrawable. This should be the full
+implementation now.
+
+*** New demos illustrating hexagonal spaces, and working with
+raster files.
+
+*** Includes the latest version of the colt library patched so
+that Normal works correctly.
+
+
+* RePast 1.4
+
+Thanks to Skye Bender-deMoll, Tom Howe, Laszlo Gulyas, and David
+Sallach for their contributions to this release. Note that only a few
+new features have been added since the 1.4beta release. However, all
+new features both in this and the beta release are now documented, and
+improved where necessary.
+
+See UPGRADING for version incompatibilities.
+
+** New Features
+
+*** Network visualization has been redone. It is now much easier to
+visualize network models.
+
+*** Many useful methods added to the DefaultNode class. See the API
+docs for more info.
+
+*** Zoomable networks. See the network how to for more info.
+
+*** A new Histogram class. This differs from the OpenHistogram in that the
+xaxis interval is not dynamic, allowing for empty bins. It will also
+report some basic statistics. Histogram uses the colt libraries
+hep.aida.ref.Histogram1D as its "model", and a reference to this is
+available from Histogram. Histogram1D has lots of useful methods (see
+the colt docs for details). See Histogram in the api docs
+(repast/docs/api/index.html).
+
+*** Can now set the column delimiter for data recorded by a
+DataRecorder.
+
+*** Grid spaces that can hold multiple objects in each cell. The
+occupants of the cell may stored in an ordered or unordered fashion. See
+AbsMulti2DGrid and its descendants in the api docs
+(repast/docs/api/index.html) for more.
+
+*** Display for the multiple occupancy grid spaces.
+
+*** New TextDisplay class. This will display text at some user
+specifiable position on the display. The text itself can be moved
+around the display with the mouse. See TextDisplay in the api docs.
+
+*** New abstract Display base class. Makes it much easier to build
+custom displays.
+
+*** Better visualization of directionality on network links. The
+directionality indicator is now on the edge nearer to the "to" node
+rather than on the "to" node itself.
+
+*** Network nodes are now movable with the mouse.
+
+*** New network graph layouts using the Fruchmen-Reingold graph
+layout algorithm and the Kamada-Kawai graph layout algorithm. See
+FruchGraphLayout and KamadaGraphLayout in the api docs for more.
+
+*** Generate 3 new kinds of networks with NetworkFactory --
+RandomDensity, SquareLattice and Watts-Strogatz Small World (ring
+substrate). See NetworkFactory in the api docs for more.
+
+*** No longer need to hit enter to register a parameter change. When
+the box looses focus, the parameter change will be registered.
+
+*** Model parameters disabled while the model is running.
+
+*** New methods in SimUtilities to update the model's or an agent's
+probed property window. See SimUtilities in the api docs for more.
+
+*** More efficient ColorMap.
+
+*** New SimpleModel class that hides the complexites of scheduling
+and can serve as a base class for models. See the new How To Build
+a RePast Model 1 for more info.
+
+*** Two New How Tos, revisions to older ones, and additions to the
+FAQ.
+
+*** Two new demonstration simulations: Conway's Life and a
+realistic network model (JinGirNew). See the readme in the repast
+demo directory (repast/demo) for more info.
+
+*** Mouse and Key listeners added to DisplaySurface.
+
+*** Demos can now be run outside of their respective directories if
+the REPAST_HOME environment variable is set.
+
+** Bug Fixes
+
+*** Entering a parameter of the wrong type (e.g. a String instead of
+an int) will now pop-up the error in a dialog box. The former behavior
+was to write the error to the terminal.
+
+*** Fixes for problems with graph layout algorithms.
+
+*** misc small bug fixes (got to start writing these down!)
+
+* RePast 1.4b
+
+** This is a Beta release for RePast 1.4. The majority of the code is
+ready to be released as 1.4 except for a few classes in the gui and network
+package. These include the new graph layout classes (FruchGraphLayout, and
+KamadaGraphLayout) in uchicago.src.sim.gui. These work well but need to be
+more robust. In uchicago.src.sim.network the new network generators,
+SquareLattice and RandomDensity need more javadoc style documentation.
+
+The other reason for releasing this distribution as a beta is that the
+how-to documentation has not been updated to include the new features.
+However, the javadoc api documentation is complete except where mentioned
+above.
+
+Thanks to Skye Bender-deMoll and Tom Howe for their contributions to
+this release.
+
+** New Features
+
+*** A new Histogram class. This differs from the OpenHistogram in that the
+xaxis interval is not dynamic, allowing for empty bins. It will also
+report some basic statistics. Histogram uses the colt libraries
+hep.aida.ref.Histogram1D as its "model", and a reference to this is
+available from Histogram. Histogram1D has lots of useful methods (see
+the colt docs for details). See Histogram in the api docs
+(repast/docs/api/index.html).
+
+*** Can now set the column delimiter for data recorded by a
+DataRecorder.
+
+*** Grid spaces that can hold multiple objects in each cell. The
+occupants of the cell may stored in an ordered or unorded fashion. See
+AbsMulti2DGrid and its decendants in the api docs
+(repast/docs/api/index.html) for more.
+
+*** Display for the multiple occupancy grid spaces.
+
+*** New TextDisplay class. This will display text at some user
+specifiable position on the display. The text itself can be moved
+around the display with the mouse. See TextDisplay in the api docs.
+
+*** New abstract Display base class. Makes it much easier to build
+custom displays.
+
+*** Better visualization of directionality on network links. The
+directionality indicator is now on the edge nearer to the "to" node
+rather than on the "to" node itself.
+
+*** Network nodes are now moveable with the mouse.
+
+*** New network graph layouts using the Fruchmen-Reingold graph
+layout algorithm and the Kamada-Kawai graph layout algorithm. See
+FruchGraphLayout and KamadaGraphLayout in the api docs for more.
+
+*** Generate 3 new kinds of networks with NetworkFactory --
+RandomDensity, SquareLattice and Watts-Strogatz Small World (ring
+substrate). See NetworkFactory in the api docs for more.
+
+*** No longer need to hit enter to register a parameter change. When
+the box looses focus, the parameter change will be registered.
+
+*** Model parameters disabled while the model is running.
+
+*** New methods in SimUtilities to update the model's or an agent's
+probed property window. See SimUtilities in the api docs for more.
+
+*** More efficient ColorMap.
+
+*** New SimpleModel class that hides the complexites of scheduling
+and can serve as a base class for models.
+
+** Bug Fixes
+
+*** Entering a parameter of the wrong type (e.g. a String instead of
+an int) will now pop-up the error in a dialog box. The former behavoir
+was to write the error to the terminal.
+
+*** misc small bug fixes (got to start writing these down!)
+
+* RePast 1.3
+
+** New Features
+
+*** Easier to work with agent networks generated from
+adjacency matrices in dl and other formats due to network API
+additions.
+
+*** New GraphLayout classes that make it much easier to
+create custom graph layouts (based on simulated annealing etc.).
+
+*** Network import and export code re-worked for memory efficiency.
+(No more large matrices of unnecessary doubles).
+
+*** Unified code for probing and display of model and agent
+properties. Agents can now display properties via PropertyDescriptors.
+
+*** Simplified scheduling of actions.
+
+schedule.scheduleActionAt(1, some_obj, "a_method");
+
+is now just as efficient as
+
+schedule.scheduleActionAt(1, new BasicAction() {
+  public void execute() {
+   some_obj.a_method();
+  }
+});
+
+at the cost of some compile time checking.
+
+*** Small improvements to the DataRecorder - file header comments,
+can specify the precision for NumericDataSources, etc.
+
+*** proper use of jar file format. repast.jar now knows
+where the other required libraries are located. Long classpath
+declarations are no longer required.
+
+*** Can add custom buttons to the tool bar.
+
+*** New and improved documentation.
+
+** Bug Fixes
+
+*** fixed DataRecorder file-splitting bug that occurred
+during long multi-day runs. (Similar bug remains, but only occurs
+under WinNT.)
+
+*** fixed File Header bug.
+
+*** misc small bug fixes.
+
+
+* RePast 1.2
+
+** New Features
+
+*** Better support for Social Network Models.
+Networks (Nodes and Edges) can now be imported and
+exported as matrices in UCINet's dl format, MS Excel,
+and an ascii format suitable for importing into Excel.
+Network documentation with a Social Network
+how to.
+
+*** New parameter file keywords for
+working with lists, Strings and booleans.
+
+*** Better random number support
+The colt random number distributions
+have been consolidated into a single RePast
+class - Random. The random how to
+describes how to use this new class.
+
+*** Parameter files for non-batch simulations
+Parameter files can be used with gui simulations
+to set default parameters. Users can
+create parameter files using the
+RePast actions tab as well as setting a model's
+current parameters as the default for
+that session.
+
+*** Models can now load themselves
+using SimInit's loadModel method.
+
+*** Value2DDisplay is now probeable. Grids
+containing primitive values can now be probed.
+
+*** Can take snapshots of the RePast
+charting objects.
+
+*** Additional drawing methods in SimGraphics
+
+*** Additional switches to SimInit.
+-b for batch mode and -v for version
+information.
+
+*** Small speed improvements and much better
+responsiveness for gui models.
+
+*** More API and how to docs.
+
+** Bug Fixes
+
+*** misc small bug fixes.
+
+*** Fixes snapshot button bug.
+
+*** Won't try to display a repast error
+box if display is not available (e.g.
+remote Unix machine.)
+
+*** Small changes to work with java 1.3
+
+
+
+* Repast 1.1.1
+
+** New Features
+
+*** Charting is now based on open source library
+
+Charting is now based on PtPlot, the charting
+component of the Ptolemy project
+(http://ptolemy.eecs.berkeley.edu/). The API
+has changed very little and nearly all models should
+be able to use the new charting components with some
+very small changes to the source code. See the
+API docs for OpenSequenceGraph and OpenHistogram
+for more info.
+
+*** More "how-to" docs
+
+See repast/docs/how_to
+
+*** Now uses Sun provided icons for
+the control panel.
+
+*** Some small user interface improvements
+
+** Bug Fixes
+
+*** Fixed threading bug in the scheduling setup
+that decreased responsiveness in gui models.
+
+This also fixes the flicker problem in mentioned in
+"known problems" with repast 1.1
+
+*** misc small bug fixes.
+
+* Repast 1.1
+
+** New Features
+
+*** New type of Schedule, the SubSchedule
+
+A SubSchedule makes it easier to schedule actions
+at different rates. It is identical to a Schedule but can
+be set to iterate over its own actions some specified number
+of times whenever it is executed. For example, it may iterate
+4 times for every single iteration of its parent Schedule.
+This number of iterations can varied at run-time.
+
+*** Remove BasicActions from Schedules and ActionsGroups
+with removeAction(BasicAction action)
+
+*** Execution order is now more easily specifiable
+
+You can now specify that BasicActions scheduled at
+some interval or for a single execution at a certain
+time, execute after other BasicActions scheduled for
+the same tick. This is useful for ensuring that things
+such as data collection or image capture that might occur
+at some interval occur after their sources change state.
+This was always possible, but modifications to the scheduling
+mechanism made the semantics quite convoluted.
+
+*** Default execution order for BasicActions added
+to a Schedule is now concurrent.
+
+You can use a sequential ActionGroup if you need
+sequential actions.
+
+*** Eliminated reflection from the analysis classes
+
+DataRecorder and the charting classes no longer use
+reflection to call methods used in data collection.
+Substantial speed-up in models that frequently collect
+a lot of data. The convenience methods that use reflection
+remain.
+
+*** New interfaces for collecting and charting data
+
+The elimination of reflection in the analysis classes,
+necessiated the introduction of the Sequence and
+BinDataSource interfaces.
+
+*** findMin and findMax methods added to Object2DGrid,
+Object2DTorus and Diffuse2D spaces.
+
+The method for specifying what constitutes a max or min
+value is user specifiable as is the range and neighborhood
+to be searched.
+
+*** Standard java.beans.BeanInfo now used as the
+basis for probing.
+
+*** New CustomProbeable interface for specifying
+what properties should be probed and displayed
+
+*** New Look for Repast toolbar and parameter windows
+
+Toolbar now uses icons from Dean S. Jones' excellent free icon
+collection instead of labeled buttons. The parameter
+windows have been consolidated into a single tab in
+a settings window.
+
+*** Custom Actions tab and mechanism
+
+A Custom Actions tab has been placed in the settings
+window. You can now easily add sliders, buttons, or
+checkboxes to this tab to change the state of the
+model at run-time.
+
+*** Repast Action tab
+
+A Repast Action tab has been placed in the settings
+window. You can now take snapshots and create movies
+by clicking the buttons on this window.
+
+*** Can now load a model from within the Gui.
+
+There is a load model button on the toolbar for this.
+
+*** -ng switch added to SimInit.
+
+This switch (no gui) will start a single
+run of the model without bringing up the gui.
+It is up to the model to stop itself.
+
+*** Includes a port of the Swarm mousetrap
+sample simulation
+
+*** More "How To" documentation
+
+** Bug Fixes
+
+*** Diffuse2D is now correctly double buffered.
+
+*** Misc. small bugs fixed.
+
+** Known problems
+
+There is a flicker in the display when a graphical model
+is first started. This is caused, I think, by a small conflict
+between the initial display of the DisplaySurface via the
+AWT thread, and the redrawing of the DisplaySurface via the
+main Repast thread. This is ugly, but only an inconvenience.
+I am looking into it.
+
+
+
+
+
+
+
+
+
+
+
+
+
+

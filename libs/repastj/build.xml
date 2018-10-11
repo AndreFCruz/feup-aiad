@@ -1,0 +1,345 @@
+<!-- ========================================================== -->
+<!-- Adapted from the buildfile for the data visualization      -->
+<!-- library prefuse http://prefuse.sf.net                      -->
+<!-- ========================================================== -->
+
+<project name="repastj" default="usage" basedir=".">
+
+	<!-- =================================================================== -->
+	<!-- Initialization target                                               -->
+	<!-- =================================================================== -->
+	<target name="init">
+		<tstamp />
+		<property name="Name" value="RepastJ" />
+		<property name="name" value="repastj" />
+		<property name="version" value="3.1" />
+		<property name="year" value="2005" />
+
+		<property name="build.compiler" value="modern" />
+		<property name="debug" value="off" />
+		<property name="optimize" value="on" />
+		<property name="deprecation" value="on" />
+		<property name="packages" value="layout.*,uchicago.src.*,anl.repast.*" />
+
+		<!-- Define the source directories -->
+		<property name="root.dir" value="." />
+		<property name="doc.dir" value="${root.dir}/doc" />
+		<property name="lib.dir" value="${root.dir}/lib" />
+		<property name="src.dir" value="${root.dir}/src" />
+		<property name="demos.dir" value="${root.dir}/demos" />
+		<property name="demos.src.dir" value="${root.dir}/demos/src" />
+		<property name="test.dir" value="${root.dir}/test" />
+
+		<!-- Define the source build directories -->
+		<property name="doc.apidocs" value="${doc.dir}/api" />
+		<property name="build.dir" value="${root.dir}/build" />
+		<property name="build.lib" value="${root.dir}/build/lib" />
+		<property name="build.repast.src" value="${root.dir}/build/repast/src" />
+		<property name="build.repast.dest" value="${root.dir}/build/repast/classes" />
+		<property name="build.demos.src" value="${root.dir}/build/demos/src" />
+		<property name="build.demos.dest" value="${root.dir}/build/demos/classes" />
+		<property name="build.demos.data" value="${root.dir}/build/demos/data" />
+		<property name="build.test.src" value="${root.dir}/build/test/src" />
+		<property name="build.test.dest" value="${root.dir}/build/test/dest" />
+		<property name="build.test.reports" value="${root.dir}/build/test/reports" />
+
+		<!-- Define the distribution directories -->
+		<property name="dist.root" value="${root.dir}/dist" />
+		<property name="sourcedist.dir" value="${dist.root}/${name}-${version}/${name}-${version}" />
+		<property name="compiledist.dir" value="${dist.root}/${name}-${version}-compiled/${name}-${version}" />
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Help on usage                                                       -->
+	<!-- =================================================================== -->
+	<target name="usage">
+		<echo message="" />
+		<echo message="" />
+		<echo message="repast build control" />
+		<echo message="-------------------------------------------------------------" />
+		<echo message="" />
+		<echo message=" available targets are:" />
+		<echo message="" />
+		<echo message="   all        --> builds all the jars in ./build" />
+		<echo message="   prepForNSIS --> preps the directories for running NSIS" />
+		<echo message="   repast    --> builds the repast.jar file in ./build" />
+		<echo message="   demos      --> builds the demos.jar file in ./build" />
+		<echo message="   compiledist--> creates the compiled distribution in ./dist" />
+		<echo message="   sourcedist --> creates the source distribution in ./dist" />
+		<echo message="   api        --> generates repast API docs in ./doc/api" />
+		<echo message="   clean      --> restores distribution to original state" />
+		<echo message="   usage      --> (default) displays build menu" />
+		<echo message="" />
+		<echo message=" See the comments inside the build.xml file for more details." />
+		<echo message="-------------------------------------------------------------" />
+		<echo message="" />
+		<echo message="" />
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Prepares the build directory                                        -->
+	<!-- =================================================================== -->
+	<target name="prepare" depends="init">
+		<mkdir dir="${build.dir}" />
+		<mkdir dir="${build.lib}" />
+		<mkdir dir="${doc.apidocs}" />
+		<copy todir="${build.lib}">
+			<fileset dir="${lib.dir}" />
+		</copy>
+
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Prepares the repast source code                                    -->
+	<!-- =================================================================== -->
+	<target name="prepare-repast" depends="prepare">
+		<mkdir dir="${build.repast.src}" />
+		<mkdir dir="${build.repast.dest}" />
+
+		<copy todir="${build.repast.src}">
+			<fileset dir="${src.dir}" />
+		</copy>
+
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Prepares the examples code                                          -->
+	<!-- =================================================================== -->
+	<target name="prepare-demos" depends="prepare">
+		<mkdir dir="${build.demos.src}" />
+		<mkdir dir="${build.demos.dest}" />
+		<mkdir dir="${build.demos.data}" />
+
+		<copy todir="${build.demos.src}">
+			<fileset dir="${demos.src.dir}" />
+		</copy>
+	</target>
+
+	<!-- ================================================================== -->
+	<!-- Prepares the test code						-->
+	<!-- ================================================================== -->
+	<target name="prepare-tests" depends="prepare">
+		<mkdir dir="${build.test.src}" />
+		<mkdir dir="${build.test.dest}" />
+		<mkdir dir="${build.test.reports}" />
+
+		<copy todir="${build.test.src}">
+			<fileset dir="${test.dir}" />
+		</copy>
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Compiles the repast source code                                     -->
+	<!-- =================================================================== -->
+	<target name="compile-repast" depends="prepare-repast">
+		<!-- copy resource files -->
+		<copy todir="${build.repast.dest}">
+			<fileset dir="${build.repast.src}" excludes="**/*.java" />
+		</copy>
+
+		<javac source="1.4" target="1.4" srcdir="${build.repast.src}" destdir="${build.repast.dest}" debug="${debug}" deprecation="${deprecation}" optimize="${optimize}" excludes="**/ESRI*.java">
+			<classpath>
+				<fileset dir="${build.lib}">
+					<include name="**/*.jar" />
+				</fileset>
+			</classpath>
+		</javac>
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Compiles the demos directory                                        -->
+	<!-- =================================================================== -->
+	<target name="compile-demos" depends="prepare-demos ">
+		<!-- copy resource files -->
+		<copy todir="${build.demos.dest}">
+			<fileset dir="${demos.dir}/src" includes="**" excludes="**/*.java" />
+		</copy>
+
+		<javac source="1.4" target="1.4" srcdir="${build.demos.src}" destdir="${build.demos.dest}" debug="${debug}" deprecation="${deprecation}" optimize="${optimize}">
+			<classpath>
+				<fileset dir="${build.lib}">
+					<include name="**/*.jar" />
+				</fileset>
+				<pathelement path="${build.repast.dest}" />
+			</classpath>
+		</javac>
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Compiles the test directory                                         -->
+	<!-- =================================================================== -->
+	<target name="compile-test" depends="prepare-tests, demos">
+		<javac target="1.4" srcdir="${build.test.src}" destdir="${build.test.dest}" debug="${debug}" deprecation="${deprecation}" optimize="${optimize}">
+			<classpath>
+				<fileset dir="${build.lib}">
+					<include name="**/*.jar" />
+				</fileset>
+				<pathelement path="${build.repast.dest}" />
+			</classpath>
+		</javac>
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Run the unit tests and store results in ./build                     -->
+	<!-- =================================================================== -->
+	<target name="test" depends="compile-test">
+		<junit printsummary="yes" haltonfailure="no">
+			<classpath>
+				<fileset dir="${build.lib}">
+					<include name="**/*.jar" />
+				</fileset>
+				<pathelement path="${build.dir}/${name}.jar" />
+				<pathelement path="${build.test.dest}" />
+			</classpath>
+
+			<formatter type="xml" />
+			<formatter type="plain" />
+			<batchtest fork="yes" todir="${build.test.reports}">
+				<fileset dir="${build.test.src}">
+					<include name="**/*Test.java" />
+					<exclude name="**/AllTests.java" />
+				</fileset>
+			</batchtest>
+		</junit>
+	</target>
+
+
+	<!-- =================================================================== -->
+	<!-- Creates the repast.jar in ./build                                  -->
+	<!-- =================================================================== -->
+	<target name="repast" depends="compile-repast">
+		<jar jarfile="${build.dir}/repast.jar" basedir="${build.repast.dest}" includes="**">
+			<manifest>
+				<attribute name="Built-By" value="Repast Development Team" />
+				<attribute name="Class-Path" value="lib/JTS.jar lib/OpenForecast-0.4.0.jar lib/ProActive.jar lib/asm.jar lib/beanbowl.jar lib/colt.jar lib/commons-collections.jar lib/commons-logging.jar lib/geotools_repast.jar lib/ibis.jar lib/jakarta-poi.jar lib/jep-2.24.jar lib/jgap.jar lib/jh.jar lib/jmf.jar lib/joone.jar lib/junit.jar lib/log4j-1.2.8.jar lib/openmap.jar lib/plot.jar lib/trove.jar lib/violinstrings-1.0.2.jar" />
+				<attribute name="Main-Class" value="uchicago.src.sim.engine.SimInit" />
+			</manifest>
+		</jar>
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Creates the demos.jar                                               -->
+	<!-- =================================================================== -->
+	<target name="demos" depends="compile-demos">
+		<jar jarfile="${build.dir}/demos.jar" basedir="${build.demos.dest}" includes="**" >
+			<manifest>
+				<attribute name="Built-By" value="Repast Development Team" />
+				<attribute name="Class-Path" value="../repast.jar ../lib/JTS.jar ../lib/OpenForecast-0.4.0.jar ../lib/ProActive.jar ../lib/asm.jar ../lib/beanbowl.jar ../lib/colt.jar ../lib/commons-collections.jar ../lib/commons-logging.jar ../lib/geotools_repast.jar ../lib/ibis.jar ../lib/jakarta-poi.jar ../lib/jep-2.24.jar ../lib/jgap.jar ../lib/jh.jar ../lib/jmf.jar ../lib/joone.jar ../lib/junit.jar ../lib/log4j-1.2.8.jar ../lib/openmap.jar ../lib/plot.jar ../lib/trove.jar ../lib/violinstrings-1.0.2.jar" />
+				<attribute name="Main-Class" value="uchicago.src.sim.engine.SimInit" />
+			</manifest>
+		</jar>
+	</target>
+
+
+	<!-- =================================================================== -->
+	<!-- Build all jars in ./build                                           -->
+	<!-- =================================================================== -->
+	<target name="all" depends="repast, demos" />
+
+	<!-- =================================================================== -->
+	<!-- Creates the API documentation in ./doc/api/                         -->
+	<!-- =================================================================== -->
+	<target name="api" depends="prepare-repast, prepare-demos">
+		<mkdir dir="${doc.apidocs}" />
+		<javadoc packagenames="${packages}" sourcepath="${build.repast.src};${build.demos.src}" verbose="false" destdir="${doc.apidocs}" author="true" version="true" use="true" breakiterator="yes" splitindex="true" noindex="false" windowtitle="${Name} API Documentation" doctitle="&lt;font face='Verdana,Arial,Helvetica,Sans-Serif'>the ${Name} agent-based simulation toolkit&lt;/font>">
+			<classpath>
+				<fileset dir="${build.lib}">
+					<include name="**/*.jar" />
+				</fileset>
+			</classpath>
+		</javadoc>
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Replace all sequences of 4 spaces in .java files with a tab         -->
+	<!-- =================================================================== -->
+	<target name="addTabsWithLength4" depends="init">
+		<fixcrlf srcdir="${root.dir}" tab="add" tablength="4" includes="**/*.java" />
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Runs the all build and also copies demo data files to demos/data    -->
+	<!-- =================================================================== -->
+	<target name="prepForNSIS" depends="all,api">
+		<copy todir="${build.demos.data}" flatten="true">
+			<fileset dir="${demos.dir}" includes="**/*.shp,**/*.gif,**/*.dl,**/*.txt,**/*.pgm,**/*.sb*,**/*.pf,**/*.dbf" />
+		</copy>
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Replace all tabs in .java files with a sequence of 4 spaces         -->
+	<!-- =================================================================== -->
+	<target name="removeTabsWithLength4" depends="init">
+		<fixcrlf srcdir="${root.dir}" tab="remove" tablength="4" includes="**/*.java" />
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Build source distribution in ./dist                                 -->
+	<!-- =================================================================== -->
+	<target name="sourcedist" depends="clean">
+		<mkdir dir="${dist.root}" />
+		<mkdir dir="${sourcedist.dir}" />
+
+		<copy todir="${sourcedist.dir}">
+			<fileset dir="${root.dir}" />
+		</copy>
+
+		<!-- Now delete what we dont want, probably a better way to do this -->
+		<delete dir="${sourcedist.dir}/dist" />
+
+		<fixcrlf srcdir="${sourcedist.dir}" eol="lf" eof="remove" includes="**/*.sh" />
+		<zip zipfile="${dist.root}/${name}-${version}.zip" basedir="${dist.root}/${name}-${version}" whenempty="create" />
+
+	</target>
+
+
+	<!-- =================================================================== -->
+	<!-- Build compiled distribution in ./dist                               -->
+	<!-- =================================================================== -->
+	<target name="compiledist" depends="clean, all, api">
+		<mkdir dir="${dist.root}" />
+		<mkdir dir="${compiledist.dir}" />
+
+
+		<copy todir="${compiledist.dir}">
+			<fileset dir="${root.dir}">
+				<exclude name="build/**/*" />
+				<exclude name="dist/**/*" />
+				<exclude name="*/CVS"/>
+			</fileset>
+		</copy>
+
+		<copy todir="${compiledist.dir}">
+			<fileset dir="build" includes="repast.jar" />
+		</copy>
+		<copy todir="${compiledist.dir}/demos">
+			<fileset dir="build" includes="demos.jar" />
+		</copy>
+		<copy todir="${compiledist.dir}">
+			<fileset dir="doc" includes="api/**/*" />
+		</copy>
+		<copy todir="${compiledist.dir}">
+			<fileset dir="../web" includes="how-to/**/*" excludes="*/CVS" />
+		</copy>
+
+
+		<delete dir="${compiledist.dir}/build" />
+		<delete dir="${compiledist.dir}/dist" />
+		<delete dir="${compiledist.dir}/doc" />
+		<fixcrlf srcdir="${compiledist.dir}" eol="lf" eof="remove" includes="**/*.sh" />
+
+		<tar  destfile="${dist.root}/${name}-${version}.tar.gz" basedir="${compiledist.dir}" compression="gzip" />
+
+	</target>
+
+	<!-- =================================================================== -->
+	<!-- Clean restores the distribution to original state                   -->
+	<!-- =================================================================== -->
+	<target name="clean" depends="init">
+		<delete dir="${build.dir}" />
+		<delete dir="${dist.root}" />
+		<delete dir="${doc.apidocs}" />
+	</target>
+</project>
+
+<!-- End of file -->

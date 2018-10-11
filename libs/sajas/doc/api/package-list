@@ -1,0 +1,10 @@
+sajas.core
+sajas.core.behaviours
+sajas.domain
+sajas.lang.acl
+sajas.proto
+sajas.proto.states
+sajas.sim
+sajas.sim.repast3
+sajas.sim.repasts
+sajas.wrapper

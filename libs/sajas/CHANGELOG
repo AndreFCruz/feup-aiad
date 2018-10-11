@@ -1,0 +1,25 @@
+SAJaS - Simple API for JADE-based Simulations
+=============================================
+
+This is the change-log for SAJaS.
+
+
+v0.92b, 2016-Mar-11
+-------------------
+- Added timer-based functionality as available in JADE agents (which supports features such as TickerBehaviour, WakerBehaviour and ACLMessage reply-by handling in FIPA protocols),
+  although its use in SAJaS should be carefully considered and is not encouraged, given its impact on simulation performance.
+- Solved issue with stopping the simulation (in both Repast3 and RepastS): agents now have a chance to take-down properly.
+- Solved issue on agent scheduling/unscheduling: agents are no longer unscheduled when they have no ready behaviours.
+  (Undesired side-effects were: agent removal from its context (RepastS), making it inaccessible for projections; no take-down operations for unscheduled agents.)
+- Refactored the way agents are started, making the whole process more clear and more similar to JADE (though greatly simplified).
+
+
+v0.91b, 2015-Oct-20
+-------------------
+- Solved bug with incorrect use of sajas.core.AID in some migrated JADE classes.
+- Updated documentation on sajas.core.AID, which should be used by programmers only when explicitly instantiating this class.
+
+
+v0.9b, 2015-Sep-1
+-----------------
+First version of SAJaS.

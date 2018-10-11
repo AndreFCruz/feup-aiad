@@ -1,0 +1,246 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 3.2//EN">
+<html>
+   <head>
+      <title>
+         How to use the GUI
+      </title>
+   </head>
+   <body>
+      <center>
+         <h1>
+            How to use the GUI
+         </h1>
+      </center>
+      <p>
+         A user can interact with a non-batch Repast simulation through the
+         gui. The gui allows the user to start, stop, pause, setup, and exit a
+         simulation through the toolbar. The table below lists the toolbar
+         buttons and their functions.
+      </p>
+      <br>
+      <br>
+      <table>
+         <tr>
+            <td>
+               <b>Start Multi-Run</b> 
+            </td>
+            <td>
+               <b>Start</b>
+            </td>
+            <td>
+               <b>Step</b>
+            </td>
+            <td>
+               <b>Initialize</b>
+            </td>
+            <td>
+               <b>Stop</b>
+            </td>
+            <td>
+               <b>Pause</b>
+            </td>
+            <td>
+               <b>Setup</b>
+            </td>
+            <td>
+               <b>Load Model</b>
+            </td>
+            <td>
+               <b>View Settings</b>
+            </td>
+            <td>
+               <b>Exit</b>
+            </td>
+         </tr>
+         <tr align="center">
+            <td>
+               <img alt="error-file:tidyout.log" src=
+               "./images/ParameterSweep.gif">
+            </td>
+            <td>
+               <img alt="error-file:tidyout.log" src="./images/Play24.gif">
+            </td>
+            <td>
+               <img alt="error-file:tidyout.log" src=
+               "./images/StepForward24.gif">
+            </td>
+            <td>
+               <img alt="error-file:tidyout.log" src="./images/Redo24.gif">
+            </td>
+            <td>
+               <img alt="error-file:tidyout.log" src=
+               "./images/StopSquare24.gif">
+            </td>
+            <td>
+               <img alt="error-file:tidyout.log" src="./images/Pause24.gif">
+            </td>
+            <td>
+               <img alt="error-file:tidyout.log" src="./images/Refresh24.gif">
+            </td>
+            <td>
+               <img alt="error-file:tidyout.log" src="./images/Open24.gif">
+            </td>
+            <td>
+               <img alt="error-file:tidyout.log" src=
+               "./images/TipOfTheDay24.gif">
+            </td>
+            <td>
+               <img alt="error-file:tidyout.log" src="./images/Delete.gif">
+            </td>
+         </tr>
+      </table>
+      <br>
+      <br>
+      <ol>
+         <li>
+            <strong>Start Multi-Run</strong>: The start multi-run button starts
+            a batch run of a simulation. See <a href="./multirun.html">How to
+            Use the Multi-Run</a> for more details.
+         </li>
+         <li>
+            <b>Start</b>: The start button starts the simulation when it is
+            paused or has not yet been started, iterating through the scheduled
+            behavior.
+         </li>
+         <li>
+            <b>Step</b>: The step button starts the simulation when it is
+            paused or has not yet been started, iterating through a single
+            iteration the scheduled behavior.
+         </li>
+         <li>
+            <b>Initialize</b>: The initialize button starts the simulation but
+            pauses before iterating any scheduled behavior. Only the
+            initializing code is executed in this case.
+         </li>
+         <li>
+            <b>Stop</b>: The stop button stops the simulation.
+         </li>
+         <li>
+            <b>Pause</b>: The pause button pauses the simulation.
+         </li>
+         <li>
+            <b>Setup</b>: The setup button &quot;sets up&quot; the simulation
+            by executing the user defined setup code.
+         </li>
+         <li>
+            <b>Load Model</b>: The load model button pops up a dialog allowing
+            the user to specify a model to load.
+         </li>
+         <li>
+            <b>View Settings</b>: The view settings button will display the
+            various model settings panel if it is hidden or destroyed.
+         </li>
+         <li>
+            <b>Exit</b>: The exit button will shutdown the simulation and exit.
+         </li>
+      </ol>
+      <p>
+         To run a simulation you would click either the start, step or
+         initialize buttons. If you click the initialize button, you would then
+         click step or start. When you want to stop the simulation and then run
+         it again, you click stop and then the setup button.
+      </p>
+      <p>
+         In addition, if the model has followed the get/set method pattern (see
+         <a href="./model.html#getset">How to Build a Model</a> and <a href=
+         "./params.html">How to use Parameters and Parameter Files</a>) the
+         user will also be able to see and set the initial parameters of a
+         simulation. The initial parameters will appear in the settings window
+         on the tab entitled &quot;Parameters&quot; into which the user can see
+         the default starting parameters and enter new ones.
+      </p>
+      <p>
+         Also in the settings window are the Custom Actions tab and the Repast
+         Actions tab. The Custom Actions tab will contain any sliders, buttons,
+         or checkboxes that the simulation author has defined. You can interact
+         with the model while it is running through these sliders, buttons, and
+         checkboxes.
+      </p>
+      <p>
+         The Repast Actions tab looks like:
+      </p>
+      <br>
+      <br>
+      <center>
+         <img alt="error-file:tidyout.log" src="./images/repastactions.png">
+      </center>
+      <br>
+      <br>
+      <ul>
+         <li>
+            The first two buttons allow you to make a movie or take a snapshot.
+            Clicking on one of these buttons will bring up a dialog containing
+            further information and choices.
+         </li>
+         <li>
+            The third button will bring up a dialog for creating an sequence
+            chart. (This functionality is provisional at this time.)
+         </li>
+         <li>
+            The &quot;In Alpha Order&quot; check box controls the order of the
+            parameters in the parameters tab. If it is checked the parameters
+            will appear in alphabetical order. Otherwise they will appear in
+            the order they are defined in the model.
+         </li>
+         <li>
+            The &quot;Stdout to Console&quot; check box determines if standard
+            output (output from &quot;System.out.println&quot;) will be
+            captured by the Repast console.
+         </li>
+         <li>
+            The &quot;Stderr to Console&quot; check box determines if standard
+            error (output from &quot;System.err.println&quot;) will be captured
+            by the Repast console.
+         </li>
+         <li>
+            The &quot;RngSeed in Defaults&quot; checkbox determines whether the
+            current random number seed will be included as a default value
+            either when written to a file or set as the current default.
+         </li>
+         <li>
+            &quot;Update Probes&quot; determines whether or not any probed
+            objects have their displayed properties updated in real-time or
+            not.
+         </li>
+         <li>
+            &quot;Show custom charts&quot; determines whether or not any custom
+            charts created for this model using the &quot;create / edit
+            charts&quot; button are automatically created and displayed when
+            this model is run.
+         </li>
+         <li>
+            The &quot;Set As Default&quot; button will set the current
+            parameters as the default until Repast is exited. This means that
+            whenever the setup button is pressed these new defaults will be
+            used rather the initial parameters.
+         </li>
+         <li>
+            The &quot;Write Parameters&quot; button will write the current
+            parameters to a file so that can be loaded later.
+         </li>
+         <li>
+            The &quot;About&quot; button displays a typical about dialog giving
+            some further information about Repast.
+         </li>
+      </ul>
+      <p>
+         A user may also probe objects in the simulation provided those objects
+         implement the get/set method pattern and whose displays are added to
+         the DisplaySurface as probeables (see <a href="./display.html">How to
+         Create Displays</a>). To probe an object, pause the simulation, and
+         left click on the object in the display. The probeable state of all
+         the objects underneath the cursor should appear in windows similar to
+         the &quot;Parameters&quot; tab in the settings window, and their
+         properties can be set in the same way (i.e. changing the property and
+         pressing enter).
+      </p>
+      <p>
+         Displaying a simulation can be one of the slowest parts of a
+         simulation. Repast will not update the display if the display window
+         is minimized, allowing for dynamic display updates. (Of course, these
+         kind of updates can be set explicitly through a Schedule.) When the
+         window is displayed again it will update in the usual manner.
+      </p>
+   </body>
+</html>
+

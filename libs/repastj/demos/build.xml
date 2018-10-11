@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<!--
+<!DOCTYPE project PUBLIC "-//ANT//DTD project//EN" "/usr/local/jakarta-ant/lib/project.dtd">
+-->
+<project name="demos" default="compile" basedir=".">
+  <!-- version should be picked up from the main ant file that calls this one -->
+  <property name="demo.dist.dir" value="../../dist/RePast-${version}/demo"/>
+  
+  <target name="compile">
+    <ant dir="enn" antfile="build.xml" target="compile"/>
+    <ant dir="gisModel" antfile="build.xml" target="compile"/>
+    <ant dir="heatBugs" antfile="build.xml" target="compile"/>
+    <ant dir="hexabugs" antfile="build.xml" target="compile"/>
+    <ant dir="hypercycles" antfile="build.xml" target="compile"/>
+    <ant dir="jain" antfile="build.xml" target="compile"/>
+    <ant dir="jiggle" antfile="build.xml" target="compile"/>
+    <ant dir="jinGirNew" antfile="build.xml" target="compile"/>
+    <ant dir="life" antfile="build.xml" target="compile"/>
+    <ant dir="mousetrap" antfile="build.xml" target="compile"/>
+    <ant dir="schellingGis" antfile="build.xml" target="compile"/>
+    <ant dir="sugarscape" antfile="build.xml" target="compile"/>
+  </target>
+
+  <target name="dist">
+    <ant dir="enn" antfile="build.xml" target="dist"/>
+    <ant dir="gisModel" antfile="build.xml" target="dist"/>
+    <ant dir="heatBugs" antfile="build.xml" target="dist"/>
+    <ant dir="hexabugs" antfile="build.xml" target="dist"/>
+    <ant dir="hypercycles" antfile="build.xml" target="dist"/>
+    <ant dir="jain" antfile="build.xml" target="dist"/>
+    <ant dir="jiggle" antfile="build.xml" target="dist"/>
+    <ant dir="jinGirNew" antfile="build.xml" target="dist"/>
+    <ant dir="life" antfile="build.xml" target="dist"/>
+    <ant dir="mousetrap" antfile="build.xml" target="dist"/>
+    <ant dir="schellingGis" antfile="build.xml" target="dist"/>
+    <ant dir="sugarscape" antfile="build.xml" target="dist"/>
+  </target>
+  
+  <target name="clean">
+    <ant dir="enn" antfile="build.xml" target="clean"/>
+    <ant dir="gisModel" antfile="build.xml" target="clean"/>
+    <ant dir="heatBugs" antfile="build.xml" target="clean"/>
+    <ant dir="hexabugs" antfile="build.xml" target="clean"/>
+    <ant dir="hypercycles" antfile="build.xml" target="clean"/>
+    <ant dir="jain" antfile="build.xml" target="clean"/>
+    <ant dir="jiggle" antfile="build.xml" target="clean"/>
+    <ant dir="jinGirNew" antfile="build.xml" target="clean"/>
+    <ant dir="life" antfile="build.xml" target="clean"/>
+    <ant dir="mousetrap" antfile="build.xml" target="clean"/>
+    <ant dir="schellingGis" antfile="build.xml" target="clean"/>
+    <ant dir="sugarscape" antfile="build.xml" target="clean"/>
+  </target>
+
+</project>
