@@ -10,6 +10,7 @@ public class Broker extends Agent {
     @Override
     protected void setup() {
         super.setup();
+        System.out.println("Broker " + this.getLocalName() + " was created.");
     }
 
     @Override
