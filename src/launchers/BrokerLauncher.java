@@ -2,7 +2,6 @@ package launchers;
 
 import agents.Broker;
 import agents.Producer;
-import jade.core.Agent;
 import jade.core.Profile;
 import jade.core.ProfileImpl;
 import jade.core.Runtime;
@@ -11,7 +10,7 @@ import jade.wrapper.AgentController;
 import jade.wrapper.ContainerController;
 import jade.wrapper.StaleProxyException;
 
-public class ProducerLauncher implements Launcher {
+public class BrokerLauncher implements Launcher {
 
     public static void main(String[] args) throws StaleProxyException {
 
@@ -25,12 +24,6 @@ public class ProducerLauncher implements Launcher {
 
         // launch agents
         for (int i = 0; i < 10; i++) {
-            AgentController p = mainContainer.acceptNewAgent("p"+i, new Producer());
-            p.start();
-        }
-
-
-        for (int i = 0; i < 10; i++) {
             AgentController p = mainContainer.acceptNewAgent("b" + i, new Broker());
             p.start();
         }
@@ -40,8 +33,9 @@ public class ProducerLauncher implements Launcher {
 
     }
 
+
     @Override
     public void launch() {
-        System.out.println("Launched producers.");
+
     }
 }
