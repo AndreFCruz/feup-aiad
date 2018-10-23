@@ -17,8 +17,8 @@ public class BrokerLauncher extends Launcher {
 
         // launch brokers
         for (int i = 1; i < numberOfAgents; i++) {
-            AgentController p = mainContainer.acceptNewAgent("broker" + i, new Broker());
-            p.start();
+//            AgentController p = mainContainer.acceptNewAgent("broker" + i, new Broker());
+//            p.start();
         }
     }
 }

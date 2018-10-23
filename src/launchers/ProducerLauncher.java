@@ -18,8 +18,8 @@ public class ProducerLauncher extends Launcher {
 
         // launch producers
         for (int i = 1; i < numberOfAgents; i++) {
-            AgentController p = mainContainer.acceptNewAgent("producer"+i, new Producer());
-            p.start();
+//            AgentController p = mainContainer.acceptNewAgent("producer"+i, new Producer());
+//            p.start();
         }
 
     }
