@@ -1,6 +1,6 @@
 package agents;
 
-import jade.core.Agent;
+import sajas.core.Agent;
 
 public class Broker extends Agent {
 
