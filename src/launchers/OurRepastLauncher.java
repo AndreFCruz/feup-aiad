@@ -15,6 +15,7 @@ import uchicago.src.sim.gui.DisplaySurface;
 import uchicago.src.sim.gui.Object2DDisplay;
 import uchicago.src.sim.space.Object2DGrid;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -111,21 +112,21 @@ public class OurRepastLauncher extends Repast3Launcher{
     public void launchAgents() {
         try {
             for(int i = 0; i < NUMPRODUCERS; i++){
-                Producer p = new Producer((worldWidth/(NUMPRODUCERS+1))*(i+1), 50, this);
+                Producer p = new Producer((worldWidth/(NUMPRODUCERS+1))*(i+1), 50, this, Color.GREEN);
                 world.putObjectAt(p.getX(), p.getY(), p);
                 producers.add(p);
                 mainContainer.acceptNewAgent("Producer:" + i, p).start();
             }
 
             for(int i = 0; i < NUMBROKERS; i++){
-                Broker b = new Broker((worldWidth/(NUMBROKERS+1))*(i+1), 150, this);
+                Broker b = new Broker((worldWidth/(NUMBROKERS+1))*(i+1), 150, this, Color.YELLOW);
                 world.putObjectAt(b.getX(), b.getY(), b);
                 brokers.add(b);
                 mainContainer.acceptNewAgent("Broker:" + i, b).start();
             }
 
             for(int i = 0; i < NUMCONSUMERS; i++){
-                Consumer c = new Consumer((worldWidth/(NUMCONSUMERS+1))*(i+1), 250, this);
+                Consumer c = new Consumer((worldWidth/(NUMCONSUMERS+1))*(i+1), 250, this, Color.RED);
                 world.putObjectAt(c.getX(), c.getY(), c);
                 consumers.add(c);
                 mainContainer.acceptNewAgent("Consumer:" + i, c).start();

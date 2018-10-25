@@ -1,10 +1,16 @@
 package agents;
 
+import launchers.OurRepastLauncher;
 import sajas.core.AID;
 import sajas.core.Agent;
 import sajas.core.behaviours.Behaviour;
+import uchicago.src.sim.gui.Drawable;
+import uchicago.src.sim.gui.SimGraphics;
 
-public class SimpleAgent extends Agent {
+import java.awt.*;
+
+public class SimpleAgent extends Agent implements Drawable {
+
 
     class SimpleBehaviour extends Behaviour {
 
@@ -34,10 +40,23 @@ public class SimpleAgent extends Agent {
         }
     }
 
-    private static int agentCount = 0;
-    private int id;
 
-    public SimpleAgent() {
+    private static int agentCount = 0;
+    protected int id;
+    protected int x;
+    protected int y;
+    protected Color color;
+    protected OurRepastLauncher worldModel;
+
+    int cumulativeExpenses = 0;
+    int cumulativeEarnings = 0;
+
+    SimpleAgent(int x, int y, OurRepastLauncher model, Color c) {
+        super();
+        this.x = x;
+        this.y = y;
+        this.color = c;
+        this.worldModel = model;
         this.id = agentCount++;
     }
 
@@ -58,4 +77,19 @@ public class SimpleAgent extends Agent {
         System.out.println(this.id + " Hello World!");
     }
     */
+
+    @Override
+    public void draw(SimGraphics simGraphics) {
+        simGraphics.drawCircle(color);
+    }
+
+    @Override
+    public int getX() {
+        return x;
+    }
+
+    @Override
+    public int getY() {
+        return y;
+    }
 }
