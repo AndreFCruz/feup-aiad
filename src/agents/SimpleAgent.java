@@ -12,7 +12,7 @@ public class SimpleAgent extends Agent {
 
         @Override
         public void action() {
-            System.out.println(this.getAgent().getAID() + " : " + this.count);
+            System.out.println(this.getAgent().getAID() + " : " + this.count++);
         }
 
         @Override
@@ -37,7 +37,7 @@ public class SimpleAgent extends Agent {
     private static int agentCount = 0;
     private int id;
 
-    SimpleAgent() {
+    public SimpleAgent() {
         this.id = agentCount++;
     }
 
