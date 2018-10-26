@@ -1,5 +1,9 @@
 package agents;
 
+import jade.domain.DFService;
+import jade.domain.FIPAAgentManagement.DFAgentDescription;
+import jade.domain.FIPAAgentManagement.ServiceDescription;
+import jade.domain.FIPAException;
 import launchers.OurRepastLauncher;
 import sajas.core.AID;
 import sajas.core.Agent;
@@ -92,4 +96,5 @@ public class SimpleAgent extends Agent implements Drawable {
     public int getY() {
         return y;
     }
+
 }

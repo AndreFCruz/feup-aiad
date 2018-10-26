@@ -11,6 +11,8 @@ import sajas.sim.repast3.Repast3Launcher;
 import sajas.wrapper.ContainerController;
 
 import uchicago.src.sim.engine.SimInit;
+import uchicago.src.sim.event.SliderListener;
+import uchicago.src.sim.gui.DisplayConstants;
 import uchicago.src.sim.gui.DisplaySurface;
 import uchicago.src.sim.gui.Object2DDisplay;
 import uchicago.src.sim.space.Object2DGrid;
@@ -22,6 +24,7 @@ import java.util.Random;
 
 public class OurRepastLauncher extends Repast3Launcher{
 
+    
     private static final int NUMPRODUCERS = 8;
     private static final int NUMBROKERS = 5;
     private static final int NUMCONSUMERS = 20;
@@ -31,8 +34,9 @@ public class OurRepastLauncher extends Repast3Launcher{
 
     private DisplaySurface displaySurface;
     private Object2DGrid world;
-    private int worldWidth = 400;
-    private int worldHeight = 400;
+    private int density = 10;
+    private int worldWidth;
+    private int worldHeight;
 
     private ArrayList<Producer> producers;
     private ArrayList<Broker> brokers;
@@ -41,6 +45,11 @@ public class OurRepastLauncher extends Repast3Launcher{
 
     public OurRepastLauncher() {
         rand = new Random();
+
+        worldWidth = 40 * density;
+        worldHeight = 40 * density;
+        DisplayConstants.CELL_WIDTH = density;
+        DisplayConstants.CELL_HEIGHT = density;
     }
 
 //    @SuppressWarnings("unchecked")
@@ -109,7 +118,7 @@ public class OurRepastLauncher extends Repast3Launcher{
 
     }
 
-    public void launchAgents() {
+    private void launchAgents() {
         try {
             for(int i = 0; i < NUMPRODUCERS; i++){
                 int x = (worldWidth/(NUMPRODUCERS+1))*(i+1);
@@ -117,7 +126,7 @@ public class OurRepastLauncher extends Repast3Launcher{
                 Producer p = new Producer(x, y, this, Color.GREEN);
                 world.putObjectAt(p.getX(), p.getY(), p);
                 producers.add(p);
-                mainContainer.acceptNewAgent("Producer:" + i, p).start();
+                mainContainer.acceptNewAgent("producer-" + i, p).start();
             }
 
             for(int i = 0; i < NUMBROKERS; i++){
@@ -126,7 +135,7 @@ public class OurRepastLauncher extends Repast3Launcher{
                 Broker b = new Broker(x, y, this, Color.YELLOW);
                 world.putObjectAt(b.getX(), b.getY(), b);
                 brokers.add(b);
-                mainContainer.acceptNewAgent("Broker:" + i, b).start();
+                mainContainer.acceptNewAgent("broker-" + i, b).start();
             }
 
             for(int i = 0; i < NUMCONSUMERS; i++){
@@ -135,7 +144,7 @@ public class OurRepastLauncher extends Repast3Launcher{
                 Consumer c = new Consumer(x, y, this, Color.RED);
                 world.putObjectAt(c.getX(), c.getY(), c);
                 consumers.add(c);
-                mainContainer.acceptNewAgent("Consumer:" + i, c).start();
+                mainContainer.acceptNewAgent("consumer-" + i, c).start();
             }
 
         }
@@ -144,12 +153,26 @@ public class OurRepastLauncher extends Repast3Launcher{
         }
     }
 
+
     public static void main(String[] args) {
         boolean BATCH_MODE = false;
 
         SimInit init = new SimInit();
         init.setNumRuns(1); // works only in batch mode
         init.loadModel(new OurRepastLauncher(), null, BATCH_MODE);
+    }
+
+
+    public ArrayList<Producer> getProducers() {
+        return producers;
+    }
+
+    public ArrayList<Broker> getBrokers() {
+        return brokers;
+    }
+
+    public ArrayList<Consumer> getConsumers() {
+        return consumers;
     }
 
 }
