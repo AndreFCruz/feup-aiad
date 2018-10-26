@@ -31,8 +31,8 @@ public class OurRepastLauncher extends Repast3Launcher{
 
     private DisplaySurface displaySurface;
     private Object2DGrid world;
-    private int worldWidth = 500;
-    private int worldHeight = 300;
+    private int worldWidth = 400;
+    private int worldHeight = 200;
 
     private ArrayList<Producer> producers;
     private ArrayList<Broker> brokers;
@@ -112,21 +112,27 @@ public class OurRepastLauncher extends Repast3Launcher{
     public void launchAgents() {
         try {
             for(int i = 0; i < NUMPRODUCERS; i++){
-                Producer p = new Producer((worldWidth/(NUMPRODUCERS+1))*(i+1), 50, this, Color.GREEN);
+                int x = (worldWidth/(NUMPRODUCERS+1))*(i+1);
+                int y = worldHeight/4 + (int)(20*(rand.nextFloat()-0.5f));
+                Producer p = new Producer(x, y, this, Color.GREEN);
                 world.putObjectAt(p.getX(), p.getY(), p);
                 producers.add(p);
                 mainContainer.acceptNewAgent("Producer:" + i, p).start();
             }
 
             for(int i = 0; i < NUMBROKERS; i++){
-                Broker b = new Broker((worldWidth/(NUMBROKERS+1))*(i+1), 150, this, Color.YELLOW);
+                int x = (worldWidth/(NUMBROKERS+1))*(i+1);
+                int y = worldHeight/2 + (int)(20*(rand.nextFloat()-0.5f));
+                Broker b = new Broker(x, y, this, Color.YELLOW);
                 world.putObjectAt(b.getX(), b.getY(), b);
                 brokers.add(b);
                 mainContainer.acceptNewAgent("Broker:" + i, b).start();
             }
 
             for(int i = 0; i < NUMCONSUMERS; i++){
-                Consumer c = new Consumer((worldWidth/(NUMCONSUMERS+1))*(i+1), 250, this, Color.RED);
+                int x = (worldWidth/(NUMCONSUMERS+1))*(i+1);
+                int y = (3*worldHeight)/4 + (int)(20*(rand.nextFloat()-0.5f));
+                Consumer c = new Consumer(x, y, this, Color.RED);
                 world.putObjectAt(c.getX(), c.getY(), c);
                 consumers.add(c);
                 mainContainer.acceptNewAgent("Consumer:" + i, c).start();
