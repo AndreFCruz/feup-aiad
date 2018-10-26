@@ -22,9 +22,9 @@ import java.util.Random;
 
 public class OurRepastLauncher extends Repast3Launcher{
 
-    private static final int NUMPRODUCERS = 10;
+    private static final int NUMPRODUCERS = 8;
     private static final int NUMBROKERS = 5;
-    private static final int NUMCONSUMERS = 100;
+    private static final int NUMCONSUMERS = 20;
 
     private ContainerController mainContainer;
     private Random rand;
@@ -32,7 +32,7 @@ public class OurRepastLauncher extends Repast3Launcher{
     private DisplaySurface displaySurface;
     private Object2DGrid world;
     private int worldWidth = 400;
-    private int worldHeight = 200;
+    private int worldHeight = 400;
 
     private ArrayList<Producer> producers;
     private ArrayList<Broker> brokers;
@@ -113,7 +113,7 @@ public class OurRepastLauncher extends Repast3Launcher{
         try {
             for(int i = 0; i < NUMPRODUCERS; i++){
                 int x = (worldWidth/(NUMPRODUCERS+1))*(i+1);
-                int y = worldHeight/4 + (int)(20*(rand.nextFloat()-0.5f));
+                int y = (int)((worldHeight)/4 + 20*(rand.nextFloat()-0.5f));
                 Producer p = new Producer(x, y, this, Color.GREEN);
                 world.putObjectAt(p.getX(), p.getY(), p);
                 producers.add(p);
@@ -122,7 +122,7 @@ public class OurRepastLauncher extends Repast3Launcher{
 
             for(int i = 0; i < NUMBROKERS; i++){
                 int x = (worldWidth/(NUMBROKERS+1))*(i+1);
-                int y = worldHeight/2 + (int)(20*(rand.nextFloat()-0.5f));
+                int y = (int)((2*worldHeight)/4 + 20*(rand.nextFloat()-0.5f));
                 Broker b = new Broker(x, y, this, Color.YELLOW);
                 world.putObjectAt(b.getX(), b.getY(), b);
                 brokers.add(b);
@@ -131,7 +131,7 @@ public class OurRepastLauncher extends Repast3Launcher{
 
             for(int i = 0; i < NUMCONSUMERS; i++){
                 int x = (worldWidth/(NUMCONSUMERS+1))*(i+1);
-                int y = (3*worldHeight)/4 + (int)(20*(rand.nextFloat()-0.5f));
+                int y = (int)((3*worldHeight)/4 + 20*(rand.nextFloat()-0.5f));
                 Consumer c = new Consumer(x, y, this, Color.RED);
                 world.putObjectAt(c.getX(), c.getY(), c);
                 consumers.add(c);
