@@ -12,9 +12,11 @@ import uchicago.src.sim.gui.Drawable;
 import uchicago.src.sim.gui.SimGraphics;
 
 import java.awt.*;
+import java.util.ArrayList;
 
 public class SimpleAgent extends Agent implements Drawable {
 
+    ArrayList<SimpleAgent> neighbours;
 
     class SimpleBehaviour extends Behaviour {
 
@@ -57,6 +59,7 @@ public class SimpleAgent extends Agent implements Drawable {
 
     SimpleAgent(int x, int y, OurRepastLauncher model, Color c) {
         super();
+        this.neighbours = new ArrayList<>();
         this.x = x;
         this.y = y;
         this.color = c;
@@ -82,9 +85,17 @@ public class SimpleAgent extends Agent implements Drawable {
     }
     */
 
+    public void addNeighbour(SimpleAgent s){
+        this.neighbours.add(s);
+    }
+
     @Override
     public void draw(SimGraphics simGraphics) {
         simGraphics.drawCircle(color);
+        for (SimpleAgent s: neighbours) {
+            // TODO: figure out why this 4 is necessary here...
+            simGraphics.drawLink(color, 4*this.x, 4*(s.x+this.x)/2, this.y, (s.y+this.y)/2);
+        }
     }
 
     @Override

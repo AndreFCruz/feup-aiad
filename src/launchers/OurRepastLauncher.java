@@ -4,12 +4,14 @@ package launchers;
 import agents.Broker;
 import agents.Consumer;
 import agents.Producer;
+import agents.SimpleAgent;
 import jade.core.ProfileImpl;
 import jade.wrapper.StaleProxyException;
 import sajas.core.Runtime;
 import sajas.sim.repast3.Repast3Launcher;
 import sajas.wrapper.ContainerController;
 
+import sun.java2d.pipe.SpanShapeRenderer;
 import uchicago.src.sim.engine.SimInit;
 import uchicago.src.sim.event.SliderListener;
 import uchicago.src.sim.gui.DisplayConstants;
@@ -24,7 +26,6 @@ import java.util.Random;
 
 public class OurRepastLauncher extends Repast3Launcher{
 
-    
     private static final int NUMPRODUCERS = 8;
     private static final int NUMBROKERS = 5;
     private static final int NUMCONSUMERS = 20;
@@ -48,8 +49,8 @@ public class OurRepastLauncher extends Repast3Launcher{
 
         worldWidth = 40 * density;
         worldHeight = 40 * density;
-        DisplayConstants.CELL_WIDTH = density;
-        DisplayConstants.CELL_HEIGHT = density;
+        DisplayConstants.CELL_WIDTH = 1;
+        DisplayConstants.CELL_HEIGHT = 1;
     }
 
 //    @SuppressWarnings("unchecked")
@@ -146,6 +147,10 @@ public class OurRepastLauncher extends Repast3Launcher{
                 consumers.add(c);
                 mainContainer.acceptNewAgent("consumer-" + i, c).start();
             }
+
+
+            producers.get(0).addNeighbour(brokers.get(1));
+            brokers.get(1).addNeighbour(producers.get(0));
 
         }
         catch (StaleProxyException e) {
