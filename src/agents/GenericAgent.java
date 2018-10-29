@@ -81,7 +81,7 @@ public class GenericAgent extends Agent implements Drawable {
     }
     */
 
-    public void addNeighbour(GenericAgent s){
+    public void addContact(GenericAgent s){
         this.contacts.add(s);
     }
 
