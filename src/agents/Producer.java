@@ -3,7 +3,7 @@ package agents;
 import launchers.OurRepastLauncher;
 import java.awt.*;
 
-public class Producer extends SimpleAgent{
+public class Producer extends GenericAgent {
 
 
     public Producer(int x, int y, OurRepastLauncher model, Color c){

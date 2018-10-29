@@ -1,11 +1,6 @@
 package agents;
 
-import jade.domain.DFService;
-import jade.domain.FIPAAgentManagement.DFAgentDescription;
-import jade.domain.FIPAAgentManagement.ServiceDescription;
-import jade.domain.FIPAException;
 import launchers.OurRepastLauncher;
-import sajas.core.AID;
 import sajas.core.Agent;
 import sajas.core.behaviours.Behaviour;
 import uchicago.src.sim.gui.Drawable;
@@ -14,9 +9,9 @@ import uchicago.src.sim.gui.SimGraphics;
 import java.awt.*;
 import java.util.ArrayList;
 
-public class SimpleAgent extends Agent implements Drawable {
+public class GenericAgent extends Agent implements Drawable {
 
-    ArrayList<SimpleAgent> neighbours;
+    ArrayList<GenericAgent> contacts;
 
     class SimpleBehaviour extends Behaviour {
 
@@ -57,9 +52,9 @@ public class SimpleAgent extends Agent implements Drawable {
     int cumulativeExpenses = 0;
     int cumulativeEarnings = 0;
 
-    SimpleAgent(int x, int y, OurRepastLauncher model, Color c) {
+    GenericAgent(int x, int y, OurRepastLauncher model, Color c) {
         super();
-        this.neighbours = new ArrayList<>();
+        this.contacts = new ArrayList<>();
         this.x = x;
         this.y = y;
         System.out.println("(x,y) = " + x + "," + y);
@@ -86,14 +81,14 @@ public class SimpleAgent extends Agent implements Drawable {
     }
     */
 
-    public void addNeighbour(SimpleAgent s){
-        this.neighbours.add(s);
+    public void addNeighbour(GenericAgent s){
+        this.contacts.add(s);
     }
 
     @Override
     public void draw(SimGraphics simGraphics) {
         simGraphics.drawCircle(color);
-        for (SimpleAgent s: neighbours) {
+        for (GenericAgent s: contacts) {
             // TODO: figure out why this 4 is necessary here...
             simGraphics.drawLink(color, 4*this.x, 4*(s.x+this.x)/2, this.y, (s.y+this.y)/2);
         }

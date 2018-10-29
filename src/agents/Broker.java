@@ -4,7 +4,7 @@ import launchers.OurRepastLauncher;
 import java.awt.*;
 
 
-public class Broker extends SimpleAgent {
+public class Broker extends GenericAgent {
 
 
     public Broker(int x, int y, OurRepastLauncher model, Color c){

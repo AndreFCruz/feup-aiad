@@ -4,16 +4,13 @@ package launchers;
 import agents.Broker;
 import agents.Consumer;
 import agents.Producer;
-import agents.SimpleAgent;
 import jade.core.ProfileImpl;
 import jade.wrapper.StaleProxyException;
 import sajas.core.Runtime;
 import sajas.sim.repast3.Repast3Launcher;
 import sajas.wrapper.ContainerController;
 
-import sun.java2d.pipe.SpanShapeRenderer;
 import uchicago.src.sim.engine.SimInit;
-import uchicago.src.sim.event.SliderListener;
 import uchicago.src.sim.gui.DisplayConstants;
 import uchicago.src.sim.gui.DisplaySurface;
 import uchicago.src.sim.gui.Object2DDisplay;

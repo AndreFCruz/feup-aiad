@@ -8,7 +8,7 @@ import java.awt.*;
  * Some Consumers have higher inertia to changing Brokers;
  * Some Consumers prefer green energy;
  */
-public class Consumer extends SimpleAgent{
+public class Consumer extends GenericAgent {
 
 
     public Consumer(int x, int y, OurRepastLauncher model, Color c){
