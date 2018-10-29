@@ -1,4 +1,8 @@
 package resources;
 
-public class Solar extends EnergySource {
+public class Solar implements EnergySource {
+    @Override
+    public float getCostPerUnit() {
+        return 10f;
+    }
 }

@@ -15,6 +15,7 @@ import uchicago.src.sim.gui.DisplayConstants;
 import uchicago.src.sim.gui.DisplaySurface;
 import uchicago.src.sim.gui.Object2DDisplay;
 import uchicago.src.sim.space.Object2DGrid;
+import utils.GraphicSettings;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -121,7 +122,8 @@ public class EnergyMarketLauncher extends Repast3Launcher{
             for(int i = 0; i < NUMPRODUCERS; i++){
                 int x = (worldWidth/(NUMPRODUCERS+1))*(i+1);
                 int y = (int)((worldHeight)/4 + 20*(rand.nextFloat()-0.5f));
-                Producer p = new Producer(x, y, this, Color.GREEN);
+                GraphicSettings graphicSettings = new GraphicSettings(x, y, Color.GREEN);
+                Producer p = Producer.createProducer(this, graphicSettings);
                 world.putObjectAt(p.getX(), p.getY(), p);
                 producers.add(p);
                 mainContainer.acceptNewAgent("producer-" + i, p).start();
@@ -130,7 +132,8 @@ public class EnergyMarketLauncher extends Repast3Launcher{
             for(int i = 0; i < NUMBROKERS; i++){
                 int x = (worldWidth/(NUMBROKERS+1))*(i+1);
                 int y = (int)((2*worldHeight)/4 + 20*(rand.nextFloat()-0.5f));
-                Broker b = new Broker(x, y, this, Color.YELLOW);
+                GraphicSettings graphicSettings = new GraphicSettings(x, y, Color.YELLOW);
+                Broker b = new Broker(this, graphicSettings);
                 world.putObjectAt(b.getX(), b.getY(), b);
                 brokers.add(b);
                 mainContainer.acceptNewAgent("broker-" + i, b).start();
@@ -139,24 +142,25 @@ public class EnergyMarketLauncher extends Repast3Launcher{
             for(int i = 0; i < NUMCONSUMERS; i++){
                 int x = (worldWidth/(NUMCONSUMERS+1))*(i+1);
                 int y = (int)((3*worldHeight)/4 + 20*(rand.nextFloat()-0.5f));
-                Consumer c = new Consumer(x, y, this, Color.RED);
+                GraphicSettings graphicSettings = new GraphicSettings(x, y, Color.GREEN);
+                Consumer c = new Consumer(this, graphicSettings);
                 world.putObjectAt(c.getX(), c.getY(), c);
                 consumers.add(c);
                 mainContainer.acceptNewAgent("consumer-" + i, c).start();
             }
 
 
-            producers.get(0).addNeighbour(brokers.get(1));
-            brokers.get(1).addNeighbour(producers.get(0));
+            producers.get(0).addContact(brokers.get(1));
+            brokers.get(1).addContact(producers.get(0));
 
-            producers.get(0).addNeighbour(brokers.get(0));
-            brokers.get(0).addNeighbour(producers.get(0));
+            producers.get(0).addContact(brokers.get(0));
+            brokers.get(0).addContact(producers.get(0));
 
-            consumers.get(2).addNeighbour(brokers.get(1));
-            brokers.get(1).addNeighbour(consumers.get(2));
+            consumers.get(2).addContact(brokers.get(1));
+            brokers.get(1).addContact(consumers.get(2));
 
-            consumers.get(1).addNeighbour(brokers.get(1));
-            brokers.get(1).addNeighbour(consumers.get(1));
+            consumers.get(1).addContact(brokers.get(1));
+            brokers.get(1).addContact(consumers.get(1));
 
         }
         catch (StaleProxyException e) {
