@@ -1,5 +1,7 @@
 package resources;
 
-public abstract class EnergySource {
+public interface EnergySource {
+
+    float getCostPerUnit();
 
 }

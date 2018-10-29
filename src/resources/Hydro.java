@@ -1,8 +1,8 @@
 package resources;
 
-public class Eolic implements EnergySource {
+public class Hydro implements EnergySource {
     @Override
     public float getCostPerUnit() {
-        return 9f;
+        return 8f;
     }
 }

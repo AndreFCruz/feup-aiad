@@ -1,6 +1,8 @@
 package agents;
 
 import launchers.EnergyMarketLauncher;
+import utils.GraphicSettings;
+
 import java.awt.*;
 
 /**
@@ -10,9 +12,9 @@ import java.awt.*;
  */
 public class Consumer extends GenericAgent {
 
+    public Consumer(EnergyMarketLauncher model, GraphicSettings graphicSettings){
+        super(model, graphicSettings);
 
-    public Consumer(int x, int y, EnergyMarketLauncher model, Color c){
-        super(x, y, model, c);
     }
 
     @Override
