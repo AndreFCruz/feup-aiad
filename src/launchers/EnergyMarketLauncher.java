@@ -24,6 +24,12 @@ import java.util.Random;
 
 public class EnergyMarketLauncher extends Repast3Launcher{
 
+    // Render variables
+    private static final Color PRODUCERCOLOR = Color.GREEN;
+    private static final Color BROKERCOLOR = Color.YELLOW;
+    private static final Color CONSUMERCOLOR = Color.RED;
+
+    // Logic variables
     private static final int NUMPRODUCERS = 8;
     private static final int NUMBROKERS = 5;
     private static final int NUMCONSUMERS = 20;
@@ -122,7 +128,7 @@ public class EnergyMarketLauncher extends Repast3Launcher{
             for(int i = 0; i < NUMPRODUCERS; i++){
                 int x = (worldWidth/(NUMPRODUCERS+1))*(i+1);
                 int y = (int)((worldHeight)/4 + 20*(rand.nextFloat()-0.5f));
-                GraphicSettings graphicSettings = new GraphicSettings(x, y, Color.GREEN);
+                GraphicSettings graphicSettings = new GraphicSettings(x, y, PRODUCERCOLOR);
                 Producer p = Producer.createProducer(this, graphicSettings);
                 world.putObjectAt(p.getX(), p.getY(), p);
                 producers.add(p);
@@ -132,7 +138,7 @@ public class EnergyMarketLauncher extends Repast3Launcher{
             for(int i = 0; i < NUMBROKERS; i++){
                 int x = (worldWidth/(NUMBROKERS+1))*(i+1);
                 int y = (int)((2*worldHeight)/4 + 20*(rand.nextFloat()-0.5f));
-                GraphicSettings graphicSettings = new GraphicSettings(x, y, Color.YELLOW);
+                GraphicSettings graphicSettings = new GraphicSettings(x, y, BROKERCOLOR);
                 Broker b = new Broker(this, graphicSettings);
                 world.putObjectAt(b.getX(), b.getY(), b);
                 brokers.add(b);
@@ -142,7 +148,7 @@ public class EnergyMarketLauncher extends Repast3Launcher{
             for(int i = 0; i < NUMCONSUMERS; i++){
                 int x = (worldWidth/(NUMCONSUMERS+1))*(i+1);
                 int y = (int)((3*worldHeight)/4 + 20*(rand.nextFloat()-0.5f));
-                GraphicSettings graphicSettings = new GraphicSettings(x, y, Color.GREEN);
+                GraphicSettings graphicSettings = new GraphicSettings(x, y, CONSUMERCOLOR);
                 Consumer c = new Consumer(this, graphicSettings);
                 world.putObjectAt(c.getX(), c.getY(), c);
                 consumers.add(c);
