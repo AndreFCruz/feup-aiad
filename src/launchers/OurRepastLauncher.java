@@ -158,6 +158,9 @@ public class OurRepastLauncher extends Repast3Launcher{
             consumers.get(2).addNeighbour(brokers.get(1));
             brokers.get(1).addNeighbour(consumers.get(2));
 
+            consumers.get(1).addNeighbour(brokers.get(1));
+            brokers.get(1).addNeighbour(consumers.get(1));
+
         }
         catch (StaleProxyException e) {
             e.printStackTrace();
