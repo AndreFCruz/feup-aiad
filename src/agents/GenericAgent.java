@@ -1,6 +1,6 @@
 package agents;
 
-import launchers.OurRepastLauncher;
+import launchers.EnergyMarketLauncher;
 import sajas.core.Agent;
 import sajas.core.behaviours.Behaviour;
 import uchicago.src.sim.gui.Drawable;
@@ -47,12 +47,12 @@ public class GenericAgent extends Agent implements Drawable {
     protected int x;
     protected int y;
     protected Color color;
-    protected OurRepastLauncher worldModel;
+    protected EnergyMarketLauncher worldModel;
 
     int cumulativeExpenses = 0;
     int cumulativeEarnings = 0;
 
-    GenericAgent(int x, int y, OurRepastLauncher model, Color c) {
+    GenericAgent(int x, int y, EnergyMarketLauncher model, Color c) {
         super();
         this.contacts = new ArrayList<>();
         this.x = x;

@@ -1,6 +1,6 @@
 package agents;
 
-import launchers.OurRepastLauncher;
+import launchers.EnergyMarketLauncher;
 import java.awt.*;
 
 /**
@@ -11,7 +11,7 @@ import java.awt.*;
 public class Consumer extends GenericAgent {
 
 
-    public Consumer(int x, int y, OurRepastLauncher model, Color c){
+    public Consumer(int x, int y, EnergyMarketLauncher model, Color c){
         super(x, y, model, c);
     }
 

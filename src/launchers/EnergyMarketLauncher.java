@@ -21,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 
-public class OurRepastLauncher extends Repast3Launcher{
+public class EnergyMarketLauncher extends Repast3Launcher{
 
     private static final int NUMPRODUCERS = 8;
     private static final int NUMBROKERS = 5;
@@ -41,7 +41,7 @@ public class OurRepastLauncher extends Repast3Launcher{
     private ArrayList<Consumer> consumers;
 
 
-    public OurRepastLauncher() {
+    public EnergyMarketLauncher() {
         rand = new Random();
 
         worldWidth = 40 * density;
@@ -170,7 +170,7 @@ public class OurRepastLauncher extends Repast3Launcher{
 
         SimInit init = new SimInit();
         init.setNumRuns(1); // works only in batch mode
-        init.loadModel(new OurRepastLauncher(), null, BATCH_MODE);
+        init.loadModel(new EnergyMarketLauncher(), null, BATCH_MODE);
     }
 
 

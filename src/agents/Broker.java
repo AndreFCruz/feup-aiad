@@ -1,13 +1,13 @@
 package agents;
 
-import launchers.OurRepastLauncher;
+import launchers.EnergyMarketLauncher;
 import java.awt.*;
 
 
 public class Broker extends GenericAgent {
 
 
-    public Broker(int x, int y, OurRepastLauncher model, Color c){
+    public Broker(int x, int y, EnergyMarketLauncher model, Color c){
         super(x, y, model, c);
     }
 
