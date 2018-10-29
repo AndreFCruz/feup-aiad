@@ -10,6 +10,7 @@ import java.util.Random;
 public class Producer extends GenericAgent {
 
     EnergySource energySource;
+    float currentSellPricePerUnit;
 
     public static Producer createProducer(EnergyMarketLauncher model, GraphicSettings graphicSettings) {
         Random random = new Random();
@@ -31,6 +32,11 @@ public class Producer extends GenericAgent {
     public Producer(EnergyMarketLauncher model, GraphicSettings graphicSettings, EnergySource energySource){
         super(model, graphicSettings);
         this.energySource = energySource;
+
+        Random rand = new Random();
+        // increase in 10-20%
+        this.currentSellPricePerUnit = this.energySource.getCostPerUnit()*(1f + (0.1f + 0.1f*rand.nextFloat()));
+
     }
 
     @Override
