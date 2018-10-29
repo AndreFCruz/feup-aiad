@@ -7,7 +7,7 @@ import utils.GraphicSettings;
 public class Broker extends GenericAgent {
 
 
-    public Broker(EnergyMarketLauncher model, GraphicSettings graphicSettings){
+    public Broker(EnergyMarketLauncher model, GraphicSettings graphicSettings) {
         super(model, graphicSettings);
     }
 
@@ -16,7 +16,6 @@ public class Broker extends GenericAgent {
         super.setup();
         System.out.println("Broker " + this.getLocalName() + " was created.");
     }
-
 
 
 }

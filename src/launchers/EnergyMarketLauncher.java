@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.Random;
 
 
-public class EnergyMarketLauncher extends Repast3Launcher{
+public class EnergyMarketLauncher extends Repast3Launcher {
 
     // Render variables
     private static final Color PRODUCERCOLOR = Color.GREEN;
@@ -57,7 +57,7 @@ public class EnergyMarketLauncher extends Repast3Launcher{
         DisplayConstants.CELL_HEIGHT = 1;
     }
 
-//    @SuppressWarnings("unchecked")
+    //    @SuppressWarnings("unchecked")
     public void setup() { // called after constructor
         super.setup();
 
@@ -112,7 +112,7 @@ public class EnergyMarketLauncher extends Repast3Launcher{
 
     @Override
     public String[] getInitParam() {
-        return new String[] { "brokers", "producers", "consumers", "resources" };
+        return new String[]{"brokers", "producers", "consumers", "resources"};
     }
 
     @Override
@@ -125,9 +125,9 @@ public class EnergyMarketLauncher extends Repast3Launcher{
 
     private void launchAgents() {
         try {
-            for(int i = 0; i < NUMPRODUCERS; i++){
-                int x = (worldWidth/(NUMPRODUCERS+1))*(i+1);
-                int y = (int)((worldHeight)/4 + 20*(rand.nextFloat()-0.5f));
+            for (int i = 0; i < NUMPRODUCERS; i++) {
+                int x = (worldWidth / (NUMPRODUCERS + 1)) * (i + 1);
+                int y = (int) ((worldHeight) / 4 + 20 * (rand.nextFloat() - 0.5f));
                 GraphicSettings graphicSettings = new GraphicSettings(x, y, PRODUCERCOLOR);
                 int energyUnits = 100 + rand.nextInt(100);
                 Producer p = Producer.createProducer(this, graphicSettings, energyUnits);
@@ -136,9 +136,9 @@ public class EnergyMarketLauncher extends Repast3Launcher{
                 mainContainer.acceptNewAgent("producer-" + i, p).start();
             }
 
-            for(int i = 0; i < NUMBROKERS; i++){
-                int x = (worldWidth/(NUMBROKERS+1))*(i+1);
-                int y = (int)((2*worldHeight)/4 + 20*(rand.nextFloat()-0.5f));
+            for (int i = 0; i < NUMBROKERS; i++) {
+                int x = (worldWidth / (NUMBROKERS + 1)) * (i + 1);
+                int y = (int) ((2 * worldHeight) / 4 + 20 * (rand.nextFloat() - 0.5f));
                 GraphicSettings graphicSettings = new GraphicSettings(x, y, BROKERCOLOR);
                 Broker b = new Broker(this, graphicSettings);
                 world.putObjectAt(b.getX(), b.getY(), b);
@@ -146,9 +146,9 @@ public class EnergyMarketLauncher extends Repast3Launcher{
                 mainContainer.acceptNewAgent("broker-" + i, b).start();
             }
 
-            for(int i = 0; i < NUMCONSUMERS; i++){
-                int x = (worldWidth/(NUMCONSUMERS+1))*(i+1);
-                int y = (int)((3*worldHeight)/4 + 20*(rand.nextFloat()-0.5f));
+            for (int i = 0; i < NUMCONSUMERS; i++) {
+                int x = (worldWidth / (NUMCONSUMERS + 1)) * (i + 1);
+                int y = (int) ((3 * worldHeight) / 4 + 20 * (rand.nextFloat() - 0.5f));
                 GraphicSettings graphicSettings = new GraphicSettings(x, y, CONSUMERCOLOR);
                 Consumer c = new Consumer(this, graphicSettings);
                 world.putObjectAt(c.getX(), c.getY(), c);
@@ -169,8 +169,7 @@ public class EnergyMarketLauncher extends Repast3Launcher{
             consumers.get(1).addContact(brokers.get(1));
             brokers.get(1).addContact(consumers.get(1));
 
-        }
-        catch (StaleProxyException e) {
+        } catch (StaleProxyException e) {
             e.printStackTrace();
         }
     }

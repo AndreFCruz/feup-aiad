@@ -12,7 +12,7 @@ import java.awt.*;
  */
 public class Consumer extends GenericAgent {
 
-    public Consumer(EnergyMarketLauncher model, GraphicSettings graphicSettings){
+    public Consumer(EnergyMarketLauncher model, GraphicSettings graphicSettings) {
         super(model, graphicSettings);
 
     }

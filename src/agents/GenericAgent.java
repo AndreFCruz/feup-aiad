@@ -45,20 +45,20 @@ public class GenericAgent extends Agent implements Drawable {
     }
     */
 
-    public void addContact(GenericAgent s){
+    public void addContact(GenericAgent s) {
         this.contacts.add(s);
     }
 
     @Override
     public void draw(SimGraphics simGraphics) {
         simGraphics.drawCircle(graphicSettings.color);
-        for (GenericAgent s: contacts) {
+        for (GenericAgent s : contacts) {
 
             simGraphics.drawLink(graphicSettings.color,
-                    4*graphicSettings.x,
-                    4*(s.graphicSettings.x+graphicSettings.x)/2,
+                    4 * graphicSettings.x,
+                    4 * (s.graphicSettings.x + graphicSettings.x) / 2,
                     graphicSettings.y,
-                    (s.graphicSettings.y+graphicSettings.y)/2);
+                    (s.graphicSettings.y + graphicSettings.y) / 2);
         }
     }
 
