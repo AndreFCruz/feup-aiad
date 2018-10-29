@@ -8,7 +8,7 @@ import utils.GraphicSettings;
 
 import java.util.ArrayList;
 
-public class GenericAgent extends Agent implements Drawable {
+public abstract class GenericAgent extends Agent implements Drawable {
 
 
     ArrayList<GenericAgent> contacts;

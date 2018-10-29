@@ -251,7 +251,7 @@
 	</target>
 
 	<!-- =================================================================== -->
-	<!-- Replace all sequences of 4 spaces in .java files with a tab         -->
+	<!-- Replace all sequences of 4 spaces in AgentType.java files with a tab         -->
 	<!-- =================================================================== -->
 	<target name="addTabsWithLength4" depends="init">
 		<fixcrlf srcdir="${root.dir}" tab="add" tablength="4" includes="**/*.java" />
@@ -267,7 +267,7 @@
 	</target>
 
 	<!-- =================================================================== -->
-	<!-- Replace all tabs in .java files with a sequence of 4 spaces         -->
+	<!-- Replace all tabs in AgentType.java files with a sequence of 4 spaces         -->
 	<!-- =================================================================== -->
 	<target name="removeTabsWithLength4" depends="init">
 		<fixcrlf srcdir="${root.dir}" tab="remove" tablength="4" includes="**/*.java" />
