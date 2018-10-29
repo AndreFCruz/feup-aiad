@@ -129,7 +129,8 @@ public class EnergyMarketLauncher extends Repast3Launcher{
                 int x = (worldWidth/(NUMPRODUCERS+1))*(i+1);
                 int y = (int)((worldHeight)/4 + 20*(rand.nextFloat()-0.5f));
                 GraphicSettings graphicSettings = new GraphicSettings(x, y, PRODUCERCOLOR);
-                Producer p = Producer.createProducer(this, graphicSettings);
+                int energyUnits = 100 + rand.nextInt(100);
+                Producer p = Producer.createProducer(this, graphicSettings, energyUnits);
                 world.putObjectAt(p.getX(), p.getY(), p);
                 producers.add(p);
                 mainContainer.acceptNewAgent("producer-" + i, p).start();
