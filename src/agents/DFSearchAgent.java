@@ -12,6 +12,8 @@ public class DFSearchAgent extends GenericAgent {
 
     private AgentType type;
 
+    private DFAgentDescription[] result = {};
+
     public DFSearchAgent(EnergyMarketLauncher model, GraphicSettings graphicSettings) {
         super(model, graphicSettings);
     }
@@ -21,20 +23,21 @@ public class DFSearchAgent extends GenericAgent {
     }
 
     protected void search() {
-        // Adding to the DF Service
         DFAgentDescription description = new DFAgentDescription();
         ServiceDescription serviceDescription = new ServiceDescription();
 
-        serviceDescription.setType(this.type.name());
+        serviceDescription.setType(type.name());
         description.addServices(serviceDescription);
 
         try {
-            DFAgentDescription[] results = DFService.search(this, description);
-            for (DFAgentDescription result : results) {
-                System.out.println("Found result: " + result.getName());
-            }
+            result = DFService.search(this, description);
+            for (DFAgentDescription a : result) System.out.println("boy");
         } catch (FIPAException e) {
             e.printStackTrace();
         }
+    }
+
+    public DFAgentDescription[] getResult() {
+        return result;
     }
 }

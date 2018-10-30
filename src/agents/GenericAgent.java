@@ -10,7 +10,6 @@ import java.util.ArrayList;
 
 public abstract class GenericAgent extends Agent implements Drawable {
 
-
     ArrayList<GenericAgent> contacts;
 
     private static int agentCount = 0;

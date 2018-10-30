@@ -10,8 +10,7 @@ public abstract class FIPAContractNetResponder extends ContractNetResponder {
     public FIPAContractNetResponder(Agent agent, MessageTemplate template) {
         super(agent, template);
     }
-
-
+    
     protected ACLMessage handleCfp(ACLMessage cfp) {
         ACLMessage reply = cfp.createReply();
         reply.setPerformative(ACLMessage.PROPOSE);
