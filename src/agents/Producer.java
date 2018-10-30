@@ -2,12 +2,12 @@ package agents;
 
 import launchers.EnergyMarketLauncher;
 import resources.*;
+import utils.AgentType;
 import utils.GraphicSettings;
 
-import java.awt.*;
 import java.util.Random;
 
-public class Producer extends GenericAgent {
+public class Producer extends DFRegisterAgent {
 
     EnergySource energySource;
     float currentSellPricePerUnit;
@@ -38,6 +38,8 @@ public class Producer extends GenericAgent {
         // increase in 10-20%
         this.currentSellPricePerUnit = this.energySource.getCostPerUnit() * (1f + (0.1f + 0.1f * rand.nextFloat()));
 
+        //For DFService
+        this.setType(AgentType.PRODUCER);
     }
 
     @Override

@@ -8,11 +8,11 @@ import sajas.domain.DFService;
 import utils.AgentType;
 import utils.GraphicSettings;
 
-public abstract class DFAgent extends GenericAgent {
+public abstract class DFSearchAgent extends GenericAgent {
 
     private AgentType type;
 
-    public DFAgent(EnergyMarketLauncher model, GraphicSettings graphicSettings) {
+    public DFSearchAgent(EnergyMarketLauncher model, GraphicSettings graphicSettings) {
         super(model, graphicSettings);
     }
 
@@ -20,10 +20,7 @@ public abstract class DFAgent extends GenericAgent {
         this.type = type;
     }
 
-    @Override
-    protected void setup() {
-        super.setup();
-
+    protected void register() {
         // Adding to the DF Service
         DFAgentDescription description = new DFAgentDescription();
         description.setName(getAID());

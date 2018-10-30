@@ -1,14 +1,19 @@
 package agents;
 
 import launchers.EnergyMarketLauncher;
+import utils.AgentType;
 import utils.GraphicSettings;
 
 
-public class Broker extends GenericAgent {
+public class Broker extends DFRegisterAgent {
 
+    private DFSearchAgent searchService;
 
     public Broker(EnergyMarketLauncher model, GraphicSettings graphicSettings) {
         super(model, graphicSettings);
+
+        //For DFServices
+        this.setType(AgentType.BROKER);
     }
 
     @Override
