@@ -1,5 +1,8 @@
 package agents;
 
+import behaviours.consumer.ListeningBehaviour;
+import jade.lang.acl.ACLMessage;
+import jade.lang.acl.MessageTemplate;
 import launchers.EnergyMarketLauncher;
 import resources.*;
 import utils.AgentType;
@@ -40,6 +43,7 @@ public class Producer extends DFRegisterAgent {
 
         //For DFService
         this.setType(AgentType.PRODUCER);
+        addBehaviour(new ListeningBehaviour(this, MessageTemplate.MatchPerformative(ACLMessage.CFP)));
     }
 
     @Override

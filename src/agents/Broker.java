@@ -1,5 +1,7 @@
 package agents;
 
+import behaviours.broker.ContractBehaviour;
+import jade.lang.acl.ACLMessage;
 import launchers.EnergyMarketLauncher;
 import utils.AgentType;
 import utils.GraphicSettings;
@@ -15,6 +17,7 @@ public class Broker extends DFRegisterAgent {
 
         this.setType(AgentType.BROKER);
         this.searchService.setType(AgentType.PRODUCER);
+        addBehaviour(new ContractBehaviour(this, new ACLMessage(ACLMessage.CFP)));
     }
 
     @Override

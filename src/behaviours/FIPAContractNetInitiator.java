@@ -16,9 +16,9 @@ public abstract class FIPAContractNetInitiator extends ContractNetInitiator {
     protected Vector prepareCfps(ACLMessage cfp) {
         Vector v = new Vector();
 
-        cfp.addReceiver(new AID("a1", false));
-        cfp.addReceiver(new AID("a2", false));
-        cfp.addReceiver(new AID("a3", false));
+        cfp.addReceiver(new AID("producer-0", false));
+        cfp.addReceiver(new AID("producer-1", false));
+        cfp.addReceiver(new AID("producer-2", false));
         cfp.setContent("this is a call...");
 
         v.add(cfp);
