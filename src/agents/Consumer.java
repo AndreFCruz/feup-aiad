@@ -1,20 +1,19 @@
 package agents;
 
 import launchers.EnergyMarketLauncher;
+import utils.AgentType;
 import utils.GraphicSettings;
-
-import java.awt.*;
 
 /**
  * Only subscribes ONE Broker;
  * Some Consumers have higher inertia to changing Brokers;
  * Some Consumers prefer green energy;
  */
-public class Consumer extends GenericAgent {
+public class Consumer extends DFSearchAgent {
 
     public Consumer(EnergyMarketLauncher model, GraphicSettings graphicSettings) {
         super(model, graphicSettings);
-
+        this.setType(AgentType.BROKER);
     }
 
     @Override

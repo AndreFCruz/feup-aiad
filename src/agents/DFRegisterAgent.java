@@ -8,7 +8,7 @@ import sajas.domain.DFService;
 import utils.AgentType;
 import utils.GraphicSettings;
 
-public abstract class DFRegisterAgent extends GenericAgent {
+public class DFRegisterAgent extends GenericAgent {
 
     private AgentType type;
 
@@ -20,20 +20,28 @@ public abstract class DFRegisterAgent extends GenericAgent {
         this.type = type;
     }
 
-    protected void search() {
-
+    protected void register() {
         // Adding to the DF Service
         DFAgentDescription description = new DFAgentDescription();
-        ServiceDescription serviceDescription = new ServiceDescription();
+        description.setName(getAID());
 
+        ServiceDescription serviceDescription = new ServiceDescription();
         serviceDescription.setType(this.type.name());
+        serviceDescription.setName(this.getLocalName());
         description.addServices(serviceDescription);
 
         try {
-            DFAgentDescription [] results = DFService.search(this, description);
-            for (DFAgentDescription result: results) {
-                System.out.println("Found result: " + result);
-            }
+            DFService.register(this, description);
+        } catch (FIPAException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    protected void takeDown() {
+        super.takeDown();
+        try {
+            DFService.deregister(this);
         } catch (FIPAException e) {
             e.printStackTrace();
         }

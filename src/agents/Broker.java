@@ -11,16 +11,18 @@ public class Broker extends DFRegisterAgent {
 
     public Broker(EnergyMarketLauncher model, GraphicSettings graphicSettings) {
         super(model, graphicSettings);
+        this.searchService = new DFSearchAgent(model, graphicSettings);
 
-        //For DFServices
         this.setType(AgentType.BROKER);
+        this.searchService.setType(AgentType.PRODUCER);
     }
 
     @Override
     protected void setup() {
         super.setup();
+        this.register();
+        this.searchService.search();
         System.out.println("Broker " + this.getLocalName() + " was created.");
     }
-
 
 }

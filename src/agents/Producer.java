@@ -45,6 +45,7 @@ public class Producer extends DFRegisterAgent {
     @Override
     protected void setup() {
         super.setup();
+        this.register();
         System.out.println("Producer " + this.getLocalName() + " was created.");
     }
 

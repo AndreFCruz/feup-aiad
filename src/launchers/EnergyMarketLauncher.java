@@ -156,7 +156,6 @@ public class EnergyMarketLauncher extends Repast3Launcher {
                 mainContainer.acceptNewAgent("consumer-" + i, c).start();
             }
 
-
             producers.get(0).addContact(brokers.get(1));
             brokers.get(1).addContact(producers.get(0));
 
