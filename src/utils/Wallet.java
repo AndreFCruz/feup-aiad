@@ -40,7 +40,10 @@ public class Wallet {
         return this.transactions;
     }
 
-    public void pay(float amount, Wallet target) {
+    public void withdraw(float amount, Wallet target) {
+        if (amount < 0) {
+            throw new IllegalArgumentException("Withdrawing a negative amount; use deposit method instead.");
+        }
         this.balance -= amount;
         target.balance += amount;
 
@@ -49,13 +52,28 @@ public class Wallet {
         target.transactions.add(t);
     }
 
-    public void credit(float amount, Wallet target) {
+    public void deposit(float amount, Wallet target) {
+        if (amount < 0) {
+            throw new IllegalArgumentException("Depositing a negative amount; use withdraw method instead.");
+        }
         this.balance += amount;
         target.balance -= amount;
 
         Transaction t = new Transaction(amount, target, this);
         this.transactions.add(t);
         target.transactions.add(t);
+    }
+
+    /**
+     * Method for injections to the Wallet's balance.
+     * Useful for producers, which, by producing energy, inject their energy wallet with energy units.
+     * For generation
+     * @param amount
+     */
+    public void inject(float amount) {
+        this.balance += amount;
+        Transaction t = new Transaction(amount, null, this);
+        this.transactions.add(t);
     }
 
 }
