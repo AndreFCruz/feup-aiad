@@ -11,15 +11,22 @@ import utils.GraphicSettings;
  */
 public class Consumer extends DFSearchAgent {
 
-    public Consumer(EnergyMarketLauncher model, GraphicSettings graphicSettings) {
+    private int energyConsumptionPerMonth;
+
+    public Consumer(EnergyMarketLauncher model, GraphicSettings graphicSettings, int energyConsumptionPerMonth) {
         super(model, graphicSettings);
         this.setType(AgentType.BROKER);
+        this.energyConsumptionPerMonth = energyConsumptionPerMonth;
     }
 
     @Override
     protected void setup() {
         super.setup();
         System.out.println("Consumer " + this.getLocalName() + " was created.");
+    }
+
+    public int getEnergyConsumptionPerMonth() {
+        return energyConsumptionPerMonth;
     }
 
 }

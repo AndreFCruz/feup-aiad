@@ -26,15 +26,23 @@ import java.util.Random;
 public class EnergyMarketLauncher extends Repast3Launcher {
 
     // Render variables
-    private static final Color PRODUCERCOLOR = Color.GREEN;
-    private static final Color BROKERCOLOR = Color.YELLOW;
-    private static final Color CONSUMERCOLOR = Color.RED;
+    private static final Color PRODUCER_COLOR = Color.GREEN;
+    private static final Color BROKER_COLOR = Color.YELLOW;
+    private static final Color CONSUMER_COLOR = Color.RED;
 
     // Logic variables
-    private static MarketState MARKETSTATE = MarketState.INITIAL_STATE;
-    private static final int NUMPRODUCERS = 8;
-    private static final int NUMBROKERS = 5;
-    private static final int NUMCONSUMERS = 20;
+    private static MarketState MARKET_STATE = MarketState.INITIAL_STATE;
+    private static final int NUM_PRODUCERS = 9;
+    private static final int NUM_BROKERS = 3;
+    private static final int NUM_CONSUMERS = 20;
+
+
+    // Energy Variables
+    /**
+     * Approximate value of the total energy produced per month in this energy market.
+     */
+    private static final int TOTAL_ENERGY_PRODUCED_PER_MONTH = (int) Math.pow(10, 6); // 1 MWh
+    private int actualTotalEnergyProducedPerMonth = 0;
 
     private ContainerController mainContainer;
     private Random rand;
@@ -49,6 +57,13 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     private ArrayList<Broker> brokers;
     private ArrayList<Consumer> consumers;
 
+    public static void main(String[] args) {
+        boolean BATCH_MODE = false;
+
+        SimInit init = new SimInit();
+        init.setNumRuns(1); // works only in batch mode
+        init.loadModel(new EnergyMarketLauncher(), null, BATCH_MODE);
+    }
 
     public EnergyMarketLauncher() {
         rand = new Random();
@@ -85,7 +100,6 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         producers = new ArrayList<>();
         brokers = new ArrayList<>();
         consumers = new ArrayList<>();
-
     }
 
     private void displayConstructor() {
@@ -119,69 +133,77 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     protected void launchJADE() {
         mainContainer = Runtime.instance().createMainContainer(new ProfileImpl());
 
-        launchAgents();
-
-    }
-
-    private void launchAgents() {
         try {
-            for (int i = 0; i < NUMPRODUCERS; i++) {
-                int x = (worldWidth / (NUMPRODUCERS + 1)) * (i + 1);
-                int y = (int) ((worldHeight) / 4 + 20 * (rand.nextFloat() - 0.5f));
-                GraphicSettings graphicSettings = new GraphicSettings(x, y, PRODUCERCOLOR);
-                int energyUnits = 100 + rand.nextInt(100);
-                Producer p = Producer.createProducer(this, graphicSettings, energyUnits);
-                world.putObjectAt(p.getX(), p.getY(), p);
-                producers.add(p);
-                mainContainer.acceptNewAgent("producer-" + i, p).start();
-            }
-
-            for (int i = 0; i < NUMBROKERS; i++) {
-                int x = (worldWidth / (NUMBROKERS + 1)) * (i + 1);
-                int y = (int) ((2 * worldHeight) / 4 + 20 * (rand.nextFloat() - 0.5f));
-                GraphicSettings graphicSettings = new GraphicSettings(x, y, BROKERCOLOR);
-                Broker b = new Broker(this, graphicSettings);
-                world.putObjectAt(b.getX(), b.getY(), b);
-                brokers.add(b);
-                mainContainer.acceptNewAgent("broker-" + i, b).start();
-            }
-
-            for (int i = 0; i < NUMCONSUMERS; i++) {
-                int x = (worldWidth / (NUMCONSUMERS + 1)) * (i + 1);
-                int y = (int) ((3 * worldHeight) / 4 + 20 * (rand.nextFloat() - 0.5f));
-                GraphicSettings graphicSettings = new GraphicSettings(x, y, CONSUMERCOLOR);
-                Consumer c = new Consumer(this, graphicSettings);
-                world.putObjectAt(c.getX(), c.getY(), c);
-                consumers.add(c);
-                mainContainer.acceptNewAgent("consumer-" + i, c).start();
-            }
-
-//            producers.get(0).addContact(brokers.get(1));
-////            brokers.get(1).addContact(producers.get(0));
-////
-////            producers.get(0).addContact(brokers.get(0));
-////            brokers.get(0).addContact(producers.get(0));
-////
-////            consumers.get(2).addContact(brokers.get(1));
-////            brokers.get(1).addContact(consumers.get(2));
-////
-////            consumers.get(1).addContact(brokers.get(1));
-////            brokers.get(1).addContact(consumers.get(1));
-
+            launchAgents();
         } catch (StaleProxyException e) {
+            System.err.println("Failed launchAgents in main container.");
             e.printStackTrace();
         }
     }
 
-
-    public static void main(String[] args) {
-        boolean BATCH_MODE = false;
-
-        SimInit init = new SimInit();
-        init.setNumRuns(1); // works only in batch mode
-        init.loadModel(new EnergyMarketLauncher(), null, BATCH_MODE);
+    private void launchAgents() throws StaleProxyException {
+        launchProducers();
+        launchBrokers();
+//        launchConsumers();
     }
 
+    private void launchProducers() throws StaleProxyException {
+        for (int i = 0; i < NUM_PRODUCERS; ++i) {
+            GraphicSettings gs = makeGraphicsSettings(i, 1, PRODUCER_COLOR);
+
+            int monthlyEnergyQuota = (int) ((TOTAL_ENERGY_PRODUCED_PER_MONTH / NUM_PRODUCERS) * (1. + rand.nextGaussian()));
+            actualTotalEnergyProducedPerMonth += monthlyEnergyQuota;
+
+            Producer p = Producer.createProducer(this, gs, monthlyEnergyQuota);
+            world.putObjectAt(p.getX(), p.getY(), p);
+            producers.add(p);
+            mainContainer.acceptNewAgent("producer-" + i, p).start();
+
+        }
+    }
+
+    private void launchBrokers() throws StaleProxyException {
+        int totalEneryCostPerMonth = producers.parallelStream().mapToInt(
+                (Producer p) -> p.getEnergyProductionPerMonth() * p.getEneryUnitSellPrice()
+        ).sum();
+
+        for (int i = 0; i < NUM_BROKERS; ++i) {
+            GraphicSettings gs = makeGraphicsSettings(i, 2, BROKER_COLOR);
+
+            int initialInvestment = (int) ((totalEneryCostPerMonth / NUM_BROKERS)
+                    * (1. + (1. / NUM_BROKERS) * rand.nextFloat()));
+
+            Broker b = new Broker(this, gs, initialInvestment);
+            world.putObjectAt(b.getX(), b.getY(), b);
+            brokers.add(b);
+            mainContainer.acceptNewAgent("broker-" + i, b).start();
+
+        }
+    }
+
+    private void launchConsumers() throws StaleProxyException {
+        int totalEnergyConsumed = (int) (actualTotalEnergyProducedPerMonth * 0.90);
+
+        for (int i = 0; i < NUM_CONSUMERS; i++) {
+            GraphicSettings gs = makeGraphicsSettings(i, 3, CONSUMER_COLOR);
+
+            int agentConsumption = (int) ((totalEnergyConsumed / (NUM_CONSUMERS - i)) * (1 + rand.nextGaussian()));
+            if (agentConsumption > totalEnergyConsumed)
+                agentConsumption = totalEnergyConsumed;
+            totalEnergyConsumed -= agentConsumption;
+
+            Consumer c = new Consumer(this, gs, agentConsumption);
+            world.putObjectAt(c.getX(), c.getY(), c);
+            consumers.add(c);
+            mainContainer.acceptNewAgent("consumer-" + i, c).start();
+        }
+    }
+
+    private GraphicSettings makeGraphicsSettings(int idx, int yCoords, Color color) {
+        int x = (worldWidth / (NUM_PRODUCERS + 1)) * (idx + 1);
+        int y = (int) ((yCoords * worldHeight) / 4 + 20 * (rand.nextFloat() - 0.5f));
+        return new GraphicSettings(x, y, color);
+    }
 
     public ArrayList<Producer> getProducers() {
         return producers;

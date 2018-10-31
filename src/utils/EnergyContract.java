@@ -3,7 +3,13 @@ package utils;
 import agents.GenericAgent;
 
 /**
- * Future ideas: non-binding contracts, which may be broken unilaterally.
+ * TODO Can this be implemented by extending Behaviour?
+ * behaviour.action() -> step()
+ * behaviour.done() -> hasEnded()
+ *
+ * Actually, this can be a CompositeBehaviour, in which each part of the
+ *  contract (monetary and energy) is itself a Contract Behaviour (allows
+ *  for delivering energy daily with monthly payments).
  */
 public class EnergyContract {
 

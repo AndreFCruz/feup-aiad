@@ -18,12 +18,14 @@ public class Broker extends DFRegisterAgent {
 
     private DFSearchAgent search;
 
-    public Broker(EnergyMarketLauncher model, GraphicSettings graphicSettings) {
+    public Broker(EnergyMarketLauncher model, GraphicSettings graphicSettings, int initialBudget) {
         super(model, graphicSettings);
         this.search = new DFSearchAgent(model, graphicSettings);
 
         this.setType(AgentType.BROKER);
         this.search.setType(AgentType.PRODUCER);
+
+        this.moneyWallet.inject(initialBudget);
     }
 
     @Override

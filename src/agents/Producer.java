@@ -12,10 +12,11 @@ import java.util.Random;
 
 public class Producer extends DFRegisterAgent {
 
-    Consumer consumerServing = null;
-    EnergySource energySource;
-    float currentSellPricePerUnit;
-    int energyUnits;
+    private EnergySource energySource;
+    private int sellPricePerUnit;
+
+    private int energyProductionPerMonth;
+    private int unallocatedEnergyProductionPerMonth;
 
     public static Producer createProducer(EnergyMarketLauncher model, GraphicSettings graphicSettings, int energyUnits) {
         Random random = new Random();
@@ -34,13 +35,14 @@ public class Producer extends DFRegisterAgent {
         return new Producer(model, graphicSettings, energySource, energyUnits);
     }
 
-    public Producer(EnergyMarketLauncher model, GraphicSettings graphicSettings, EnergySource energySource, int energyUnits) {
+    public Producer(EnergyMarketLauncher model, GraphicSettings graphicSettings, EnergySource energySource, int energyProductionPerMonth) {
         super(model, graphicSettings);
         this.energySource = energySource;
-        this.energyUnits = energyUnits;
+        this.energyProductionPerMonth = energyProductionPerMonth;
         Random rand = new Random();
-        // increase in 10-20%
-        this.currentSellPricePerUnit = this.energySource.getCostPerUnit() * (1f + (0.1f + 0.1f * rand.nextFloat()));
+
+        // profit margin of 5% to 20%
+        this.sellPricePerUnit = (int) (this.energySource.getCostPerUnit() * (1f + (0.05f + 0.15f * rand.nextFloat())));
 
         //For DFService
         this.setType(AgentType.PRODUCER);
@@ -52,6 +54,18 @@ public class Producer extends DFRegisterAgent {
         super.setup();
         this.register();
         System.out.println("Producer " + this.getLocalName() + " was created.");
+    }
+
+    public int getEnergyProductionPerMonth() {
+        return energyProductionPerMonth;
+    }
+
+    public int getUnallocatedEnergyProductionPerMonth() {
+        return unallocatedEnergyProductionPerMonth;
+    }
+
+    public int getEneryUnitSellPrice() {
+        return sellPricePerUnit;
     }
 
 }
