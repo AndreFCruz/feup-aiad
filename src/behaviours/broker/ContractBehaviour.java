@@ -12,8 +12,8 @@ public class ContractBehaviour extends FIPAContractNetInitiator {
 
     private ArrayList<String> producers;
 
-    public ContractBehaviour(Broker agent, ACLMessage msg) {
-        super(agent, msg);
+    public ContractBehaviour(Broker agent) {
+        super(agent);
         producers = agent.getProducers();
     }
 

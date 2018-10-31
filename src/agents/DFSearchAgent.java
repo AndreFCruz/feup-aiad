@@ -36,7 +36,8 @@ public class DFSearchAgent extends GenericAgent {
         }
     }
 
-    public DFAgentDescription[] getResult() {
+    public DFAgentDescription[] searchAndGet() {
+        search();
         return result;
     }
 }

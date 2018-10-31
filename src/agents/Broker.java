@@ -12,6 +12,8 @@ import java.util.ArrayList;
 
 public class Broker extends DFRegisterAgent {
 
+    private static final int TIMEOUT = 2000;
+
     private DFSearchAgent search;
 
     public Broker(EnergyMarketLauncher model, GraphicSettings graphicSettings) {
@@ -20,22 +22,19 @@ public class Broker extends DFRegisterAgent {
 
         this.setType(AgentType.BROKER);
         this.search.setType(AgentType.PRODUCER);
-
-        addBehaviour(new ContractBehaviour(this, new ACLMessage(ACLMessage.CFP)));
     }
 
     @Override
     protected void setup() {
         super.setup();
         this.register();
-        this.search.search();
-        this.addBehaviour(new BusinessWaker(this, 2000));
+        this.addBehaviour(new BusinessWaker(this, TIMEOUT));
     }
 
     public ArrayList<String> getProducers() {
         ArrayList<String> producersNames = new ArrayList<>();
 
-        for (DFAgentDescription p : this.search.getResult()) {
+        for (DFAgentDescription p : this.search.searchAndGet()) {
             producersNames.add(p.getName().getLocalName());
         }
         return producersNames;
