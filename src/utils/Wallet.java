@@ -18,18 +18,24 @@ public class Wallet {
         }
     }
 
+    public enum WalletType {
+        CURRENCY, ENERGY
+    }
+
     private GenericAgent owner;
     private float balance;
     private List<Transaction> transactions;
+    private WalletType walletType;
 
-    public Wallet(GenericAgent owner, float balance) {
+    public Wallet(GenericAgent owner, WalletType walletType, float balance) {
         this.owner = owner;
+        this.walletType = walletType;
         this.balance = balance;
         this.transactions = new ArrayList<>();
     }
 
-    public Wallet(GenericAgent owner) {
-        this(owner, 0);
+    public Wallet(GenericAgent owner, WalletType walletType) {
+        this(owner, walletType, 0);
     }
 
     public float getBalance() {
@@ -41,8 +47,8 @@ public class Wallet {
     }
 
     public void withdraw(float amount, Wallet target) {
-        if (amount < 0) {
-            throw new IllegalArgumentException("Withdrawing a negative amount; use deposit method instead.");
+        if (amount < 0 || target.walletType != this.walletType) {
+            throw new IllegalArgumentException();
         }
         this.balance -= amount;
         target.balance += amount;
@@ -53,8 +59,8 @@ public class Wallet {
     }
 
     public void deposit(float amount, Wallet target) {
-        if (amount < 0) {
-            throw new IllegalArgumentException("Depositing a negative amount; use withdraw method instead.");
+        if (amount < 0 || target.walletType != this.walletType) {
+            throw new IllegalArgumentException();
         }
         this.balance += amount;
         target.balance -= amount;

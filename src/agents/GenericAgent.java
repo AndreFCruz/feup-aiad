@@ -5,17 +5,26 @@ import sajas.core.Agent;
 import uchicago.src.sim.gui.Drawable;
 import uchicago.src.sim.gui.SimGraphics;
 import utils.GraphicSettings;
+import utils.Wallet;
 
 import java.util.ArrayList;
 
 public abstract class GenericAgent extends Agent implements Drawable {
 
-    ArrayList<GenericAgent> contacts;
+    protected ArrayList<GenericAgent> contacts;
 
-    private static int agentCount = 0;
-    protected int id;
     protected EnergyMarketLauncher worldModel;
     protected GraphicSettings graphicSettings;
+
+    /**
+     * Wallet representing the finances of the agent.
+     */
+    protected Wallet moneyWallet;
+
+    /**
+     * Energy wallet (keeps track of this agent's energy trades).
+     */
+    protected Wallet energyWallet;
 
 
     GenericAgent(EnergyMarketLauncher model, GraphicSettings graphicSettings) {
@@ -24,7 +33,9 @@ public abstract class GenericAgent extends Agent implements Drawable {
         this.worldModel = model;
         this.graphicSettings = graphicSettings;
         this.contacts = new ArrayList<>();
-        this.id = agentCount++;
+
+        this.moneyWallet = new Wallet(this, Wallet.WalletType.CURRENCY);
+        this.energyWallet = new Wallet(this, Wallet.WalletType.ENERGY);
     }
 
     @Override
@@ -37,16 +48,19 @@ public abstract class GenericAgent extends Agent implements Drawable {
         super.takeDown();
     }
 
-    /*
-    @Override
-    public void step() {
-        System.out.println(this.id + " Hello World!");
-    }
-    */
-
     public void addContact(GenericAgent s) {
         this.contacts.add(s);
     }
+
+    public Wallet getMoneyWallet() {
+        return this.moneyWallet;
+    }
+
+    public Wallet getEnergyWallet() {
+        return this.energyWallet;
+    }
+
+    /** Draw Methods **/
 
     @Override
     public void draw(SimGraphics simGraphics) {

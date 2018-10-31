@@ -59,7 +59,6 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         DisplayConstants.CELL_HEIGHT = 1;
     }
 
-    //    @SuppressWarnings("unchecked")
     public void setup() { // called after constructor
         super.setup();
 
@@ -70,7 +69,6 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 
         displaySurface = new DisplaySurface(this, surfaceName);
         registerDisplaySurface(surfaceName, displaySurface);
-
     }
 
     public void begin() { // called when "Play" pressed on repast gui
