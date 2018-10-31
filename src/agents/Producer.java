@@ -1,6 +1,6 @@
 package agents;
 
-import behaviours.consumer.ListeningBehaviour;
+import behaviours.producer.ListeningBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import launchers.EnergyMarketLauncher;
@@ -12,6 +12,7 @@ import java.util.Random;
 
 public class Producer extends DFRegisterAgent {
 
+    Consumer consumerServing = null;
     EnergySource energySource;
     float currentSellPricePerUnit;
     int energyUnits;

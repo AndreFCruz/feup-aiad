@@ -1,0 +1,8 @@
+package utils;
+
+public enum MarketState {
+    INITIAL_STATE,
+    EQUILIBRIUM_PRODUCERS_BROKERS,
+    EQUILIBRIUM_BROKERS_CONSUMERS,
+    SIMULATION_ON
+}

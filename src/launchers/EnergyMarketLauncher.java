@@ -16,6 +16,7 @@ import uchicago.src.sim.gui.DisplaySurface;
 import uchicago.src.sim.gui.Object2DDisplay;
 import uchicago.src.sim.space.Object2DGrid;
 import utils.GraphicSettings;
+import utils.MarketState;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -30,6 +31,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     private static final Color CONSUMERCOLOR = Color.RED;
 
     // Logic variables
+    private static MarketState MARKETSTATE = MarketState.INITIAL_STATE;
     private static final int NUMPRODUCERS = 8;
     private static final int NUMBROKERS = 5;
     private static final int NUMCONSUMERS = 20;
@@ -156,17 +158,17 @@ public class EnergyMarketLauncher extends Repast3Launcher {
                 mainContainer.acceptNewAgent("consumer-" + i, c).start();
             }
 
-            producers.get(0).addContact(brokers.get(1));
-            brokers.get(1).addContact(producers.get(0));
-
-            producers.get(0).addContact(brokers.get(0));
-            brokers.get(0).addContact(producers.get(0));
-
-            consumers.get(2).addContact(brokers.get(1));
-            brokers.get(1).addContact(consumers.get(2));
-
-            consumers.get(1).addContact(brokers.get(1));
-            brokers.get(1).addContact(consumers.get(1));
+//            producers.get(0).addContact(brokers.get(1));
+////            brokers.get(1).addContact(producers.get(0));
+////
+////            producers.get(0).addContact(brokers.get(0));
+////            brokers.get(0).addContact(producers.get(0));
+////
+////            consumers.get(2).addContact(brokers.get(1));
+////            brokers.get(1).addContact(consumers.get(2));
+////
+////            consumers.get(1).addContact(brokers.get(1));
+////            brokers.get(1).addContact(consumers.get(1));
 
         } catch (StaleProxyException e) {
             e.printStackTrace();

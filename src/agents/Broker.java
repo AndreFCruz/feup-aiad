@@ -1,14 +1,18 @@
 package agents;
 
 import behaviours.broker.BusinessStarter;
+import sajas.core.AID;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import launchers.EnergyMarketLauncher;
 import utils.AgentType;
 import utils.GraphicSettings;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class Broker extends DFRegisterAgent {
+
+    private HashMap<AID, Producer> producersInContractWith = new HashMap<>();
 
     private static final int TIMEOUT = 2000;
 
