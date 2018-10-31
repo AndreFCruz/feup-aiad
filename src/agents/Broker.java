@@ -1,5 +1,6 @@
 package agents;
 
+import behaviours.broker.BusinessWaker;
 import behaviours.broker.ContractBehaviour;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import jade.lang.acl.ACLMessage;
@@ -28,12 +29,13 @@ public class Broker extends DFRegisterAgent {
         super.setup();
         this.register();
         this.search.search();
+        this.addBehaviour(new BusinessWaker(this, 2000));
     }
 
     public ArrayList<String> getProducers() {
         ArrayList<String> producersNames = new ArrayList<>();
 
-        for( DFAgentDescription p : this.search.getResult()) {
+        for (DFAgentDescription p : this.search.getResult()) {
             producersNames.add(p.getName().getLocalName());
         }
         return producersNames;

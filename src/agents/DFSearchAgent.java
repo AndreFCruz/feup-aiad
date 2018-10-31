@@ -31,7 +31,6 @@ public class DFSearchAgent extends GenericAgent {
 
         try {
             result = DFService.search(this, description);
-            for (DFAgentDescription a : result) System.out.println("boy");
         } catch (FIPAException e) {
             e.printStackTrace();
         }
