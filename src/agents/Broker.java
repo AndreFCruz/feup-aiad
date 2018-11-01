@@ -1,6 +1,6 @@
 package agents;
 
-import behaviours.broker.BusinessStarter;
+import behaviours.broker.BrokerBusinessStarter;
 import sajas.core.AID;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import launchers.EnergyMarketLauncher;
@@ -32,7 +32,7 @@ public class Broker extends DFRegisterAgent {
     protected void setup() {
         super.setup();
         this.register();
-        this.addBehaviour(new BusinessStarter(this, TIMEOUT));
+        this.addBehaviour(new BrokerBusinessStarter(this, TIMEOUT));
     }
 
     public ArrayList<String> getProducers() {

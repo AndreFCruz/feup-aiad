@@ -13,7 +13,7 @@ public class ContractBehaviourWrapper extends WrapperBehaviour {
     public int onEnd() {
         // Missing Logic here - try to find more producers until when?
         // This behavior is responsible for choosing behaviors (?) -> That's right
-        ContractBehaviour contract = new ContractBehaviour((Broker) myAgent);
+        BrokerContractInitiator contract = new BrokerContractInitiator((Broker) myAgent);
         myAgent.addBehaviour(new ContractBehaviourWrapper(contract));
         return 0;
     }
