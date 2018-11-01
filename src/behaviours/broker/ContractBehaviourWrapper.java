@@ -17,7 +17,7 @@ public class ContractBehaviourWrapper extends WrapperBehaviour {
         }
         else {
             // This behavior is responsible for choosing producers
-            ContractBehaviour contract = new ContractBehaviour((Broker) myAgent);
+            BrokerContractInitiator contract = new BrokerContractInitiator((Broker) myAgent);
             myAgent.addBehaviour(new ContractBehaviourWrapper(contract));
         }
 
