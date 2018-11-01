@@ -93,7 +93,8 @@ public class BrokerContractInitiator extends FIPAContractNetInitiator {
                     // TODO: check if this makes sense, the transaction of energy for money...
                     // adding contract to the world model
                     ((Broker) myAgent).getWorldModel().addContract(ec);
-
+                    ec.step(); // think this is needed to avoid race conditions between choosing next producers
+                                // and world step
                     msg.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
                     acceptances.add(msg);
 
