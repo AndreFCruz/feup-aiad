@@ -1,8 +1,12 @@
 package agents;
 
+import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import launchers.EnergyMarketLauncher;
 import utils.AgentType;
 import utils.GraphicSettings;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Only subscribes ONE Broker;
@@ -17,6 +21,16 @@ public class Consumer extends DFSearchAgent {
         super(model, graphicSettings);
         this.setType(AgentType.BROKER);
         this.energyConsumptionPerMonth = energyConsumptionPerMonth;
+    }
+
+    // TODO return actual Brokers instead of Strings
+    public List<String> getPromisingBrokers() {
+        ArrayList<String> brokersNames = new ArrayList<>();
+
+        for (DFAgentDescription p : this.searchAndGet()) {
+            brokersNames.add(p.getName().getLocalName());
+        }
+        return brokersNames;
     }
 
     @Override

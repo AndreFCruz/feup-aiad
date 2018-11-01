@@ -78,8 +78,20 @@ public class Wallet {
      * @param amount
      */
     public void inject(float amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException();
+        }
         this.balance += amount;
         Transaction t = new Transaction(amount, null, this);
+        this.transactions.add(t);
+    }
+
+    public void consume(float amount) {
+        if (amount <= 0) {
+            throw new IllegalArgumentException();
+        }
+        this.balance -= amount;
+        Transaction t = new Transaction(-1 * amount, null, this);
         this.transactions.add(t);
     }
 
