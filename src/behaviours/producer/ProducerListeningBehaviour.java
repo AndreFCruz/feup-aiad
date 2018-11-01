@@ -31,7 +31,7 @@ public class ProducerListeningBehaviour extends FIPAContractNetResponder {
             ec.makeContractProposal(
                     (Producer) myAgent,
                     ((Producer) myAgent).getEnergyProductionPerMonth(),
-                    ((Producer) myAgent).getEneryUnitSellPrice()
+                    ((Producer) myAgent).getEnergyUnitSellPrice()
             );
 
             reply.setContentObject(ec);

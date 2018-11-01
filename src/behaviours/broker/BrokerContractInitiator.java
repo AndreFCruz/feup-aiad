@@ -29,25 +29,38 @@ public class BrokerContractInitiator extends FIPAContractNetInitiator {
 
         Vector v = new Vector();
 
-        int contactXProducers = Math.min(orderedListOfPreferences.size(), EnergyMarketLauncher.SEARCH_TOP_X_PRODUCERS);
-
+        boolean contactedAtLeastOne = false;
+        float brokersCash = ((Broker) myAgent).getMoneyWallet().getBalance();
         for (Producer p: orderedListOfPreferences){
-            if (contactXProducers == 0)
-                break;
+            // get price for producer's whole energy
+            int energyProduction = p.getEnergyProductionPerMonth();
+            int energyCost = p.getEnergyUnitSellPrice();
 
-            cfp.addReceiver(p.getAID());
+            if (brokersCash > (energyCost * energyProduction)){
+                contactedAtLeastOne = true;
+                cfp.addReceiver(p.getAID());
+                brokersCash -= energyCost * energyProduction;
+            }
 
-            contactXProducers -= 1;
         }
 
-        EnergyContract ec = EnergyContract.makeContractDraft((Broker) myAgent, ((Broker) myAgent).getDuration() );
-        try {
-            cfp.setContentObject(ec);
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (contactedAtLeastOne){
+            // if at least one producer can supply this broker, create a draft contract
+            EnergyContract ec = EnergyContract.makeContractDraft((Broker) myAgent, ((Broker) myAgent).getDuration() );
+            try {
+                cfp.setContentObject(ec);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            v.add(cfp);
+        }
+        else {
+            // can't buy any more energy from anyone
+            ((Broker) myAgent).setCanStillBuyEnergy(false);
         }
 
-        v.add(cfp);
+        // TODO: check if there is a problem when this comes empty ?
         return v;
     }
 
@@ -64,8 +77,10 @@ public class BrokerContractInitiator extends FIPAContractNetInitiator {
     private ArrayList<Producer> getOrderedListOfPreferences() {
         // getting all the agents
         ArrayList<Producer> result = ((Broker) myAgent).getWorldModel().getProducers();
-        // ordering them
-        result.sort(Comparator.comparingInt(Producer::getEneryUnitSellPrice).reversed());
+
+        // this sorting can influence evolution of the market
+//      result.sort(Comparator.comparingInt(Producer::getEnergyUnitSellPrice).reversed());
+        Collections.shuffle(result);
 
         return result;
     }

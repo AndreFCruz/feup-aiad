@@ -37,7 +37,6 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     private static final int NUM_PRODUCERS = 9;
     private static final int NUM_BROKERS = 3;
     private static final int NUM_CONSUMERS = 20;
-    public static final int SEARCH_TOP_X_PRODUCERS = 3;
 
 
     // Energy Variables
@@ -177,7 +176,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 
     private void launchBrokers() throws StaleProxyException {
         int totalEneryCostPerMonth = producers.parallelStream().mapToInt(
-                (Producer p) -> p.getEnergyProductionPerMonth() * p.getEneryUnitSellPrice()
+                (Producer p) -> p.getEnergyProductionPerMonth() * p.getEnergyUnitSellPrice()
         ).sum();
 
         for (int i = 0; i < NUM_BROKERS; ++i) {
