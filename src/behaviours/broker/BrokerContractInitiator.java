@@ -17,11 +17,11 @@ import java.util.Vector;
 
 public class BrokerContractInitiator extends FIPAContractNetInitiator {
 
-    private List<String> producers;
+//    private List<String> producers;
 
     public BrokerContractInitiator(Broker agent) {
         super(agent);
-        producers = agent.getPromisingProducers();
+//        producers = agent.getPromisingProducers();
     }
 
     @Override
