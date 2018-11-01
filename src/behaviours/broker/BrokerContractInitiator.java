@@ -4,6 +4,7 @@ import agents.Broker;
 import agents.Producer;
 import behaviours.FIPAContractNetInitiator;
 import jade.lang.acl.ACLMessage;
+import jade.lang.acl.UnreadableException;
 import launchers.EnergyMarketLauncher;
 import sajas.core.AID;
 import utils.EnergyContract;
@@ -66,19 +67,42 @@ public class BrokerContractInitiator extends FIPAContractNetInitiator {
 
     @Override
     protected void handleAllResponses(Vector responses, Vector acceptances) {
-        super.handleAllResponses(responses, acceptances);
+
+        for (Object response : responses){
+            ACLMessage msg = ((ACLMessage) response).createReply();
+            if (msg.getPerformative() == ACLMessage.PROPOSE){   // performative of the answer
+                try {
+                    EnergyContract ec = (EnergyContract) msg.getContentObject();
+                    // TODO: do something with this ec ^
+                    msg.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
+                    acceptances.add(msg);
+
+                } catch (UnreadableException e) {
+                    e.printStackTrace();
+
+                    msg.setPerformative(ACLMessage.REJECT_PROPOSAL);
+                    acceptances.add(msg);
+                }
+            }
+            else {
+                msg.setPerformative(ACLMessage.REJECT_PROPOSAL);
+                acceptances.add(msg);
+            }
+
+        }
+
     }
 
     @Override
     protected void handleAllResultNotifications(Vector resultNotifications) {
-        super.handleAllResultNotifications(resultNotifications);
+        System.out.println(myAgent.getLocalName() + " received " + resultNotifications.size() + "results.");
     }
 
     private ArrayList<Producer> getOrderedListOfPreferences() {
         // getting all the agents
         ArrayList<Producer> result = ((Broker) myAgent).getWorldModel().getProducers();
 
-        // this sorting can influence evolution of the market
+        // this sorting can lead to a lot of agents trying to get the same producer
 //      result.sort(Comparator.comparingInt(Producer::getEnergyUnitSellPrice).reversed());
         Collections.shuffle(result);
 
