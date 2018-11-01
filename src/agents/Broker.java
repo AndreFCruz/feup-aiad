@@ -44,7 +44,7 @@ public class Broker extends DFRegisterAgent {
         return producersNames;
     }
 
-    public EnergyMarketLauncher getWorldModel(){
+    public EnergyMarketLauncher getWorldModel() {
         return worldModel;
     }
 

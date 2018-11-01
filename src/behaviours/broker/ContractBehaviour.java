@@ -48,7 +48,7 @@ public class ContractBehaviour extends FIPAContractNetInitiator {
 
     private ArrayList<Producer> getOrderedListOfPreferences() {
         // getting all the agents
-        ArrayList<Producer> result = ((Broker)myAgent).getWorldModel().getProducers();
+        ArrayList<Producer> result = ((Broker) myAgent).getWorldModel().getProducers();
         // ordering them
         result.sort(Comparator.comparingInt(Producer::getEneryUnitSellPrice).reversed());
 

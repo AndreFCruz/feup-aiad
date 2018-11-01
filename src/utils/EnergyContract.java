@@ -8,10 +8,10 @@ import java.io.Serializable;
  * TODO Can this be implemented by extending Behaviour?
  * behaviour.action() -> step()
  * behaviour.done() -> hasEnded()
- *
+ * <p>
  * Actually, this can be a CompositeBehaviour, in which each part of the
- *  contract (monetary and energy) is itself a Contract Behaviour (allows
- *  for delivering energy daily with monthly payments).
+ * contract (monetary and energy) is itself a Contract Behaviour (allows
+ * for delivering energy daily with monthly payments).
  */
 public class EnergyContract implements Serializable {
     private enum ContractState {
@@ -63,6 +63,7 @@ public class EnergyContract implements Serializable {
     /**
      * Constructor for an energy contract.
      * Supplier and Client agents are bound to this contract during its duration.
+     *
      * @param energySupplier    The agent that supplies/sells energy.
      * @param energyClient      The agent that buys energy.
      * @param energyAmount      The amount of energy to be traded.
@@ -80,13 +81,15 @@ public class EnergyContract implements Serializable {
         this.state = ContractState.SIGNED;
     }
 
-    private EnergyContract() {}
+    private EnergyContract() {
+    }
 
     /**
      * Creates a contract draft, sent from the Client to the Producer.
-     * @param energyClient  The Energy Client.
-     * @param energyAmount  The amount of energy to be traded per payment cycle.
-     * @param duration      The duration of the contract.
+     *
+     * @param energyClient The Energy Client.
+     * @param energyAmount The amount of energy to be traded per payment cycle.
+     * @param duration     The duration of the contract.
      * @return
      */
     public EnergyContract makeContractDraft(GenericAgent energyClient, int energyAmount, int duration) {
@@ -101,6 +104,7 @@ public class EnergyContract implements Serializable {
 
     /**
      * Updates the amount to be transactioned by this contract.
+     *
      * @param energyAmount the new energy amount to be traded every cycle.
      */
     @Deprecated
@@ -115,6 +119,7 @@ public class EnergyContract implements Serializable {
     /**
      * Updates the total energy cost to be paid per cycle.
      * Marks this contract as a proposal (no longer draft).
+     *
      * @param energyCost new total energy cost per payment cycle.
      */
     @Deprecated

@@ -17,10 +17,9 @@ public class ListeningBehaviour extends FIPAContractNetResponder {
     protected ACLMessage handleCfp(ACLMessage cfp) {
         ACLMessage reply = cfp.createReply();
 
-        if(((Producer) myAgent).hasContract()){
+        if (((Producer) myAgent).hasContract()) {
             reply.setPerformative(ACLMessage.REFUSE);
-        }
-        else {
+        } else {
             reply.setPerformative(ACLMessage.PROPOSE);
 
             try {
@@ -68,7 +67,6 @@ public class ListeningBehaviour extends FIPAContractNetResponder {
     public ListeningBehaviour(Agent agent, MessageTemplate template) {
         super(agent, template);
     }
-
 
 
 }

@@ -71,11 +71,11 @@ public class Producer extends DFRegisterAgent {
         return sellPricePerUnit;
     }
 
-    public boolean hasContract(){
+    public boolean hasContract() {
         return currentEnergyContract == null;
     }
 
-    public void setContract(EnergyContract ec){
+    public void setContract(EnergyContract ec) {
         this.currentEnergyContract = ec;
     }
 }

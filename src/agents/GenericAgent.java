@@ -60,7 +60,9 @@ public abstract class GenericAgent extends Agent implements Drawable {
         return this.energyWallet;
     }
 
-    /** Draw Methods **/
+    /**
+     * Draw Methods
+     **/
 
     @Override
     public void draw(SimGraphics simGraphics) {

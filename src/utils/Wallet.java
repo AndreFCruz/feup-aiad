@@ -74,6 +74,7 @@ public class Wallet {
      * Method for injections to the Wallet's balance.
      * Useful for producers, which, by producing energy, inject their energy wallet with energy units.
      * For generation
+     *
      * @param amount
      */
     public void inject(float amount) {

@@ -216,7 +216,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         return new GraphicSettings(x, y, color);
     }
 
-    public void simulationDelay(){
+    public void simulationDelay() {
         try {
             Thread.sleep(DELAY_SIMULATION);
         } catch (InterruptedException e) {
@@ -224,20 +224,26 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         }
     }
 
-    public void simulationStep(){
-        for (EnergyContract c : energyContracts){
-            if (c.hasEnded())
+    public void simulationStep() {
+        updateEnergyContracts();
+    }
+
+    private void updateEnergyContracts() {
+        for (EnergyContract c : energyContracts) {
+            if (c.hasEnded()) {
                 energyContracts.remove(c);
-            else
+                // TODO inform Broker and Producer that contract ended
+            } else {
                 c.step();
+            }
         }
     }
 
-    public void addContract(EnergyContract ec){
+    public void addContract(EnergyContract ec) {
         energyContracts.add(ec);
     }
 
-    public ArrayList<EnergyContract> getEnergyContracts(){
+    public ArrayList<EnergyContract> getEnergyContracts() {
         return energyContracts;
     }
 
