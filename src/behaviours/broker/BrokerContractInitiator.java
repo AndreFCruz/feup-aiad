@@ -15,6 +15,10 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Vector;
 
+/**
+ *  This class represents the behaviour of the Brokers when they are trying to
+ *  talk with the Producers to get energy supplied.
+ */
 public class BrokerContractInitiator extends FIPAContractNetInitiator {
 
 //    private List<String> producers;
@@ -24,6 +28,12 @@ public class BrokerContractInitiator extends FIPAContractNetInitiator {
 //        producers = agent.getPromisingProducers();
     }
 
+    /**
+     * In this function the Broker decides which Producers he want to contact.
+     *
+     * @param cfp A template message.
+     * @return A Vector of messages that will be delivered.
+     */
     @Override
     protected Vector prepareCfps(ACLMessage cfp) {
         ArrayList<Producer> orderedListOfPreferences = getOrderedListOfPreferences();
@@ -65,6 +75,13 @@ public class BrokerContractInitiator extends FIPAContractNetInitiator {
         return v;
     }
 
+    /**
+     * In this function the Broker checks if all the Producers he contacted are able to enter in a contract
+     * with him and acts accordingly.
+     *
+     * @param responses Each response from the Producers.
+     * @param acceptances A Vector where all the messages will be stored to answer the Producers.
+     */
     @Override
     protected void handleAllResponses(Vector responses, Vector acceptances) {
 
@@ -98,11 +115,20 @@ public class BrokerContractInitiator extends FIPAContractNetInitiator {
 
     }
 
+    /**
+     * This function is called when all messages from the contacted Producers have been received.
+     *
+     * @param resultNotifications The notifications of the messages received.
+     */
     @Override
     protected void handleAllResultNotifications(Vector resultNotifications) {
         System.out.println(myAgent.getLocalName() + " received " + resultNotifications.size() + "results.");
     }
 
+    /**
+     *
+     * @return An ordered ArrayList of the preferred order to contact the Producers.
+     */
     private ArrayList<Producer> getOrderedListOfPreferences() {
         // getting all the agents
         ArrayList<Producer> result = ((Broker) myAgent).getWorldModel().getProducers();
