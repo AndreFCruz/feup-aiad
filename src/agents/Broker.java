@@ -9,6 +9,7 @@ import utils.GraphicSettings;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class Broker extends DFRegisterAgent {
 
@@ -38,7 +39,11 @@ public class Broker extends DFRegisterAgent {
         this.addBehaviour(new BrokerBusinessStarter(this, TIMEOUT));
     }
 
-    public ArrayList<String> getProducers() {
+    /**
+     * Fetches the list of promising (available) producers for new contracts.
+     * @return the list of producers.
+     */
+    public List<String> getPromisingProducers() {
         ArrayList<String> producersNames = new ArrayList<>();
 
         for (DFAgentDescription p : this.search.searchAndGet()) {

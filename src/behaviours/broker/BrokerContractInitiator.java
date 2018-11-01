@@ -4,23 +4,21 @@ import agents.Broker;
 import agents.Producer;
 import behaviours.FIPAContractNetInitiator;
 import jade.lang.acl.ACLMessage;
-import launchers.EnergyMarketLauncher;
-import sajas.core.AID;
 import utils.EnergyContract;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
+import java.util.List;
 import java.util.Vector;
 
 public class BrokerContractInitiator extends FIPAContractNetInitiator {
 
-    private ArrayList<String> producers;
+    private List<String> producers;
 
     public BrokerContractInitiator(Broker agent) {
         super(agent);
-        producers = agent.getProducers();
+        producers = agent.getPromisingProducers();
     }
 
     @Override
