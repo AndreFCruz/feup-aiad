@@ -11,6 +11,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * The Broker class represents the middleman between the energy suppliers and the final consumers.
+ */
 public class Broker extends DFRegisterAgent {
 
     private HashMap<AID, Producer> producersInContractWith = new HashMap<>();
