@@ -18,7 +18,6 @@ import uchicago.src.sim.gui.Object2DDisplay;
 import uchicago.src.sim.space.Object2DGrid;
 import utils.EnergyContract;
 import utils.GraphicSettings;
-import utils.MarketState;
 
 import java.awt.*;
 import java.util.ArrayList;
@@ -34,7 +33,6 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 
     // Logic variables
     private static final int DELAY_SIMULATION = 1000;
-    private static MarketState MARKET_STATE = MarketState.INITIAL_STATE;
     private static final int NUM_PRODUCERS = 9;
     private static final int NUM_BROKERS = 3;
     private static final int NUM_CONSUMERS = 20;
