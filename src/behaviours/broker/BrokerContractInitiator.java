@@ -93,8 +93,6 @@ public class BrokerContractInitiator extends FIPAContractNetInitiator {
                     // TODO: check if this makes sense, the transaction of energy for money...
                     // adding contract to the world model
                     ((Broker) myAgent).getWorldModel().addContract(ec);
-                    ((Broker) myAgent).getMoneyWallet().withdraw(ec.getEnergyAmount()*ec.getEnergyCostPerUnit(), ec.getEnergySupplier().getMoneyWallet());
-                    ((Broker) myAgent).getEnergyWallet().deposit(ec.getEnergyAmount(), ec.getEnergySupplier().getEnergyWallet());
 
                     msg.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
                     acceptances.add(msg);
