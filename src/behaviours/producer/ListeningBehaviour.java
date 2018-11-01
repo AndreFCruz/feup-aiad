@@ -59,13 +59,10 @@ public class ListeningBehaviour extends FIPAContractNetResponder {
 
     @Override
     protected ACLMessage handleAcceptProposal(ACLMessage cfp, ACLMessage propose, ACLMessage accept) {
-        return super.handleAcceptProposal(cfp, propose, accept);
-//        System.out.println(myAgent.getLocalName() + " got an accept!");
-//        ACLMessage result = accept.createReply();
-//        result.setPerformative(ACLMessage.INFORM);
-//        result.setContent("this is the result");
-//
-//        return result;
+        ACLMessage result = accept.createReply();
+        result.setPerformative(ACLMessage.INFORM);
+
+        return result;
     }
 
     public ListeningBehaviour(Agent agent, MessageTemplate template) {
