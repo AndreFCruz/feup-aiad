@@ -11,7 +11,7 @@ public class ContractBehaviourWrapper extends WrapperBehaviour {
     }
 
     public int onEnd() {
-        if(((Broker) myAgent).isSatisfied()){
+        if(!((Broker) myAgent).canStillBuyEnergy()){
             // TODO: put here next step logic
             // AKA: listening for consumer requests (?)
         }

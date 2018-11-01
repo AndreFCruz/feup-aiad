@@ -17,8 +17,8 @@ public class Broker extends DFRegisterAgent {
     private static final int TIMEOUT = 2000;
 
     private DFSearchAgent search;
-    private boolean energyNeedsSatisfied;
-    private int duration = 1000; // TODO: remove this at a further development stage
+    private boolean canStillBuyEnergy;
+    private int duration = 365; // TODO: remove this at a further development stage
 
     public Broker(EnergyMarketLauncher model, GraphicSettings graphicSettings, int initialBudget) {
         super(model, graphicSettings);
@@ -28,7 +28,7 @@ public class Broker extends DFRegisterAgent {
         this.search.setType(AgentType.PRODUCER);
 
         this.moneyWallet.inject(initialBudget);
-        this.energyNeedsSatisfied = false;
+        this.canStillBuyEnergy = true;
     }
 
     @Override
@@ -51,12 +51,12 @@ public class Broker extends DFRegisterAgent {
         return worldModel;
     }
 
-    public boolean isSatisfied(){
-        return energyNeedsSatisfied;
+    public boolean canStillBuyEnergy(){
+        return canStillBuyEnergy;
     }
 
-    public void setEnergyNeedsSatisfied(boolean b){
-        this.energyNeedsSatisfied = b;
+    public void setCanStillBuyEnergy(boolean b){
+        this.canStillBuyEnergy = b;
     }
 
     public int getDuration(){

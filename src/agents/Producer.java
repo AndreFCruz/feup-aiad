@@ -67,7 +67,7 @@ public class Producer extends DFRegisterAgent {
         return unallocatedEnergyProductionPerMonth;
     }
 
-    public int getEneryUnitSellPrice() {
+    public int getEnergyUnitSellPrice() {
         return sellPricePerUnit;
     }
 
