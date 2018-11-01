@@ -2,6 +2,8 @@ package utils;
 
 import agents.GenericAgent;
 
+import java.io.Serializable;
+
 /**
  * TODO Can this be implemented by extending Behaviour?
  * behaviour.action() -> step()
@@ -11,7 +13,12 @@ import agents.GenericAgent;
  *  contract (monetary and energy) is itself a Contract Behaviour (allows
  *  for delivering energy daily with monthly payments).
  */
-public class EnergyContract {
+public class EnergyContract implements Serializable {
+    private enum ContractState {
+        DRAFT,      // No price defined
+        PROPOSAL,   // Features complete contract information, but hasn't yet been accepted
+        SIGNED      // Contract has been accepted by both parts
+    }
 
     /**
      * Agent that sells energy.
@@ -34,9 +41,9 @@ public class EnergyContract {
     private int energyAmount;
 
     /**
-     * Total currency to be transferred every payment cycle.
+     * Currency to be transferred every payment cycle, per energy unit.
      */
-    private int energyCost;
+    private int energyCostPerUnit;
 
     /**
      * Length of the contract, in days (ticks).
@@ -49,33 +56,74 @@ public class EnergyContract {
     private int paymentCycle = 30;
 
     /**
+     * The state of this EnergyContract.
+     */
+    private ContractState state;
+
+    /**
      * Constructor for an energy contract.
      * Supplier and Client agents are bound to this contract during its duration.
      * @param energySupplier    The agent that supplies/sells energy.
      * @param energyClient      The agent that buys energy.
      * @param energyAmount      The amount of energy to be traded.
-     * @param energyCost        The amount of money to be paid.
+     * @param energyCostPerUnit The amount of money to be paid.
      * @param duration          The duration of the contract.
      */
     public EnergyContract(GenericAgent energySupplier, GenericAgent energyClient,
-                          int energyAmount, int energyCost, int duration) {
+                          int energyAmount, int energyCostPerUnit, int duration) {
         this.energySupplier = energySupplier;
         this.energyClient = energyClient;
         this.energyAmount = energyAmount;
-        this.energyCost = energyCost;
+        this.energyCostPerUnit = energyCostPerUnit;
         this.duration = duration;
+
+        this.state = ContractState.SIGNED;
     }
 
-    public EnergyContract(GenericAgent energySupplier, GenericAgent energyClient,
-                          int energyAmount, int energyCost, int duration, int paymentCycle) {
-        this(energySupplier, energyClient, energyAmount, energyCost, duration);
-        this.paymentCycle = paymentCycle;
+    private EnergyContract() {}
+
+    /**
+     * Creates a contract draft, sent from the Client to the Producer.
+     * @param energyClient  The Energy Client.
+     * @param energyAmount  The amount of energy to be traded per payment cycle.
+     * @param duration      The duration of the contract.
+     * @return
+     */
+    public EnergyContract makeContractDraft(GenericAgent energyClient, int energyAmount, int duration) {
+        EnergyContract contract = new EnergyContract();
+        contract.energyClient = energyClient;
+        contract.energyAmount = energyAmount;
+        contract.duration = duration;
+
+        contract.state = ContractState.DRAFT;
+        return contract;
     }
 
     /**
      * Updates the amount to be transactioned by this contract.
+     * @param energyAmount the new energy amount to be traded every cycle.
      */
-    protected void updateAmount() {}
+    public void updateEnergyAmount(int energyAmount) {
+        if (this.state == ContractState.SIGNED) {
+            System.err.println("Can't update energy amount of already signed contract.");
+            return;
+        }
+        this.energyAmount = energyAmount;
+    }
+
+    /**
+     * Updates the total energy cost to be paid per cycle.
+     * Marks this contract as a proposal (no longer draft).
+     * @param energyCost new total energy cost per payment cycle.
+     */
+    public void updateEnergyCostPerUnit(int energyCost) {
+        if (this.state == ContractState.SIGNED) {
+            System.err.println("Can't update energy cost of already signed contract.");
+            return;
+        }
+        this.energyCostPerUnit = energyCost;
+        this.state = ContractState.PROPOSAL;
+    }
 
     /**
      * @return Whether this contract has ended.
@@ -84,18 +132,22 @@ public class EnergyContract {
         return ticks >= duration;
     }
 
+    public boolean isSigned() {
+        return this.state == ContractState.SIGNED;
+    }
+
     /**
      * Steps this contract, meaning one day (tick) has passed.
      */
     public void step() {
-        if (this.hasEnded())
+        if (this.hasEnded() || this.state != ContractState.SIGNED)
             return;
-        this.updateAmount();
 
         // Pay day
         if (ticks % paymentCycle == 0) {
+            int totalEnergyCost = energyCostPerUnit * energyAmount;
             energySupplier.getEnergyWallet().withdraw(energyAmount, energyClient.getEnergyWallet());
-            energyClient.getMoneyWallet().withdraw(energyCost, energySupplier.getMoneyWallet());
+            energyClient.getMoneyWallet().withdraw(totalEnergyCost, energySupplier.getMoneyWallet());
         }
 
         // Ticks are updated at the end of each step, as such,
