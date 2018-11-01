@@ -73,7 +73,12 @@ public class BrokerContractInitiator extends FIPAContractNetInitiator {
             if (msg.getPerformative() == ACLMessage.PROPOSE){   // performative of the answer
                 try {
                     EnergyContract ec = (EnergyContract) msg.getContentObject();
-                    // TODO: do something with this ec ^
+                    // TODO: check if this makes sense, the transaction of energy for money...
+                    // adding contract to the world model
+                    ((Broker) myAgent).getWorldModel().addContract(ec);
+                    ((Broker) myAgent).getMoneyWallet().withdraw(ec.getEnergyAmount()*ec.getEnergyCostPerUnit(), ec.getEnergySupplier().getMoneyWallet());
+                    ((Broker) myAgent).getEnergyWallet().deposit(ec.getEnergyAmount(), ec.getEnergySupplier().getEnergyWallet());
+
                     msg.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
                     acceptances.add(msg);
 

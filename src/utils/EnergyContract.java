@@ -45,6 +45,18 @@ public class EnergyContract implements Serializable {
      */
     private int energyCostPerUnit;
 
+    public GenericAgent getEnergySupplier() {
+        return energySupplier;
+    }
+
+    public int getEnergyAmount() {
+        return energyAmount;
+    }
+
+    public int getEnergyCostPerUnit() {
+        return energyCostPerUnit;
+    }
+
     /**
      * Length of the contract, in days (ticks).
      */

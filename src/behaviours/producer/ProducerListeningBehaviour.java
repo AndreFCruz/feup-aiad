@@ -63,7 +63,6 @@ public class ProducerListeningBehaviour extends FIPAContractNetResponder {
     protected ACLMessage handleAcceptProposal(ACLMessage cfp, ACLMessage propose, ACLMessage accept) {
         ACLMessage result = accept.createReply();
         result.setPerformative(ACLMessage.INFORM);
-
         return result;
     }
 
