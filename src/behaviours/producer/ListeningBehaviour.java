@@ -1,5 +1,6 @@
 package behaviours.producer;
 
+import agents.GenericAgent;
 import agents.Producer;
 import behaviours.FIPAContractNetResponder;
 import jade.lang.acl.ACLMessage;
@@ -24,11 +25,13 @@ public class ListeningBehaviour extends FIPAContractNetResponder {
 
             try {
                 EnergyContract ec = (EnergyContract) cfp.getContentObject();
-                 ec.updateSupplier((Producer) myAgent);
-                 ec.updateEnergyAmount(((Producer) myAgent).getEnergyProductionPerMonth());
-                 ec.updateEnergyCostPerUnit(((Producer) myAgent).getEneryUnitSellPrice());
+                ec.makeContractProposal(
+                        (Producer) myAgent,
+                        ((Producer) myAgent).getEnergyProductionPerMonth(),
+                        ((Producer) myAgent).getEneryUnitSellPrice()
+                );
 
-                 reply.setContentObject(ec);
+                reply.setContentObject(ec);
                 // assuming we will gain this contract, to reject others
                 ((Producer) myAgent).setContract(ec);
 

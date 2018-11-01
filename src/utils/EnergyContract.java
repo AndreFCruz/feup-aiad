@@ -103,6 +103,7 @@ public class EnergyContract implements Serializable {
      * Updates the amount to be transactioned by this contract.
      * @param energyAmount the new energy amount to be traded every cycle.
      */
+    @Deprecated
     public void updateEnergyAmount(int energyAmount) {
         if (this.state == ContractState.SIGNED) {
             System.err.println("Can't update energy amount of already signed contract.");
@@ -116,13 +117,23 @@ public class EnergyContract implements Serializable {
      * Marks this contract as a proposal (no longer draft).
      * @param energyCost new total energy cost per payment cycle.
      */
+    @Deprecated
     public void updateEnergyCostPerUnit(int energyCost) {
         if (this.state == ContractState.SIGNED) {
             System.err.println("Can't update energy cost of already signed contract.");
             return;
         }
         this.energyCostPerUnit = energyCost;
+    }
+
+    public EnergyContract makeContractProposal(GenericAgent supplier, int energyAmount, int energyCostPerUnit) {
+        if (this.state == ContractState.SIGNED)
+            throw new IllegalArgumentException("Making contract proposal from already signed contract.");
+        this.energySupplier = supplier;
+        this.energyAmount = energyAmount;
+        this.energyCostPerUnit = energyCostPerUnit;
         this.state = ContractState.PROPOSAL;
+        return this;
     }
 
     /**
@@ -130,6 +141,15 @@ public class EnergyContract implements Serializable {
      */
     public boolean hasEnded() {
         return ticks >= duration;
+    }
+
+    /**
+     * Client signs contract proposal.
+     */
+    public void signContract(GenericAgent agent) {
+        if (agent != energyClient)
+            throw new IllegalArgumentException("Signing agent was not the client.");
+        this.state = ContractState.SIGNED;
     }
 
     public boolean isSigned() {
