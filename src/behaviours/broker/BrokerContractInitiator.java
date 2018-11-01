@@ -14,11 +14,11 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Vector;
 
-public class ContractBehaviour extends FIPAContractNetInitiator {
+public class BrokerContractInitiator extends FIPAContractNetInitiator {
 
     private ArrayList<String> producers;
 
-    public ContractBehaviour(Broker agent) {
+    public BrokerContractInitiator(Broker agent) {
         super(agent);
         producers = agent.getProducers();
     }

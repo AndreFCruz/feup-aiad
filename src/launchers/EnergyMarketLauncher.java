@@ -21,6 +21,7 @@ import utils.GraphicSettings;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.ListIterator;
 import java.util.Random;
 
 
@@ -230,12 +231,13 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     }
 
     private void updateEnergyContracts() {
-        for (EnergyContract c : energyContracts) {
-            if (c.hasEnded()) {
-                energyContracts.remove(c);
+        for (ListIterator<EnergyContract> iter = energyContracts.listIterator(); iter.hasNext(); ) {
+            EnergyContract contract = iter.next();
+            if (contract.hasEnded()) {
+                iter.remove();
                 // TODO inform Broker and Producer that contract ended
             } else {
-                c.step();
+                contract.step();
             }
         }
     }
