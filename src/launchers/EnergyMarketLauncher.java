@@ -15,6 +15,7 @@ import uchicago.src.sim.gui.DisplayConstants;
 import uchicago.src.sim.gui.DisplaySurface;
 import uchicago.src.sim.gui.Object2DDisplay;
 import uchicago.src.sim.space.Object2DGrid;
+import utils.EnergyContract;
 import utils.GraphicSettings;
 import utils.MarketState;
 
@@ -57,6 +58,8 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     private ArrayList<Broker> brokers;
     private ArrayList<Consumer> consumers;
 
+    private ArrayList<EnergyContract> energyContracts;
+
     public static void main(String[] args) {
         boolean BATCH_MODE = false;
 
@@ -90,6 +93,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 
         modelConstructor();
         displayConstructor();
+        scheduleConstructor();
 
         super.begin();
     }
@@ -100,6 +104,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         producers = new ArrayList<>();
         brokers = new ArrayList<>();
         consumers = new ArrayList<>();
+        energyContracts = new ArrayList<>();
     }
 
     private void displayConstructor() {
@@ -117,6 +122,10 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 
         displaySurface.display();
 
+    }
+
+    private void scheduleConstructor() {
+        getSchedule().scheduleActionAtInterval(1, this, "simulationStep");
     }
 
     @Override
@@ -203,6 +212,23 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         int x = (worldWidth / (NUM_PRODUCERS + 1)) * (idx + 1);
         int y = (int) ((yCoords * worldHeight) / 4 + 20 * (rand.nextFloat() - 0.5f));
         return new GraphicSettings(x, y, color);
+    }
+
+    public void simulationStep(){
+        for (EnergyContract c : energyContracts){
+            if (c.hasEnded())
+                energyContracts.remove(c);
+            else
+                c.step();
+        }
+    }
+
+    public void addContract(EnergyContract ec){
+        energyContracts.add(ec);
+    }
+
+    public ArrayList<EnergyContract> getEnergyContracts(){
+        return energyContracts;
     }
 
     public ArrayList<Producer> getProducers() {

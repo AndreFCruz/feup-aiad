@@ -6,6 +6,7 @@ import jade.lang.acl.MessageTemplate;
 import launchers.EnergyMarketLauncher;
 import resources.*;
 import utils.AgentType;
+import utils.EnergyContract;
 import utils.GraphicSettings;
 
 import java.util.Random;
@@ -17,6 +18,8 @@ public class Producer extends DFRegisterAgent {
 
     private int energyProductionPerMonth;
     private int unallocatedEnergyProductionPerMonth;
+
+    private EnergyContract currentEnergyContract = null;
 
     public static Producer createProducer(EnergyMarketLauncher model, GraphicSettings graphicSettings, int energyUnits) {
         Random random = new Random();
@@ -68,4 +71,11 @@ public class Producer extends DFRegisterAgent {
         return sellPricePerUnit;
     }
 
+    public boolean hasContract(){
+        return currentEnergyContract == null;
+    }
+
+    public void setContract(EnergyContract ec){
+        this.currentEnergyContract = ec;
+    }
 }
