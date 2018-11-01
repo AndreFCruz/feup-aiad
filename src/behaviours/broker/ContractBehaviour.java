@@ -1,11 +1,15 @@
 package behaviours.broker;
 
 import agents.Broker;
+import agents.Producer;
 import behaviours.FIPAContractNetInitiator;
 import jade.lang.acl.ACLMessage;
+import launchers.EnergyMarketLauncher;
 import sajas.core.AID;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Vector;
 
 public class ContractBehaviour extends FIPAContractNetInitiator {
@@ -19,6 +23,8 @@ public class ContractBehaviour extends FIPAContractNetInitiator {
 
     @Override
     protected Vector prepareCfps(ACLMessage cfp) {
+        ArrayList<Producer> orderedListOfPreferences = getOrderedListOfPreferences();
+
         Vector v = new Vector();
 
         for (String p : producers) {
@@ -28,5 +34,14 @@ public class ContractBehaviour extends FIPAContractNetInitiator {
 
         v.add(cfp);
         return v;
+    }
+
+    private ArrayList<Producer> getOrderedListOfPreferences() {
+        // getting all the agents
+        ArrayList<Producer> result = ((Broker)myAgent).getWorldModel().getProducers();
+        // ordering them
+        result.sort(Comparator.comparingInt(Producer::getEneryUnitSellPrice).reversed());
+
+        return result;
     }
 }
