@@ -11,10 +11,16 @@ public class ContractBehaviourWrapper extends WrapperBehaviour {
     }
 
     public int onEnd() {
-        // Missing Logic here - try to find more producers until when?
-        // This behavior is responsible for choosing behaviors (?) -> That's right
-        ContractBehaviour contract = new ContractBehaviour((Broker) myAgent);
-        myAgent.addBehaviour(new ContractBehaviourWrapper(contract));
+        if(((Broker) myAgent).isSatisfied()){
+            // TODO: put here next step logic
+            // AKA: listening for consumer requests (?)
+        }
+        else {
+            // This behavior is responsible for choosing producers
+            ContractBehaviour contract = new ContractBehaviour((Broker) myAgent);
+            myAgent.addBehaviour(new ContractBehaviourWrapper(contract));
+        }
+
         return 0;
     }
 

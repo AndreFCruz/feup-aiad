@@ -36,6 +36,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     private static final int NUM_PRODUCERS = 9;
     private static final int NUM_BROKERS = 3;
     private static final int NUM_CONSUMERS = 20;
+    public static final int SEARCH_TOP_X_PRODUCERS = 3;
 
 
     // Energy Variables

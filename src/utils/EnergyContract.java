@@ -88,14 +88,14 @@ public class EnergyContract implements Serializable {
      * Creates a contract draft, sent from the Client to the Producer.
      *
      * @param energyClient The Energy Client.
-     * @param energyAmount The amount of energy to be traded per payment cycle.
+//     * @param energyAmount The amount of energy to be traded per payment cycle.
      * @param duration     The duration of the contract.
      * @return
      */
-    public EnergyContract makeContractDraft(GenericAgent energyClient, int energyAmount, int duration) {
+    public static EnergyContract makeContractDraft(GenericAgent energyClient, int duration) {
         EnergyContract contract = new EnergyContract();
         contract.energyClient = energyClient;
-        contract.energyAmount = energyAmount;
+//        contract.energyAmount = energyAmount;
         contract.duration = duration;
 
         contract.state = ContractState.DRAFT;

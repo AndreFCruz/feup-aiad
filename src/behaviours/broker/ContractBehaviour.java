@@ -6,7 +6,9 @@ import behaviours.FIPAContractNetInitiator;
 import jade.lang.acl.ACLMessage;
 import launchers.EnergyMarketLauncher;
 import sajas.core.AID;
+import utils.EnergyContract;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -27,10 +29,23 @@ public class ContractBehaviour extends FIPAContractNetInitiator {
 
         Vector v = new Vector();
 
-        for (String p : producers) {
-            cfp.addReceiver(new AID(p, false));
+        int contactXProducers = Math.min(orderedListOfPreferences.size(), EnergyMarketLauncher.SEARCH_TOP_X_PRODUCERS);
+
+        for (Producer p: orderedListOfPreferences){
+            if (contactXProducers == 0)
+                break;
+
+            cfp.addReceiver(p.getAID());
+
+            contactXProducers -= 1;
         }
-        cfp.setContent("What energy do you have?");
+
+        EnergyContract ec = EnergyContract.makeContractDraft((Broker) myAgent, ((Broker) myAgent).getDuration() );
+        try {
+            cfp.setContentObject(ec);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         v.add(cfp);
         return v;
