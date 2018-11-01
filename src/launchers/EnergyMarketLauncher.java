@@ -10,6 +10,7 @@ import sajas.core.Runtime;
 import sajas.sim.repast3.Repast3Launcher;
 import sajas.wrapper.ContainerController;
 
+import uchicago.src.sim.engine.ScheduleBase;
 import uchicago.src.sim.engine.SimInit;
 import uchicago.src.sim.gui.DisplayConstants;
 import uchicago.src.sim.gui.DisplaySurface;
@@ -32,6 +33,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     private static final Color CONSUMER_COLOR = Color.RED;
 
     // Logic variables
+    private static final int DELAY_SIMULATION = 1000;
     private static MarketState MARKET_STATE = MarketState.INITIAL_STATE;
     private static final int NUM_PRODUCERS = 9;
     private static final int NUM_BROKERS = 3;
@@ -126,6 +128,8 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 
     private void scheduleConstructor() {
         getSchedule().scheduleActionAtInterval(1, this, "simulationStep");
+//        getSchedule().scheduleActionAtInterval(1, this, "simulationDelay", ScheduleBase.LAST);
+
     }
 
     @Override
@@ -212,6 +216,14 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         int x = (worldWidth / (NUM_PRODUCERS + 1)) * (idx + 1);
         int y = (int) ((yCoords * worldHeight) / 4 + 20 * (rand.nextFloat() - 0.5f));
         return new GraphicSettings(x, y, color);
+    }
+
+    public void simulationDelay(){
+        try {
+            Thread.sleep(DELAY_SIMULATION);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     public void simulationStep(){

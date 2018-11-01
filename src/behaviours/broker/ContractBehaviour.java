@@ -36,6 +36,16 @@ public class ContractBehaviour extends FIPAContractNetInitiator {
         return v;
     }
 
+    @Override
+    protected void handleAllResponses(Vector responses, Vector acceptances) {
+        super.handleAllResponses(responses, acceptances);
+    }
+
+    @Override
+    protected void handleAllResultNotifications(Vector resultNotifications) {
+        super.handleAllResultNotifications(resultNotifications);
+    }
+
     private ArrayList<Producer> getOrderedListOfPreferences() {
         // getting all the agents
         ArrayList<Producer> result = ((Broker)myAgent).getWorldModel().getProducers();
