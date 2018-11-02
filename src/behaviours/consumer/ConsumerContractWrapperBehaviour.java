@@ -11,7 +11,7 @@ public class ConsumerContractWrapperBehaviour extends WrapperBehaviour {
     }
 
     public int onEnd() {
-        if (!((Consumer) myAgent).hasEnoughEnergy()) {
+        if (!((Consumer) myAgent).isBeingSupplied()) {
             // TODO: put here next step logic
             // AKA: listening for consumer requests (?)
         } else {

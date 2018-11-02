@@ -49,7 +49,7 @@ public class Consumer extends DFSearchAgent {
         return energyConsumptionPerMonth;
     }
 
-    public boolean hasEnoughEnergy() {
+    public boolean isBeingSupplied() {
         return false;
     }
 
