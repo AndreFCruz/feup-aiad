@@ -2,11 +2,12 @@ package utils;
 
 import agents.GenericAgent;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Wallet {
-    class Transaction {
+public class Wallet implements Serializable {
+    class Transaction implements Serializable {
         float amount;
         Wallet payer;
         Wallet receiver;

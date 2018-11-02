@@ -7,9 +7,10 @@ import uchicago.src.sim.gui.SimGraphics;
 import utils.GraphicSettings;
 import utils.Wallet;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public abstract class GenericAgent extends Agent implements Drawable {
+public abstract class GenericAgent extends Agent implements Drawable, Serializable {
 
     protected ArrayList<GenericAgent> contacts;
 

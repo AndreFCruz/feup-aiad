@@ -232,15 +232,16 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     }
 
     private void updateEnergyContracts() {
-        for (ListIterator<EnergyContract> iter = energyContracts.listIterator(); iter.hasNext(); ) {
-            EnergyContract contract = iter.next();
-            if (contract.hasEnded()) {
-                iter.remove();
-                // TODO inform Broker and Producer that contract ended
-            } else {
-                contract.step();
-            }
-        }
+        System.out.println("Currently with " + energyContracts.size() + " contracts.");
+//        for (ListIterator<EnergyContract> iter = energyContracts.listIterator(); iter.hasNext(); ) {
+//            EnergyContract contract = iter.next();
+//            if (contract.hasEnded()) {
+//                iter.remove();
+//                // TODO inform Broker and Producer that contract ended
+//            } else {
+//                contract.step();
+//            }
+//        }
     }
 
     public void addContract(EnergyContract ec) {

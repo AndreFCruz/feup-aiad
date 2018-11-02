@@ -1,8 +1,9 @@
 package utils;
 
 import java.awt.*;
+import java.io.Serializable;
 
-public class GraphicSettings {
+public class GraphicSettings implements Serializable {
     public int x, y;
     public Color color;
 
