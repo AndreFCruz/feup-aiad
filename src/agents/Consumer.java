@@ -21,6 +21,8 @@ public class Consumer extends DFSearchAgent {
 
     private int energyConsumptionPerMonth;
 
+    private boolean brokerService = false;
+
     public Consumer(EnergyMarketLauncher model, GraphicSettings graphicSettings, int energyConsumptionPerMonth) {
         super(model, graphicSettings);
         this.setSearchType(AgentType.BROKER);
@@ -37,6 +39,10 @@ public class Consumer extends DFSearchAgent {
         return brokersNames;
     }
 
+    public EnergyMarketLauncher getWorldModel() {
+        return worldModel;
+    }
+
     @Override
     protected void setup() {
         super.setup();
@@ -49,8 +55,12 @@ public class Consumer extends DFSearchAgent {
         return energyConsumptionPerMonth;
     }
 
-    public boolean hasEnoughEnergy() {
-        return false;
+    public boolean hasBrokerService() {
+        return brokerService;
+    }
+
+    public void setHasBrokerService(boolean b) {
+        brokerService = b;
     }
 
 }

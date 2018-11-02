@@ -1,6 +1,7 @@
 package agents;
 
 import behaviours.broker.BrokerBusinessStarter;
+import behaviours.broker.BrokerListeningBehaviour;
 import sajas.core.AID;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import launchers.EnergyMarketLauncher;
@@ -37,7 +38,8 @@ public class Broker extends DFRegisterAgent {
     @Override
     protected void setup() {
         super.setup();
-        this.addBehaviour(new BrokerBusinessStarter(this, TIMEOUT));
+        addBehaviour(new BrokerBusinessStarter(this, TIMEOUT));
+        addBehaviour(new BrokerListeningBehaviour(this));
     }
 
     /**
@@ -68,6 +70,14 @@ public class Broker extends DFRegisterAgent {
 
     public int getDuration() {
         return duration;
+    }
+
+    public int getAvailableEnergy() {
+        return (int) energyWallet.getBalance(); // TODO bem grande
+    }
+
+    public int getEnergyUnitSellPrice() {
+        return (int) 100; // TODO bem grande
     }
 
 }
