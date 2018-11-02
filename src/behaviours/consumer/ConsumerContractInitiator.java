@@ -28,21 +28,18 @@ public class ConsumerContractInitiator extends FIPAContractNetInitiator {
         Consumer c = (Consumer) myAgent;
 
         boolean contactedAtLeastOne = false;
-        float consumerCash = c.getMoneyWallet().getBalance();
 
         for (Broker b : orderedListOfPreferences) {
-            int contractCost = b.getEnergyUnitSellPrice() * c.getEnergyConsumptionPerMonth();
-
-            if (b.getAvailableMonthlyEnergyQuota() >= c.getEnergyConsumptionPerMonth() && contractCost <= consumerCash) {
+            if (b.getAvailableMonthlyEnergyQuota() >= c.getEnergyConsumptionPerMonth()) {
                 contactedAtLeastOne = true;
                 cfp.addReceiver(b.getAID());
-                consumerCash -= contractCost;
             }
         }
 
         if (contactedAtLeastOne) {
-            // if at least one broker can supply this consumer, create a draft contract
-            EnergyContractProposal ec = EnergyContractProposal.makeContractDraft(myAgent.getAID(), ((Broker) myAgent).getDuration());
+            EnergyContractProposal ec = EnergyContractProposal.makeContractDraft(myAgent.getAID(), c.getContractDuration());
+            ec.updateEnergyAmount(c.getEnergyConsumptionPerMonth());
+
             try {
                 cfp.setContentObject(ec);
             } catch (IOException e) {

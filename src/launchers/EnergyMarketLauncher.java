@@ -11,6 +11,9 @@ import jade.wrapper.StaleProxyException;
 import sajas.core.Runtime;
 import sajas.sim.repast3.Repast3Launcher;
 import sajas.wrapper.ContainerController;
+import uchicago.src.sim.analysis.OpenSequenceGraph;
+import uchicago.src.sim.analysis.Sequence;
+import uchicago.src.sim.engine.Schedule;
 import uchicago.src.sim.engine.SimInit;
 import uchicago.src.sim.gui.DisplayConstants;
 import uchicago.src.sim.gui.DisplaySurface;
@@ -34,19 +37,20 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     private static final Color PRODUCER_COLOR = Color.GREEN;
     private static final Color BROKER_COLOR = Color.YELLOW;
     private static final Color CONSUMER_COLOR = Color.RED;
+    private OpenSequenceGraph energyGraph = null;
 
     // Logic variables
     private static final int DELAY_SIMULATION = 1000;
-    private static final int NUM_PRODUCERS = 9;
-    private static final int NUM_BROKERS = 3;
-    private static final int NUM_CONSUMERS = 20;
+    private static final int NUM_PRODUCERS = 100;
+    private static final int NUM_BROKERS = 5;
+    private static final int NUM_CONSUMERS = 60;
 
 
     // Energy Variables
     /**
      * Approximate value of the total energy produced per month in this energy market.
      */
-    private static final int TOTAL_ENERGY_PRODUCED_PER_MONTH = (int) Math.pow(10, 6); // 1 MWh
+    private static final int TOTAL_ENERGY_PRODUCED_PER_MONTH = (int) Math.pow(10, 8); // 1 MWh
     private int actualTotalEnergyProducedPerMonth = 0;
 
     private ContainerController mainContainer;
@@ -105,6 +109,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         super.begin();
     }
 
+
     private void modelConstructor() {
         world = new Object2DGrid(worldWidth, worldHeight);
 
@@ -131,11 +136,48 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 
         displaySurface.display();
 
+        energyPlotBuild();
+
+    }
+
+    private void energyPlotBuild() {
+        if (energyGraph != null)
+            energyGraph.dispose();
+
+        energyGraph = new OpenSequenceGraph("Sum of energies", this);
+        energyGraph.setAxisTitles("time", "energy");
+
+        energyGraph.addSequence("Energy Traded Brokers-Producers", () -> {
+            double energy = 0f;
+            for (EnergyContract ec : energyContractsBrokerProducer) {
+                energy += ec.getEnergyAmountPerCycle();
+
+            }
+            return energy;
+        });
+
+        energyGraph.addSequence("Total energy in System", () -> TOTAL_ENERGY_PRODUCED_PER_MONTH);
+
+        energyGraph.display();
+    }
+
+    private void energyPlotBuildBrokers() {
+        for (Broker b : brokers) {
+            energyGraph.addSequence("Broker: " + b.getLocalName(), () -> {
+                double energy = 0f;
+                for (EnergyContract ec : energyContractsBrokerProducer) {
+                    if (ec.getEnergyClient().getLocalName().equals(b.getLocalName()))
+                        energy += ec.getEnergyAmountPerCycle();
+                }
+                return energy;
+            });
+        }
     }
 
     private void scheduleConstructor() {
         getSchedule().scheduleActionAtInterval(1, this, "simulationStep");
 //        getSchedule().scheduleActionAtInterval(1, this, "simulationDelay", ScheduleBase.LAST);
+        getSchedule().scheduleActionAtInterval(1, energyGraph, "step", Schedule.LAST);
 
     }
 
@@ -217,6 +259,8 @@ public class EnergyMarketLauncher extends Repast3Launcher {
             mainContainer.acceptNewAgent("broker-" + i, b).start();
 
         }
+
+        energyPlotBuildBrokers();
     }
 
     private void launchConsumers() throws StaleProxyException {

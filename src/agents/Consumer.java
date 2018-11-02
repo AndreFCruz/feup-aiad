@@ -17,11 +17,13 @@ import java.util.List;
  */
 public class Consumer extends DFSearchAgent {
 
-    private static final int TIMEOUT = 3000;
+    private static final int TIMEOUT = 2000;
 
     private int energyConsumptionPerMonth;
 
     private boolean brokerService = false;
+
+    private int contractDuration = 365; // One year contracts
 
     public Consumer(EnergyMarketLauncher model, GraphicSettings graphicSettings, int energyConsumptionPerMonth) {
         super(model, graphicSettings);
@@ -46,7 +48,7 @@ public class Consumer extends DFSearchAgent {
     @Override
     protected void setup() {
         super.setup();
-        addBehaviour(new ConsumerBusinessStarter(this, TIMEOUT));
+        //addBehaviour(new ConsumerBusinessStarter(this, TIMEOUT));
         addBehaviour(new ConsumeBehaviour(this));
         System.out.println("Consumer " + this.getLocalName() + " was created.");
     }
@@ -63,4 +65,7 @@ public class Consumer extends DFSearchAgent {
         brokerService = b;
     }
 
+    public int getContractDuration() {
+        return contractDuration;
+    }
 }
