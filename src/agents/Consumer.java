@@ -48,7 +48,7 @@ public class Consumer extends DFSearchAgent {
     protected void setup() {
         super.setup();
         addBehaviour(new ConsumerBusinessStarter(this, TIMEOUT));
-        addBehaviour(new IncomeBehaviour(this, 1200)); // TODO change hardcoded monthly income
+        addBehaviour(new IncomeBehaviour(this, 120000)); // TODO change hardcoded monthly income
          addBehaviour(new ConsumeBehaviour(this));
         System.out.println("Consumer " + this.getLocalName() + " was created.");
     }
