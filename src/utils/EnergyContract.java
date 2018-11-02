@@ -11,6 +11,14 @@ public class EnergyContract {
     private GenericAgent energySupplier;
 
     /**
+     *
+     * @return the client that is being supplied.
+     */
+    public GenericAgent getEnergyClient() {
+        return energyClient;
+    }
+
+    /**
      * Agent that buys energy.
      */
     private GenericAgent energyClient;
@@ -20,6 +28,10 @@ public class EnergyContract {
      */
     private int ticks = 0;
 
+    /**
+     *
+     * @return the energy being traded with this contract.
+     */
     public int getEnergyAmountPerCycle() {
         return energyAmountPerCycle;
     }

@@ -41,16 +41,16 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 
     // Logic variables
     private static final int DELAY_SIMULATION = 1000;
-    private static final int NUM_PRODUCERS = 9;
-    private static final int NUM_BROKERS = 3;
-    private static final int NUM_CONSUMERS = 20;
+    private static final int NUM_PRODUCERS = 100;
+    private static final int NUM_BROKERS = 5;
+    private static final int NUM_CONSUMERS = 60;
 
 
     // Energy Variables
     /**
      * Approximate value of the total energy produced per month in this energy market.
      */
-    private static final int TOTAL_ENERGY_PRODUCED_PER_MONTH = (int) Math.pow(10, 6); // 1 MWh
+    private static final int TOTAL_ENERGY_PRODUCED_PER_MONTH = (int) Math.pow(10, 8); // 1 MWh
     private int actualTotalEnergyProducedPerMonth = 0;
 
     private ContainerController mainContainer;
@@ -144,23 +144,31 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         energyGraph = new OpenSequenceGraph("Sum of energies", this);
         energyGraph.setAxisTitles("time", "energy");
 
-        energyGraph.addSequence("Energy Traded Brokers-Producers", new Sequence() {
+        energyGraph.addSequence("Energy Traded Brokers-Producers", () -> {
+            double energy = 0f;
+            for (EnergyContract ec : energyContracts) {
+                energy += ec.getEnergyAmountPerCycle();
 
-            @Override
-            public double getSValue() {
-                double energy = 0f;
-
-                for (EnergyContract ec : energyContracts){
-                    energy += ec.getEnergyAmountPerCycle();
-
-                }
-
-                return energy;
             }
-
+            return energy;
         });
 
+        energyGraph.addSequence("Total energy in System", () -> TOTAL_ENERGY_PRODUCED_PER_MONTH);
+
         energyGraph.display();
+    }
+
+    private void energyPlotBuildBrokers() {
+        for (Broker b : brokers) {
+            energyGraph.addSequence("Broker: " + b.getLocalName(), () -> {
+                double energy = 0f;
+                for (EnergyContract ec : energyContracts) {
+                    if (ec.getEnergyClient().getLocalName().equals(b.getLocalName()))
+                        energy += ec.getEnergyAmountPerCycle();
+                }
+                return energy;
+            });
+        }
     }
 
     private void scheduleConstructor() {
@@ -248,6 +256,8 @@ public class EnergyMarketLauncher extends Repast3Launcher {
             mainContainer.acceptNewAgent("broker-" + i, b).start();
 
         }
+
+        energyPlotBuildBrokers();
     }
 
     private void launchConsumers() throws StaleProxyException {
