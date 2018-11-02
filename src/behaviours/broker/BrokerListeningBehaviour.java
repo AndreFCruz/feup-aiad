@@ -2,15 +2,14 @@ package behaviours.broker;
 
 import behaviours.FIPAContractNetResponder;
 import jade.lang.acl.ACLMessage;
-import jade.lang.acl.MessageTemplate;
 import sajas.core.Agent;
 
 /**
  * Brokers listens for contract proposals from Consumers.
  */
 public class BrokerListeningBehaviour extends FIPAContractNetResponder {
-    public BrokerListeningBehaviour(Agent agent, MessageTemplate template) {
-        super(agent, template);
+    public BrokerListeningBehaviour(Agent agent) {
+        super(agent);
     }
 
     @Override

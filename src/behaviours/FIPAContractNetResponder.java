@@ -7,8 +7,8 @@ import sajas.proto.ContractNetResponder;
 
 public abstract class FIPAContractNetResponder extends ContractNetResponder {
 
-    public FIPAContractNetResponder(Agent agent, MessageTemplate template) {
-        super(agent, template);
+    public FIPAContractNetResponder(Agent agent) {
+        super(agent, MessageTemplate.MatchPerformative(ACLMessage.CFP));
     }
 
     protected ACLMessage handleCfp(ACLMessage cfp) {

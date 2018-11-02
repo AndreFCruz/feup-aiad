@@ -3,7 +3,6 @@ package behaviours.producer;
 import agents.Producer;
 import behaviours.FIPAContractNetResponder;
 import jade.lang.acl.ACLMessage;
-import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
 import sajas.core.Agent;
 import utils.EnergyContractProposal;
@@ -14,6 +13,10 @@ import java.io.IOException;
  * Producer listens for contract proposals (Contract Net Initiators) from Brokers.
  */
 public class ProducerListeningBehaviour extends FIPAContractNetResponder {
+
+    public ProducerListeningBehaviour(Agent agent) {
+        super(agent);
+    }
 
     @Override
     protected ACLMessage handleCfp(ACLMessage cfp) {
@@ -65,10 +68,6 @@ public class ProducerListeningBehaviour extends FIPAContractNetResponder {
         ACLMessage result = accept.createReply();
         result.setPerformative(ACLMessage.INFORM);
         return result;
-    }
-
-    public ProducerListeningBehaviour(Agent agent, MessageTemplate template) {
-        super(agent, template);
     }
 
 

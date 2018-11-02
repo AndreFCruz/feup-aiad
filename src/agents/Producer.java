@@ -34,7 +34,7 @@ public class Producer extends DFRegisterAgent {
         // Start with a month's worth of energy, so it can trade with brokers immediately
         this.getEnergyWallet().inject(energyProductionPerMonth);
 
-        addBehaviour(new ProducerListeningBehaviour(this, MessageTemplate.MatchPerformative(ACLMessage.CFP)));
+        addBehaviour(new ProducerListeningBehaviour(this));
         addBehaviour(new ProduceBehaviour(this));
     }
 
