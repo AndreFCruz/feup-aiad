@@ -21,14 +21,25 @@ public class EnergyContract implements Serializable {
     }
 
     /**
-     * Agent that sells energy.
+     * Energy wallet of the supplier (agent that sells energy).
      */
-    private GenericAgent energySupplier;
+    private Wallet supplierEnergyWallet;
 
     /**
-     * Agent that pays for the energy.
+     * Money wallet of the supplier.
      */
-    private GenericAgent energyClient;
+    private Wallet supplierMoneyWallet;
+
+
+    /**
+     * Energy wallet of the client (agent that buys energy).
+     */
+    private Wallet clientEnergyWallet;
+
+    /**
+     * Money wallet of the client (agent that buys energy).
+     */
+    private Wallet clientMoneyWallet;
 
     /**
      * Ticks (days) since the beginning of the contract.
@@ -44,10 +55,6 @@ public class EnergyContract implements Serializable {
      * Currency to be transferred every payment cycle, per energy unit.
      */
     private int energyCostPerUnit;
-
-    public GenericAgent getEnergySupplier() {
-        return energySupplier;
-    }
 
     public int getEnergyAmount() {
         return energyAmount;
@@ -70,7 +77,7 @@ public class EnergyContract implements Serializable {
     /**
      * The state of this EnergyContract.
      */
-    private ContractState state;
+    private ContractState state = ContractState.DRAFT;
 
     /**
      * Constructor for an energy contract.
@@ -84,8 +91,12 @@ public class EnergyContract implements Serializable {
      */
     public EnergyContract(GenericAgent energySupplier, GenericAgent energyClient,
                           int energyAmount, int energyCostPerUnit, int duration) {
-        this.energySupplier = energySupplier;
-        this.energyClient = energyClient;
+        this.supplierEnergyWallet = energySupplier.getEnergyWallet();
+        this.supplierMoneyWallet = energySupplier.getMoneyWallet();
+
+        this.clientEnergyWallet = energyClient.getEnergyWallet();
+        this.clientMoneyWallet = energyClient.getMoneyWallet();
+
         this.energyAmount = energyAmount;
         this.energyCostPerUnit = energyCostPerUnit;
         this.duration = duration;
@@ -93,7 +104,20 @@ public class EnergyContract implements Serializable {
         this.state = ContractState.SIGNED;
     }
 
-    private EnergyContract() {
+    private EnergyContract() {}
+
+    private void setEnergySupplier(GenericAgent supplier) {
+        if (this.state == ContractState.SIGNED)
+            throw new IllegalArgumentException("Changing supplier of already signed contract.");
+        this.supplierEnergyWallet = supplier.getEnergyWallet();
+        this.supplierMoneyWallet = supplier.getMoneyWallet();
+    }
+
+    private void setEnergyClient(GenericAgent client) {
+        if (this.state == ContractState.SIGNED)
+            throw new IllegalArgumentException("Changing client of already signed contract.");
+        this.clientEnergyWallet = client.getEnergyWallet();
+        this.clientMoneyWallet = client.getMoneyWallet();
     }
 
     /**
@@ -105,7 +129,7 @@ public class EnergyContract implements Serializable {
      */
     public static EnergyContract makeContractDraft(GenericAgent energyClient, int duration) {
         EnergyContract contract = new EnergyContract();
-        contract.energyClient = energyClient;
+        contract.setEnergyClient(energyClient);
         contract.duration = duration;
 
         contract.state = ContractState.DRAFT;
@@ -144,7 +168,7 @@ public class EnergyContract implements Serializable {
     public EnergyContract makeContractProposal(GenericAgent supplier, int energyAmount, int energyCostPerUnit) {
         if (this.state == ContractState.SIGNED)
             throw new IllegalArgumentException("Making contract proposal from already signed contract.");
-        this.energySupplier = supplier;
+        this.setEnergySupplier(supplier);
         this.energyAmount = energyAmount;
         this.energyCostPerUnit = energyCostPerUnit;
         this.state = ContractState.PROPOSAL;
@@ -162,7 +186,7 @@ public class EnergyContract implements Serializable {
      * Client signs contract proposal.
      */
     public void signContract(GenericAgent agent) {
-        if (agent != energyClient)
+        if (agent.getMoneyWallet() != clientMoneyWallet)
             throw new IllegalArgumentException("Signing agent was not the client.");
         this.state = ContractState.SIGNED;
     }
@@ -181,8 +205,8 @@ public class EnergyContract implements Serializable {
         // Pay day
         if (ticks % paymentCycle == 0) {
             int totalEnergyCost = energyCostPerUnit * energyAmount;
-            energySupplier.getEnergyWallet().withdraw(energyAmount, energyClient.getEnergyWallet());
-            energyClient.getMoneyWallet().withdraw(totalEnergyCost, energySupplier.getMoneyWallet());
+            supplierEnergyWallet.withdraw(energyAmount, clientEnergyWallet);
+            clientMoneyWallet.withdraw(totalEnergyCost, supplierMoneyWallet);
         }
 
         // Ticks are updated at the end of each step, as such,

@@ -23,20 +23,18 @@ public class Wallet implements Serializable {
         CURRENCY, ENERGY
     }
 
-    private GenericAgent owner;
     private float balance;
     private List<Transaction> transactions;
     private WalletType walletType;
 
-    public Wallet(GenericAgent owner, WalletType walletType, float balance) {
-        this.owner = owner;
+    public Wallet(WalletType walletType, float balance) {
         this.walletType = walletType;
         this.balance = balance;
         this.transactions = new ArrayList<>();
     }
 
-    public Wallet(GenericAgent owner, WalletType walletType) {
-        this(owner, walletType, 0);
+    public Wallet(WalletType walletType) {
+        this(walletType, 0);
     }
 
     public float getBalance() {

@@ -35,8 +35,8 @@ public abstract class GenericAgent extends Agent implements Drawable, Serializab
         this.graphicSettings = graphicSettings;
         this.contacts = new ArrayList<>();
 
-        this.moneyWallet = new Wallet(this, Wallet.WalletType.CURRENCY);
-        this.energyWallet = new Wallet(this, Wallet.WalletType.ENERGY);
+        this.moneyWallet = new Wallet(Wallet.WalletType.CURRENCY);
+        this.energyWallet = new Wallet(Wallet.WalletType.ENERGY);
     }
 
     @Override
