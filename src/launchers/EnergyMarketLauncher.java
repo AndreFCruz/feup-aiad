@@ -11,6 +11,9 @@ import jade.wrapper.StaleProxyException;
 import sajas.core.Runtime;
 import sajas.sim.repast3.Repast3Launcher;
 import sajas.wrapper.ContainerController;
+import uchicago.src.sim.analysis.OpenSequenceGraph;
+import uchicago.src.sim.analysis.Sequence;
+import uchicago.src.sim.engine.Schedule;
 import uchicago.src.sim.engine.SimInit;
 import uchicago.src.sim.gui.DisplayConstants;
 import uchicago.src.sim.gui.DisplaySurface;
@@ -34,6 +37,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     private static final Color PRODUCER_COLOR = Color.GREEN;
     private static final Color BROKER_COLOR = Color.YELLOW;
     private static final Color CONSUMER_COLOR = Color.RED;
+    private OpenSequenceGraph energyGraph = null;
 
     // Logic variables
     private static final int DELAY_SIMULATION = 1000;
@@ -104,6 +108,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         super.begin();
     }
 
+
     private void modelConstructor() {
         world = new Object2DGrid(worldWidth, worldHeight);
 
@@ -128,11 +133,40 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 
         displaySurface.display();
 
+        energyPlotBuild();
+
+    }
+
+    private void energyPlotBuild() {
+        if (energyGraph != null)
+            energyGraph.dispose();
+
+        energyGraph = new OpenSequenceGraph("Sum of energies", this);
+        energyGraph.setAxisTitles("time", "energy");
+
+        energyGraph.addSequence("Energy Traded Brokers-Producers", new Sequence() {
+
+            @Override
+            public double getSValue() {
+                double energy = 0f;
+
+                for (EnergyContract ec : energyContracts){
+                    energy += ec.getEnergyAmountPerCycle();
+
+                }
+
+                return energy;
+            }
+
+        });
+
+        energyGraph.display();
     }
 
     private void scheduleConstructor() {
         getSchedule().scheduleActionAtInterval(1, this, "simulationStep");
 //        getSchedule().scheduleActionAtInterval(1, this, "simulationDelay", ScheduleBase.LAST);
+        getSchedule().scheduleActionAtInterval(1, energyGraph, "step", Schedule.LAST);
 
     }
 

@@ -20,6 +20,10 @@ public class EnergyContract {
      */
     private int ticks = 0;
 
+    public int getEnergyAmountPerCycle() {
+        return energyAmountPerCycle;
+    }
+
     /**
      * Total energy to be transferred every payment cycle.
      */
