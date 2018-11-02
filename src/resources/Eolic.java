@@ -5,4 +5,9 @@ public class Eolic implements EnergySource {
     public float getCostPerUnit() {
         return 9f;
     }
+
+    @Override
+    public boolean isRenewable() {
+        return true;
+    }
 }

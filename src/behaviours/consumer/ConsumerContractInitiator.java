@@ -33,7 +33,7 @@ public class ConsumerContractInitiator extends FIPAContractNetInitiator {
         for (Broker b : orderedListOfPreferences) {
             int contractCost = b.getEnergyUnitSellPrice() * c.getEnergyConsumptionPerMonth();
 
-            if (b.getAvailableEnergy() >= c.getEnergyConsumptionPerMonth() && contractCost <= consumerCash) {
+            if (b.getAvailableMonthlyEnergyQuota() >= c.getEnergyConsumptionPerMonth() && contractCost <= consumerCash) {
                 contactedAtLeastOne = true;
                 cfp.addReceiver(b.getAID());
                 consumerCash -= contractCost;

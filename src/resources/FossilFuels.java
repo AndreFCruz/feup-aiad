@@ -8,4 +8,9 @@ public class FossilFuels implements EnergySource {
     public float getCostPerUnit() {
         return 11f;
     }
+
+    @Override
+    public boolean isRenewable() {
+        return false;
+    }
 }

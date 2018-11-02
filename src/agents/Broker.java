@@ -6,18 +6,23 @@ import sajas.core.AID;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import launchers.EnergyMarketLauncher;
 import utils.AgentType;
+import utils.EnergyContract;
+import utils.EnergyContractProposal;
 import utils.GraphicSettings;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * The Broker class represents the middleman between the energy suppliers and the final consumers.
  */
 public class Broker extends DFRegisterAgent {
 
-    private HashMap<AID, Producer> producersInContractWith = new HashMap<>();
+    private List<EnergyContract> producerContracts = new ArrayList<>();
+
+    private List<EnergyContract> consumerContracts = new ArrayList<>();
 
     private static final int TIMEOUT = 2000;
 
@@ -26,6 +31,8 @@ public class Broker extends DFRegisterAgent {
     private boolean canStillBuyEnergy;
 
     private int duration = 365; // TODO: remove this at a further development stage
+
+    private int energyUnitSellPrice;
 
     public Broker(EnergyMarketLauncher model, GraphicSettings graphicSettings, int initialBudget) {
         super(model, graphicSettings, AgentType.BROKER);
@@ -58,6 +65,11 @@ public class Broker extends DFRegisterAgent {
         return producersNames;
     }
 
+    public void addEnergyContract(EnergyContract ec) {
+        producerContracts.add(ec);
+        updateEnergyUnitSellPrice();
+    }
+
     public EnergyMarketLauncher getWorldModel() {
         return worldModel;
     }
@@ -74,12 +86,36 @@ public class Broker extends DFRegisterAgent {
         return duration;
     }
 
-    public int getAvailableEnergy() {
-        return (int) energyWallet.getBalance(); // TODO bem grande
+    public int getAvailableMonthlyEnergyQuota() {
+        return 10000; // TODO return consumers' - producers' energy
+    }
+
+    /**
+     * Update the current energy
+     */
+    public void updateEnergyUnitSellPrice() {
+        float costPerUnit = (float) getMonthlyCosts() / getMonthlyEnergy();
+        this.energyUnitSellPrice = (int) (costPerUnit * 1.1f);
     }
 
     public int getEnergyUnitSellPrice() {
-        return (int) 100; // TODO bem grande
+        return energyUnitSellPrice;
+    }
+
+    public int getMonthlyCosts() {
+        return (int) producerContracts.stream().mapToDouble(
+                (EnergyContract c) -> c.getEnergyCostPerUnit() * c.getEnergyAmountPerMonth()
+        ).sum();
+    }
+
+    public int getMonthlyEnergy() {
+        return (int) producerContracts.stream().mapToDouble(EnergyContract::getEnergyAmountPerMonth).sum();
+    }
+
+    public int getMonthlyRenewableEnergy() {
+        return (int) producerContracts.stream()
+                .filter((EnergyContract ec) -> ((Producer) ec.getEnergySupplier()).getEnergySource().isRenewable())
+                .mapToDouble(EnergyContract::getEnergyAmountPerMonth).sum();
     }
 
 }

@@ -62,7 +62,8 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     private List<Broker> brokers;
     private List<Consumer> consumers;
 
-    private List<EnergyContract> energyContracts;
+    private List<EnergyContract> energyContractsBrokerProducer;
+    private List<EnergyContract> energyContractsConsumerBroker;
 
     private Map<AID, GenericAgent> agents;
 
@@ -110,7 +111,9 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         producers = new ArrayList<>();
         brokers = new ArrayList<>();
         consumers = new ArrayList<>();
-        energyContracts = new ArrayList<>();
+
+        energyContractsBrokerProducer = new ArrayList<>();
+        energyContractsConsumerBroker = new ArrayList<>();
     }
 
     private void displayConstructor() {
@@ -253,7 +256,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     }
 
     private void updateEnergyContracts() {
-        System.out.println("Currently with " + energyContracts.size() + " contracts.");
+        System.out.println("Currently with " + energyContractsBrokerProducer.size() + " contracts.");
 //        for (ListIterator<EnergyContractProposal> iter = energyContractProposals.listIterator(); iter.hasNext(); ) {
 //            EnergyContractProposal contract = iter.next();
 //            if (contract.hasEnded()) {
@@ -269,13 +272,15 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         return agents.get(agentAID);
     }
 
-    public void addContract(EnergyContractProposal contractProposal) {
-        GenericAgent supplier = getAgentByAID(contractProposal.getEnergySupplierAID());
-        GenericAgent client = getAgentByAID(contractProposal.getEnergyClientAID());
+    public void addBrokerProducerContract(EnergyContractProposal contractProposal) {
+        Producer supplier = (Producer) getAgentByAID(contractProposal.getEnergySupplierAID());
+        Broker client = (Broker) getAgentByAID(contractProposal.getEnergyClientAID());
 
         EnergyContract contract = new EnergyContract(contractProposal, supplier, client);
-        energyContracts.add(contract);
+        energyContractsBrokerProducer.add(contract);
         contract.step(); // first step, so first month's trades are promptly withdrawn
+
+        client.addEnergyContract(contract);
     }
 
     public List<Producer> getProducers() {

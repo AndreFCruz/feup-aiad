@@ -100,4 +100,24 @@ public class EnergyContract {
         throw new NotSerializableException();
     }
 
+    public GenericAgent getEnergySupplier() {
+        return energySupplier;
+    }
+
+    public GenericAgent getEnergyClient() {
+        return energyClient;
+    }
+
+    public int getEnergyAmountPerCycle() {
+        return energyAmountPerCycle;
+    }
+
+    public int getEnergyCostPerUnit() {
+        return energyCostPerUnit;
+    }
+
+    public float getEnergyAmountPerMonth() {
+        return energyAmountPerCycle * 30f / paymentCycle;
+    }
+
 }

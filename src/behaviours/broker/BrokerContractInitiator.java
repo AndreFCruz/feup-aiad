@@ -8,7 +8,6 @@ import jade.lang.acl.UnreadableException;
 import utils.EnergyContractProposal;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
@@ -88,8 +87,9 @@ public class BrokerContractInitiator extends FIPAContractNetInitiator {
                     EnergyContractProposal ec = (EnergyContractProposal) received.getContentObject();
                     ec.signContract(myAgent);
 
-                    // TODO EnergyMarket.addContract should fetch correct agents from AID, and step 1 step of the contract (to withdraw money from respective agents)
-                    ((Broker) myAgent).getWorldModel().addContract(ec);
+                    // TODO EnergyMarket.addBrokerProducerContract should fetch correct agents from AID, and step 1 step of the contract (to withdraw money from respective agents)
+
+                    ((Broker) myAgent).getWorldModel().addBrokerProducerContract(ec);
 
                     reply.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
                     acceptances.add(reply);
@@ -104,7 +104,6 @@ public class BrokerContractInitiator extends FIPAContractNetInitiator {
                 reply.setPerformative(ACLMessage.REJECT_PROPOSAL);
                 acceptances.add(reply);
             }
-
         }
 
     }

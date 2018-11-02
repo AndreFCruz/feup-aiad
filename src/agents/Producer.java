@@ -80,4 +80,8 @@ public class Producer extends DFRegisterAgent {
     public void setContract(EnergyContractProposal ec) {
         this.currentEnergyContractProposal = ec;
     }
+
+    public EnergySource getEnergySource() {
+        return this.energySource;
+    }
 }

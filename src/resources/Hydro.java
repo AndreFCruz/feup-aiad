@@ -5,4 +5,9 @@ public class Hydro implements EnergySource {
     public float getCostPerUnit() {
         return 8f;
     }
+
+    @Override
+    public boolean isRenewable() {
+        return true;
+    }
 }
