@@ -11,7 +11,6 @@ import jade.wrapper.StaleProxyException;
 import sajas.core.Runtime;
 import sajas.sim.repast3.Repast3Launcher;
 import sajas.wrapper.ContainerController;
-
 import uchicago.src.sim.engine.SimInit;
 import uchicago.src.sim.gui.DisplayConstants;
 import uchicago.src.sim.gui.DisplaySurface;
@@ -67,14 +66,6 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 
     private Map<AID, GenericAgent> agents;
 
-    public static void main(String[] args) {
-        boolean BATCH_MODE = false;
-
-        SimInit init = new SimInit();
-        init.setNumRuns(1); // works only in batch mode
-        init.loadModel(new EnergyMarketLauncher(), null, BATCH_MODE);
-    }
-
     public EnergyMarketLauncher() {
         rand = new Random();
 
@@ -82,6 +73,14 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         worldHeight = 40 * density;
         DisplayConstants.CELL_WIDTH = 1;
         DisplayConstants.CELL_HEIGHT = 1;
+    }
+
+    public static void main(String[] args) {
+        boolean BATCH_MODE = false;
+
+        SimInit init = new SimInit();
+        init.setNumRuns(1); // works only in batch mode
+        init.loadModel(new EnergyMarketLauncher(), null, BATCH_MODE);
     }
 
     public void setup() { // called after constructor
@@ -162,7 +161,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     private void launchAgents() throws StaleProxyException {
         launchProducers();
         launchBrokers();
-//        launchConsumers();
+        launchConsumers();
 
         setUpAgentsAIDMap();
     }
@@ -180,7 +179,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 
     private void launchProducers() throws StaleProxyException {
         for (int i = 0; i < NUM_PRODUCERS; ++i) {
-            GraphicSettings gs = makeGraphicsSettings(i, 1, PRODUCER_COLOR);
+            GraphicSettings gs = makeGraphicsSettings(NUM_PRODUCERS, i, 1, PRODUCER_COLOR);
 
             int energyLeft = TOTAL_ENERGY_PRODUCED_PER_MONTH - actualTotalEnergyProducedPerMonth;
             int monthlyEnergyQuota = (int) ((energyLeft / (NUM_PRODUCERS - i))
@@ -204,7 +203,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         ).sum();
 
         for (int i = 0; i < NUM_BROKERS; ++i) {
-            GraphicSettings gs = makeGraphicsSettings(i, 2, BROKER_COLOR);
+            GraphicSettings gs = makeGraphicsSettings(NUM_BROKERS, i, 2, BROKER_COLOR);
 
             int initialInvestment = (int) ((totalEneryCostPerMonth / NUM_BROKERS)
                     * (1. + (1. / NUM_BROKERS) * rand.nextFloat()));
@@ -221,7 +220,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         int totalEnergyConsumed = (int) (actualTotalEnergyProducedPerMonth * 0.90);
 
         for (int i = 0; i < NUM_CONSUMERS; i++) {
-            GraphicSettings gs = makeGraphicsSettings(i, 3, CONSUMER_COLOR);
+            GraphicSettings gs = makeGraphicsSettings(NUM_CONSUMERS, i, 3, CONSUMER_COLOR);
 
             int agentConsumption = (int) ((totalEnergyConsumed / (NUM_CONSUMERS - i)) * (0.5 + rand.nextFloat()));
             if (agentConsumption > totalEnergyConsumed)
@@ -235,8 +234,8 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         }
     }
 
-    private GraphicSettings makeGraphicsSettings(int idx, int yCoords, Color color) {
-        int x = (worldWidth / (NUM_PRODUCERS + 1)) * (idx + 1);
+    private GraphicSettings makeGraphicsSettings(int total, int idx, int yCoords, Color color) {
+        int x = (worldWidth / (total + 1)) * (idx + 1);
         int y = (int) ((yCoords * worldHeight) / 4 + 20 * (rand.nextFloat() - 0.5f));
         return new GraphicSettings(x, y, color);
     }
