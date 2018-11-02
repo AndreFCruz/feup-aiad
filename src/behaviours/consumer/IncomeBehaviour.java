@@ -23,7 +23,7 @@ public class IncomeBehaviour extends SimpleBehaviour {
     @Override
     public void action() {
         if (++monthDay == 30) {
-            myConsumer.getEnergyWallet().inject(this.income);
+            myConsumer.getMoneyWallet().inject(this.income);
             monthDay = 0;
         }
     }
