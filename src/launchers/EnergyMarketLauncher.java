@@ -3,7 +3,9 @@ package launchers;
 
 import agents.Broker;
 import agents.Consumer;
+import agents.GenericAgent;
 import agents.Producer;
+import jade.core.AID;
 import jade.core.ProfileImpl;
 import jade.wrapper.StaleProxyException;
 import sajas.core.Runtime;
@@ -15,12 +17,14 @@ import uchicago.src.sim.gui.DisplayConstants;
 import uchicago.src.sim.gui.DisplaySurface;
 import uchicago.src.sim.gui.Object2DDisplay;
 import uchicago.src.sim.space.Object2DGrid;
+import utils.EnergyContract;
 import utils.EnergyContractProposal;
 import utils.GraphicSettings;
 
 import java.awt.*;
-import java.util.ArrayList;
-import java.util.Random;
+import java.util.*;
+import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * This class represents the world model and is the starting point of the simulation.
@@ -55,11 +59,13 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     private int worldWidth;
     private int worldHeight;
 
-    private ArrayList<Producer> producers;
-    private ArrayList<Broker> brokers;
-    private ArrayList<Consumer> consumers;
+    private List<Producer> producers;
+    private List<Broker> brokers;
+    private List<Consumer> consumers;
 
-    private ArrayList<EnergyContractProposal> energyContractProposals;
+    private List<EnergyContract> energyContracts;
+
+    private Map<AID, GenericAgent> agents;
 
     public static void main(String[] args) {
         boolean BATCH_MODE = false;
@@ -105,7 +111,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         producers = new ArrayList<>();
         brokers = new ArrayList<>();
         consumers = new ArrayList<>();
-        energyContractProposals = new ArrayList<>();
+        energyContracts = new ArrayList<>();
     }
 
     private void displayConstructor() {
@@ -157,6 +163,19 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         launchProducers();
         launchBrokers();
 //        launchConsumers();
+
+        setUpAgentsAIDMap();
+    }
+
+    private void setUpAgentsAIDMap() {
+        agents = new HashMap<>();
+
+        Stream<GenericAgent> stream = Stream.concat(producers.stream(), brokers.stream());
+        Stream.concat(stream, consumers.stream());
+
+        stream.forEach(
+                (GenericAgent a) -> agents.put(a.getAID(), a)
+        );
     }
 
     private void launchProducers() throws StaleProxyException {
@@ -230,7 +249,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     }
 
     private void updateEnergyContracts() {
-        System.out.println("Currently with " + energyContractProposals.size() + " contracts.");
+        System.out.println("Currently with " + energyContracts.size() + " contracts.");
 //        for (ListIterator<EnergyContractProposal> iter = energyContractProposals.listIterator(); iter.hasNext(); ) {
 //            EnergyContractProposal contract = iter.next();
 //            if (contract.hasEnded()) {
@@ -242,23 +261,28 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 //        }
     }
 
-    public void addContract(EnergyContractProposal ec) {
-        energyContractProposals.add(ec);
+    private GenericAgent getAgentByAID(AID agentAID) {
+        return agents.get(agentAID);
     }
 
-    public ArrayList<EnergyContractProposal> getEnergyContractProposals() {
-        return energyContractProposals;
+    public void addContract(EnergyContractProposal contractProposal) {
+        GenericAgent supplier = getAgentByAID(contractProposal.getEnergySupplierAID());
+        GenericAgent client = getAgentByAID(contractProposal.getEnergyClientAID());
+
+        EnergyContract contract = new EnergyContract(contractProposal, supplier, client);
+        energyContracts.add(contract);
+        contract.step(); // first step, so first month's trades are promptly withdrawn
     }
 
-    public ArrayList<Producer> getProducers() {
+    public List<Producer> getProducers() {
         return producers;
     }
 
-    public ArrayList<Broker> getBrokers() {
+    public List<Broker> getBrokers() {
         return brokers;
     }
 
-    public ArrayList<Consumer> getConsumers() {
+    public List<Consumer> getConsumers() {
         return consumers;
     }
 

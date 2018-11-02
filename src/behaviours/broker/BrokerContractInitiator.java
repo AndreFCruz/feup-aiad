@@ -124,7 +124,7 @@ public class BrokerContractInitiator extends FIPAContractNetInitiator {
      */
     private List<Producer> getOrderedListOfPreferences() {
         // getting all the agents
-        ArrayList<Producer> result = ((Broker) myAgent).getWorldModel().getProducers();
+        List<Producer> result = ((Broker) myAgent).getWorldModel().getProducers();
 
         // this sorting can lead to a lot of agents trying to get the same producer
 //      result.sort(Comparator.comparingInt(Producer::getEnergyUnitSellPrice).reversed());
