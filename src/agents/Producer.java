@@ -21,6 +21,18 @@ public class Producer extends DFRegisterAgent {
 
     private EnergyContract currentEnergyContract = null;
 
+    private Producer(EnergyMarketLauncher model, GraphicSettings graphicSettings, EnergySource energySource, int energyProductionPerMonth) {
+        super(model, graphicSettings, AgentType.PRODUCER);
+        this.energySource = energySource;
+        this.energyProductionPerMonth = energyProductionPerMonth;
+        Random rand = new Random();
+
+        // profit margin of 5% to 20%
+        this.sellPricePerUnit = (int) (this.energySource.getCostPerUnit() * (1f + (0.05f + 0.15f * rand.nextFloat())));
+
+        addBehaviour(new ProducerListeningBehaviour(this, MessageTemplate.MatchPerformative(ACLMessage.CFP)));
+    }
+
     public static Producer createProducer(EnergyMarketLauncher model, GraphicSettings graphicSettings, int energyUnits) {
         Random random = new Random();
         float probability = random.nextFloat();
@@ -36,18 +48,6 @@ public class Producer extends DFRegisterAgent {
             energySource = new FossilFuels();
 
         return new Producer(model, graphicSettings, energySource, energyUnits);
-    }
-
-    public Producer(EnergyMarketLauncher model, GraphicSettings graphicSettings, EnergySource energySource, int energyProductionPerMonth) {
-        super(model, graphicSettings, AgentType.PRODUCER);
-        this.energySource = energySource;
-        this.energyProductionPerMonth = energyProductionPerMonth;
-        Random rand = new Random();
-
-        // profit margin of 5% to 20%
-        this.sellPricePerUnit = (int) (this.energySource.getCostPerUnit() * (1f + (0.05f + 0.15f * rand.nextFloat())));
-
-        addBehaviour(new ProducerListeningBehaviour(this, MessageTemplate.MatchPerformative(ACLMessage.CFP)));
     }
 
     @Override
@@ -69,7 +69,7 @@ public class Producer extends DFRegisterAgent {
     }
 
     public boolean hasContract() {
-        return currentEnergyContract == null;
+        return currentEnergyContract != null;
     }
 
     public void setContract(EnergyContract ec) {

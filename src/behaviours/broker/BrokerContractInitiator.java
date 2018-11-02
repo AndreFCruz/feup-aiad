@@ -5,14 +5,12 @@ import agents.Producer;
 import behaviours.FIPAContractNetInitiator;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
-import launchers.EnergyMarketLauncher;
-import sajas.core.AID;
 import utils.EnergyContract;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
+import java.util.List;
 import java.util.Vector;
 
 /**
@@ -36,7 +34,7 @@ public class BrokerContractInitiator extends FIPAContractNetInitiator {
      */
     @Override
     protected Vector prepareCfps(ACLMessage cfp) {
-        ArrayList<Producer> orderedListOfPreferences = getOrderedListOfPreferences();
+        List<Producer> orderedListOfPreferences = getOrderedListOfPreferences();
 
         Vector v = new Vector();
 
@@ -81,29 +79,31 @@ public class BrokerContractInitiator extends FIPAContractNetInitiator {
      */
     @Override
     protected void handleAllResponses(Vector responses, Vector acceptances) {
-
         for (Object response : responses) {
-            ACLMessage msg = ((ACLMessage) response).createReply();
-            if (msg.getPerformative() == ACLMessage.PROPOSE) {   // performative of the answer
+            ACLMessage received = ((ACLMessage) response);
+            ACLMessage reply = ((ACLMessage) response).createReply();
+
+            if (received.getPerformative() == ACLMessage.PROPOSE) {
                 try {
-                    EnergyContract ec = (EnergyContract) msg.getContentObject();
+                    EnergyContract ec = (EnergyContract) received.getContentObject();
                     // TODO: check if this makes sense, the transaction of energy for money...
                     // adding contract to the world model
                     ((Broker) myAgent).getWorldModel().addContract(ec);
                     ec.step(); // think this is needed to avoid race conditions between choosing next producers
                     // and world step
-                    msg.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
-                    acceptances.add(msg);
+
+                    reply.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
+                    acceptances.add(reply);
 
                 } catch (UnreadableException e) {
                     e.printStackTrace();
 
-                    msg.setPerformative(ACLMessage.REJECT_PROPOSAL);
-                    acceptances.add(msg);
+                    reply.setPerformative(ACLMessage.REJECT_PROPOSAL);
+                    acceptances.add(reply);
                 }
             } else {
-                msg.setPerformative(ACLMessage.REJECT_PROPOSAL);
-                acceptances.add(msg);
+                reply.setPerformative(ACLMessage.REJECT_PROPOSAL);
+                acceptances.add(reply);
             }
 
         }
@@ -123,7 +123,7 @@ public class BrokerContractInitiator extends FIPAContractNetInitiator {
     /**
      * @return An ordered ArrayList of the preferred order to contact the Producers.
      */
-    private ArrayList<Producer> getOrderedListOfPreferences() {
+    private List<Producer> getOrderedListOfPreferences() {
         // getting all the agents
         ArrayList<Producer> result = ((Broker) myAgent).getWorldModel().getProducers();
 
