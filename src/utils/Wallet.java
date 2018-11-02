@@ -46,7 +46,7 @@ public class Wallet implements Serializable {
     }
 
     public void withdraw(float amount, Wallet target) {
-        if (amount < 0 || target.walletType != this.walletType) {
+        if (target.walletType != this.walletType) {
             throw new IllegalArgumentException();
         }
         this.balance -= amount;
@@ -58,7 +58,7 @@ public class Wallet implements Serializable {
     }
 
     public void deposit(float amount, Wallet target) {
-        if (amount < 0 || target.walletType != this.walletType) {
+        if (target.walletType != this.walletType) {
             throw new IllegalArgumentException();
         }
         this.balance += amount;

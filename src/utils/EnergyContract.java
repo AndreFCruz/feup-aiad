@@ -42,8 +42,8 @@ public class EnergyContract {
 
     public EnergyContract(EnergyContractProposal proposal, GenericAgent supplier, GenericAgent client) {
         if (! (proposal.isSigned()
-                && supplier.getAID() == proposal.getEnergySupplierAID()
-                && client.getAID() == proposal.getEnergyClientAID() ) ) {
+                && supplier.getAID().equals(proposal.getEnergySupplierAID())
+                && client.getAID().equals(proposal.getEnergyClientAID())) ) {
             throw new IllegalArgumentException();
         }
 
