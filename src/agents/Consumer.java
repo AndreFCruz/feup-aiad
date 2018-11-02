@@ -2,6 +2,7 @@ package agents;
 
 import behaviours.consumer.ConsumeBehaviour;
 import behaviours.consumer.ConsumerBusinessStarter;
+import behaviours.consumer.IncomeBehaviour;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import launchers.EnergyMarketLauncher;
 import utils.AgentType;
@@ -17,7 +18,7 @@ import java.util.List;
  */
 public class Consumer extends DFSearchAgent {
 
-    private static final int TIMEOUT = 3000;
+    private static final int TIMEOUT = 2000;
 
     private int energyConsumptionPerMonth;
 
@@ -47,7 +48,8 @@ public class Consumer extends DFSearchAgent {
     protected void setup() {
         super.setup();
         addBehaviour(new ConsumerBusinessStarter(this, TIMEOUT));
-        addBehaviour(new ConsumeBehaviour(this));
+        addBehaviour(new IncomeBehaviour(this, 1200)); // TODO change hardcoded monthly income
+         addBehaviour(new ConsumeBehaviour(this));
         System.out.println("Consumer " + this.getLocalName() + " was created.");
     }
 
