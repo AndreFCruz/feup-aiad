@@ -90,6 +90,7 @@ public class BrokerContractInitiator extends FIPAContractNetInitiator {
 
                     // TODO EnergyMarket.addContract should fetch correct agents from AID, and step 1 step of the contract (to withdraw money from respective agents)
                     ((Broker) myAgent).getWorldModel().addContract(ec);
+                    // ((Broker) myAgent).addProducer(received.getSender()); // todo now
 
                     reply.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
                     acceptances.add(reply);

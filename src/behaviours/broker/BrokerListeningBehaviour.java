@@ -23,6 +23,15 @@ public class BrokerListeningBehaviour extends FIPAContractNetResponder {
         try {
             EnergyContractProposal ec = (EnergyContractProposal) cfp.getContentObject();
 
+            if (((Broker) myAgent).getAvailableEnergy() > ec.getEnergyAmountPerCycle()) {
+                ec = ec.makeContractProposal(
+                        myAgent.getAID(),
+                        ec.getEnergyAmountPerCycle(),
+                        ((Broker) myAgent).getEnergyUnitSellPrice()
+                );
+            }
+
+
         } catch (UnreadableException e) {
             e.printStackTrace();
 

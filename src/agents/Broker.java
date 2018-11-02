@@ -74,10 +74,12 @@ public class Broker extends DFRegisterAgent {
         return duration;
     }
 
+    // TODO getMonthlyEnergy
     public int getAvailableEnergy() {
         return (int) energyWallet.getBalance(); // TODO bem grande
     }
 
+    // TODO: Random de 10 a 20 % do que ele paga
     public int getEnergyUnitSellPrice() {
         return (int) 100; // TODO bem grande
     }
