@@ -6,7 +6,7 @@ import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
 import jade.lang.acl.UnreadableException;
 import sajas.core.Agent;
-import utils.EnergyContract;
+import utils.EnergyContractProposal;
 
 import java.io.IOException;
 
@@ -28,9 +28,9 @@ public class ProducerListeningBehaviour extends FIPAContractNetResponder {
         // If Producer (self) has no contract assigned, respond with proposal
         reply.setPerformative(ACLMessage.PROPOSE);
         try {
-            EnergyContract ec = (EnergyContract) cfp.getContentObject();
-            ec.makeContractProposal(
-                    (Producer) myAgent,
+            EnergyContractProposal ec = (EnergyContractProposal) cfp.getContentObject();
+            ec = ec.makeContractProposal(
+                    myAgent.getAID(),
                     ((Producer) myAgent).getEnergyProductionPerMonth(),
                     ((Producer) myAgent).getEnergyUnitSellPrice()
             );

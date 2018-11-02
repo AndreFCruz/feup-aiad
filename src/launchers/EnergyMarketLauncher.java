@@ -10,18 +10,16 @@ import sajas.core.Runtime;
 import sajas.sim.repast3.Repast3Launcher;
 import sajas.wrapper.ContainerController;
 
-import uchicago.src.sim.engine.ScheduleBase;
 import uchicago.src.sim.engine.SimInit;
 import uchicago.src.sim.gui.DisplayConstants;
 import uchicago.src.sim.gui.DisplaySurface;
 import uchicago.src.sim.gui.Object2DDisplay;
 import uchicago.src.sim.space.Object2DGrid;
-import utils.EnergyContract;
+import utils.EnergyContractProposal;
 import utils.GraphicSettings;
 
 import java.awt.*;
 import java.util.ArrayList;
-import java.util.ListIterator;
 import java.util.Random;
 
 /**
@@ -61,7 +59,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     private ArrayList<Broker> brokers;
     private ArrayList<Consumer> consumers;
 
-    private ArrayList<EnergyContract> energyContracts;
+    private ArrayList<EnergyContractProposal> energyContractProposals;
 
     public static void main(String[] args) {
         boolean BATCH_MODE = false;
@@ -107,7 +105,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         producers = new ArrayList<>();
         brokers = new ArrayList<>();
         consumers = new ArrayList<>();
-        energyContracts = new ArrayList<>();
+        energyContractProposals = new ArrayList<>();
     }
 
     private void displayConstructor() {
@@ -232,9 +230,9 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     }
 
     private void updateEnergyContracts() {
-        System.out.println("Currently with " + energyContracts.size() + " contracts.");
-//        for (ListIterator<EnergyContract> iter = energyContracts.listIterator(); iter.hasNext(); ) {
-//            EnergyContract contract = iter.next();
+        System.out.println("Currently with " + energyContractProposals.size() + " contracts.");
+//        for (ListIterator<EnergyContractProposal> iter = energyContractProposals.listIterator(); iter.hasNext(); ) {
+//            EnergyContractProposal contract = iter.next();
 //            if (contract.hasEnded()) {
 //                iter.remove();
 //                // TODO inform Broker and Producer that contract ended
@@ -244,12 +242,12 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 //        }
     }
 
-    public void addContract(EnergyContract ec) {
-        energyContracts.add(ec);
+    public void addContract(EnergyContractProposal ec) {
+        energyContractProposals.add(ec);
     }
 
-    public ArrayList<EnergyContract> getEnergyContracts() {
-        return energyContracts;
+    public ArrayList<EnergyContractProposal> getEnergyContractProposals() {
+        return energyContractProposals;
     }
 
     public ArrayList<Producer> getProducers() {

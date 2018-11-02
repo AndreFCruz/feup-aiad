@@ -5,7 +5,7 @@ import agents.Producer;
 import behaviours.FIPAContractNetInitiator;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
-import utils.EnergyContract;
+import utils.EnergyContractProposal;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -53,7 +53,7 @@ public class BrokerContractInitiator extends FIPAContractNetInitiator {
 
         if (contactedAtLeastOne) {
             // if at least one producer can supply this broker, create a draft contract
-            EnergyContract ec = EnergyContract.makeContractDraft((Broker) myAgent, ((Broker) myAgent).getDuration());
+            EnergyContractProposal ec = EnergyContractProposal.makeContractDraft(myAgent.getAID(), ((Broker) myAgent).getDuration());
             try {
                 cfp.setContentObject(ec);
             } catch (IOException e) {
@@ -85,12 +85,11 @@ public class BrokerContractInitiator extends FIPAContractNetInitiator {
 
             if (received.getPerformative() == ACLMessage.PROPOSE) {
                 try {
-                    EnergyContract ec = (EnergyContract) received.getContentObject();
-                    // TODO: check if this makes sense, the transaction of energy for money...
-                    // adding contract to the world model
+                    EnergyContractProposal ec = (EnergyContractProposal) received.getContentObject();
+                    ec.signContract(myAgent);
+
+                    // TODO EnergyMarket.addContract should fetch correct agents from AID, and step 1 step of the contract (to withdraw money from respective agents)
                     ((Broker) myAgent).getWorldModel().addContract(ec);
-                    ec.step(); // think this is needed to avoid race conditions between choosing next producers
-                    // and world step
 
                     reply.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
                     acceptances.add(reply);

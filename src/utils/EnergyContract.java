@@ -1,45 +1,19 @@
 package utils;
 
 import agents.GenericAgent;
+import java.io.NotSerializableException;
 
-import java.io.Serializable;
-
-/**
- * TODO Can this be implemented by extending Behaviour?
- * behaviour.action() -> step()
- * behaviour.done() -> hasEnded()
- * <p>
- * Actually, this can be a CompositeBehaviour, in which each part of the
- * contract (monetary and energy) is itself a Contract Behaviour (allows
- * for delivering energy daily with monthly payments).
- */
-public class EnergyContract implements Serializable {
-    private enum ContractState {
-        DRAFT,      // No price defined
-        PROPOSAL,   // Features complete contract information, but hasn't yet been accepted
-        SIGNED      // Contract has been accepted by both parts
-    }
+public class EnergyContract {
 
     /**
-     * Energy wallet of the supplier (agent that sells energy).
+     * Agent that supplies/sells energy.
      */
-    private Wallet supplierEnergyWallet;
+    private GenericAgent energySupplier;
 
     /**
-     * Money wallet of the supplier.
+     * Agent that buys energy.
      */
-    private Wallet supplierMoneyWallet;
-
-
-    /**
-     * Energy wallet of the client (agent that buys energy).
-     */
-    private Wallet clientEnergyWallet;
-
-    /**
-     * Money wallet of the client (agent that buys energy).
-     */
-    private Wallet clientMoneyWallet;
+    private GenericAgent energyClient;
 
     /**
      * Ticks (days) since the beginning of the contract.
@@ -49,20 +23,12 @@ public class EnergyContract implements Serializable {
     /**
      * Total energy to be transferred every payment cycle.
      */
-    private int energyAmount;
+    private int energyAmountPerCycle;
 
     /**
      * Currency to be transferred every payment cycle, per energy unit.
      */
     private int energyCostPerUnit;
-
-    public int getEnergyAmount() {
-        return energyAmount;
-    }
-
-    public int getEnergyCostPerUnit() {
-        return energyCostPerUnit;
-    }
 
     /**
      * Length of the contract, in days (ticks).
@@ -74,106 +40,19 @@ public class EnergyContract implements Serializable {
      */
     private int paymentCycle = 30;
 
-    /**
-     * The state of this EnergyContract.
-     */
-    private ContractState state = ContractState.DRAFT;
-
-    /**
-     * Constructor for an energy contract.
-     * Supplier and Client agents are bound to this contract during its duration.
-     *
-     * @param energySupplier    The agent that supplies/sells energy.
-     * @param energyClient      The agent that buys energy.
-     * @param energyAmount      The amount of energy to be traded.
-     * @param energyCostPerUnit The amount of money to be paid.
-     * @param duration          The duration of the contract.
-     */
-    public EnergyContract(GenericAgent energySupplier, GenericAgent energyClient,
-                          int energyAmount, int energyCostPerUnit, int duration) {
-        this.supplierEnergyWallet = energySupplier.getEnergyWallet();
-        this.supplierMoneyWallet = energySupplier.getMoneyWallet();
-
-        this.clientEnergyWallet = energyClient.getEnergyWallet();
-        this.clientMoneyWallet = energyClient.getMoneyWallet();
-
-        this.energyAmount = energyAmount;
-        this.energyCostPerUnit = energyCostPerUnit;
-        this.duration = duration;
-
-        this.state = ContractState.SIGNED;
-    }
-
-    private EnergyContract() {
-    }
-
-    private void setEnergySupplier(GenericAgent supplier) {
-        if (this.state == ContractState.SIGNED)
-            throw new IllegalArgumentException("Changing supplier of already signed contract.");
-        this.supplierEnergyWallet = supplier.getEnergyWallet();
-        this.supplierMoneyWallet = supplier.getMoneyWallet();
-    }
-
-    private void setEnergyClient(GenericAgent client) {
-        if (this.state == ContractState.SIGNED)
-            throw new IllegalArgumentException("Changing client of already signed contract.");
-        this.clientEnergyWallet = client.getEnergyWallet();
-        this.clientMoneyWallet = client.getMoneyWallet();
-    }
-
-    /**
-     * Creates a contract draft, sent from the Client to the Producer.
-     *
-     * @param energyClient The Energy Client.
-     * @param duration     The duration of the contract.
-     * @return
-     */
-    public static EnergyContract makeContractDraft(GenericAgent energyClient, int duration) {
-        EnergyContract contract = new EnergyContract();
-        contract.setEnergyClient(energyClient);
-        contract.duration = duration;
-
-        contract.state = ContractState.DRAFT;
-        return contract;
-    }
-
-    /**
-     * Updates the amount to be transactioned by this contract.
-     *
-     * @param energyAmount the new energy amount to be traded every cycle.
-     */
-    @Deprecated
-    public void updateEnergyAmount(int energyAmount) {
-        if (this.state == ContractState.SIGNED) {
-            System.err.println("Can't update energy amount of already signed contract.");
-            return;
+    public EnergyContract(EnergyContractProposal proposal, GenericAgent supplier, GenericAgent client) {
+        if (! (proposal.isSigned()
+                && supplier.getAID() == proposal.getEnergySupplierAID()
+                && client.getAID() == proposal.getEnergyClientAID() ) ) {
+            throw new IllegalArgumentException();
         }
-        this.energyAmount = energyAmount;
-    }
 
-    /**
-     * Updates the total energy cost to be paid per cycle.
-     * Marks this contract as a proposal (no longer draft).
-     *
-     * @param energyCost new total energy cost per payment cycle.
-     */
-    @Deprecated
-    public void updateEnergyCostPerUnit(int energyCost) {
-        if (this.state == ContractState.SIGNED) {
-            System.err.println("Can't update energy cost of already signed contract.");
-            return;
-        }
-        this.energyCostPerUnit = energyCost;
-    }
-
-    public EnergyContract makeContractProposal(GenericAgent supplier, int energyAmount, int energyCostPerUnit) {
-        if (this.state == ContractState.SIGNED)
-            throw new IllegalArgumentException("Making contract proposal from already signed contract.");
-        this.setEnergySupplier(supplier);
-        this.energyAmount = energyAmount;
-        this.energyCostPerUnit = energyCostPerUnit;
-        this.state = ContractState.PROPOSAL;
-        return this;
+        this.energySupplier = supplier;
+        this.energyClient = client;
+        this.energyAmountPerCycle = proposal.getEnergyAmountPerCycle();
+        this.energyCostPerUnit = proposal.getEnergyCostPerUnit();
+        this.duration = proposal.getDuration();
+        this.paymentCycle = proposal.getPaymentCycle();
     }
 
     /**
@@ -184,35 +63,41 @@ public class EnergyContract implements Serializable {
     }
 
     /**
-     * Client signs contract proposal.
-     */
-    public void signContract(GenericAgent agent) {
-        if (agent.getMoneyWallet() != clientMoneyWallet)
-            throw new IllegalArgumentException("Signing agent was not the client.");
-        this.state = ContractState.SIGNED;
-    }
-
-    public boolean isSigned() {
-        return this.state == ContractState.SIGNED;
-    }
-
-    /**
      * Steps this contract, meaning one day (tick) has passed.
      */
     public void step() {
-        if (this.hasEnded() || this.state != ContractState.SIGNED)
+        if (this.hasEnded()) {
+            // TODO Inform client and supplier of finished contract.
             return;
+        }
 
         // Pay day
         if (ticks % paymentCycle == 0) {
-            int totalEnergyCost = energyCostPerUnit * energyAmount;
-            supplierEnergyWallet.withdraw(energyAmount, clientEnergyWallet);
-            clientMoneyWallet.withdraw(totalEnergyCost, supplierMoneyWallet);
+            int totalEnergyCost = energyCostPerUnit * energyAmountPerCycle;
+            energySupplier.getEnergyWallet().withdraw(energyAmountPerCycle, energyClient.getEnergyWallet());
+            energyClient.getMoneyWallet().withdraw(totalEnergyCost, energySupplier.getMoneyWallet());
         }
 
         // Ticks are updated at the end of each step, as such,
         // contracts are paid at the beginning of each payment cycle.
         this.ticks += 1;
+    }
+
+
+    /**
+     * Class is not serializable.
+     * @throws NotSerializableException
+     */
+    private void writeObject(java.io.ObjectOutputStream stream) throws NotSerializableException {
+        throw new NotSerializableException();
+    }
+
+    /**
+     * Class is not serializable.
+     * @throws NotSerializableException
+     */
+    private void readObject(java.io.ObjectInputStream stream) throws NotSerializableException {
+        throw new NotSerializableException();
     }
 
 }

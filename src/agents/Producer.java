@@ -6,7 +6,7 @@ import jade.lang.acl.MessageTemplate;
 import launchers.EnergyMarketLauncher;
 import resources.*;
 import utils.AgentType;
-import utils.EnergyContract;
+import utils.EnergyContractProposal;
 import utils.GraphicSettings;
 
 import java.util.Random;
@@ -19,7 +19,7 @@ public class Producer extends DFRegisterAgent {
     private int energyProductionPerMonth;
 //    private int unallocatedEnergyProductionPerMonth; // For when a producer may supply multiple brokers
 
-    private EnergyContract currentEnergyContract = null;
+    private EnergyContractProposal currentEnergyContractProposal = null;
 
     private Producer(EnergyMarketLauncher model, GraphicSettings graphicSettings, EnergySource energySource, int energyProductionPerMonth) {
         super(model, graphicSettings, AgentType.PRODUCER);
@@ -69,10 +69,10 @@ public class Producer extends DFRegisterAgent {
     }
 
     public boolean hasContract() {
-        return currentEnergyContract != null;
+        return currentEnergyContractProposal != null;
     }
 
-    public void setContract(EnergyContract ec) {
-        this.currentEnergyContract = ec;
+    public void setContract(EnergyContractProposal ec) {
+        this.currentEnergyContractProposal = ec;
     }
 }
