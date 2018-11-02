@@ -1,5 +1,6 @@
 package agents;
 
+import behaviours.producer.ProduceBehaviour;
 import behaviours.producer.ProducerListeningBehaviour;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.MessageTemplate;
@@ -30,7 +31,11 @@ public class Producer extends DFRegisterAgent {
         // profit margin of 5% to 20%
         this.sellPricePerUnit = (int) (this.energySource.getCostPerUnit() * (1f + (0.05f + 0.15f * rand.nextFloat())));
 
+        // Start with a month's worth of energy, so it can trade with brokers immediately
+        this.getEnergyWallet().inject(energyProductionPerMonth);
+
         addBehaviour(new ProducerListeningBehaviour(this, MessageTemplate.MatchPerformative(ACLMessage.CFP)));
+        addBehaviour(new ProduceBehaviour(this));
     }
 
     public static Producer createProducer(EnergyMarketLauncher model, GraphicSettings graphicSettings, int energyUnits) {

@@ -182,7 +182,11 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         for (int i = 0; i < NUM_PRODUCERS; ++i) {
             GraphicSettings gs = makeGraphicsSettings(i, 1, PRODUCER_COLOR);
 
-            int monthlyEnergyQuota = (int) ((TOTAL_ENERGY_PRODUCED_PER_MONTH / NUM_PRODUCERS) * (1. + rand.nextGaussian()));
+            int energyLeft = TOTAL_ENERGY_PRODUCED_PER_MONTH - actualTotalEnergyProducedPerMonth;
+            int monthlyEnergyQuota = (int) ((energyLeft / (NUM_PRODUCERS - i))
+                    * (0.5 + rand.nextFloat()));
+            if (monthlyEnergyQuota > (TOTAL_ENERGY_PRODUCED_PER_MONTH - actualTotalEnergyProducedPerMonth))
+                monthlyEnergyQuota = TOTAL_ENERGY_PRODUCED_PER_MONTH - actualTotalEnergyProducedPerMonth;
             actualTotalEnergyProducedPerMonth += monthlyEnergyQuota;
 
             Producer p = Producer.createProducer(this, gs, monthlyEnergyQuota);
@@ -190,6 +194,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
             producers.add(p);
             mainContainer.acceptNewAgent("producer-" + i, p).start();
 
+            System.out.println(monthlyEnergyQuota);
         }
     }
 
@@ -218,7 +223,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         for (int i = 0; i < NUM_CONSUMERS; i++) {
             GraphicSettings gs = makeGraphicsSettings(i, 3, CONSUMER_COLOR);
 
-            int agentConsumption = (int) ((totalEnergyConsumed / (NUM_CONSUMERS - i)) * (1 + rand.nextGaussian()));
+            int agentConsumption = (int) ((totalEnergyConsumed / (NUM_CONSUMERS - i)) * (0.5 + rand.nextFloat()));
             if (agentConsumption > totalEnergyConsumed)
                 agentConsumption = totalEnergyConsumed;
             totalEnergyConsumed -= agentConsumption;
