@@ -37,13 +37,14 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     private static final Color PRODUCER_COLOR = Color.GREEN;
     private static final Color BROKER_COLOR = Color.YELLOW;
     private static final Color CONSUMER_COLOR = Color.RED;
-    private OpenSequenceGraph energyGraph = null;
+    private OpenSequenceGraph energyGraphPB = null;
+    private OpenSequenceGraph energyGraphBC = null;
 
     // Logic variables
-    private static final int DELAY_SIMULATION = 1000;
+    private static final int DELAY_SIMULATION = 100;
     private static final int NUM_PRODUCERS = 100;
     private static final int NUM_BROKERS = 5;
-    private static final int NUM_CONSUMERS = 60;
+    private static final int NUM_CONSUMERS = 15;
 
 
     // Energy Variables
@@ -136,34 +137,43 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 
         displaySurface.display();
 
-        energyPlotBuild();
+        energyPlotsBuild();
 
     }
 
-    private void energyPlotBuild() {
-        if (energyGraph != null)
-            energyGraph.dispose();
+    private void energyPlotsBuild() {
+        if (energyGraphPB != null)
+            energyGraphPB.dispose();
 
-        energyGraph = new OpenSequenceGraph("Sum of energies", this);
-        energyGraph.setAxisTitles("time", "energy");
+        energyGraphPB = new OpenSequenceGraph("Energies Producers-Brokers", this);
+        energyGraphPB.setAxisTitles("time", "energy");
+        addEnergyTrading(energyGraphPB, energyContractsBrokerProducer);
+        energyGraphPB.addSequence("Total energy in System", () -> TOTAL_ENERGY_PRODUCED_PER_MONTH);
+        energyGraphPB.display();
 
-        energyGraph.addSequence("Energy Traded Brokers-Producers", () -> {
+        if (energyGraphBC != null)
+            energyGraphBC.dispose();
+
+        energyGraphBC = new OpenSequenceGraph("Energies Brokers-Consumers", this);
+        energyGraphBC.setAxisTitles("time", "energy");
+        addEnergyTrading(energyGraphBC, energyContractsConsumerBroker);
+        energyGraphBC.addSequence("Total energy in System", () -> TOTAL_ENERGY_PRODUCED_PER_MONTH);
+        energyGraphBC.display();
+    }
+
+    private void addEnergyTrading(OpenSequenceGraph energyGraph, List<EnergyContract> energyContracts) {
+        energyGraph.addSequence("Energy Traded", () -> {
             double energy = 0f;
-            for (EnergyContract ec : energyContractsBrokerProducer) {
+            for (EnergyContract ec : energyContracts) {
                 energy += ec.getEnergyAmountPerCycle();
-
             }
             return energy;
         });
-
-        energyGraph.addSequence("Total energy in System", () -> TOTAL_ENERGY_PRODUCED_PER_MONTH);
-
-        energyGraph.display();
     }
 
     private void energyPlotBuildBrokers() {
         for (Broker b : brokers) {
-            energyGraph.addSequence("Broker: " + b.getLocalName(), () -> {
+            energyGraphPB.addSequence("Broker: " + b.getLocalName(), () -> {
                 double energy = 0f;
                 for (EnergyContract ec : energyContractsBrokerProducer) {
                     if (ec.getEnergyClient().getLocalName().equals(b.getLocalName()))
@@ -174,10 +184,24 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         }
     }
 
+    private void energyPlotBuildConsumers() {
+        for (Consumer c : consumers) {
+            energyGraphBC.addSequence("Consumer: " + c.getLocalName(), () -> {
+                double energy = 0f;
+                for (EnergyContract ec : energyContractsConsumerBroker) {
+                    if (ec.getEnergyClient().getLocalName().equals(c.getLocalName()))
+                        energy += ec.getEnergyAmountPerCycle();
+                }
+                return energy;
+            });
+        }
+    }
+
     private void scheduleConstructor() {
         getSchedule().scheduleActionAtInterval(1, this, "simulationStep");
-//        getSchedule().scheduleActionAtInterval(1, this, "simulationDelay", ScheduleBase.LAST);
-        getSchedule().scheduleActionAtInterval(1, energyGraph, "step", Schedule.LAST);
+//        getSchedule().scheduleActionAtInterval(1, this, "simulationDelay", Schedule.LAST);
+        getSchedule().scheduleActionAtInterval(1, energyGraphPB, "step", Schedule.LAST);
+        getSchedule().scheduleActionAtInterval(1, energyGraphBC, "step", Schedule.LAST);
 
     }
 
@@ -279,6 +303,9 @@ public class EnergyMarketLauncher extends Repast3Launcher {
             consumers.add(c);
             mainContainer.acceptNewAgent("consumer-" + i, c).start();
         }
+
+        energyPlotBuildConsumers();
+
     }
 
     private GraphicSettings makeGraphicsSettings(int total, int idx, int yCoords, Color color) {
