@@ -21,7 +21,9 @@ public class Broker extends DFRegisterAgent {
     private static final int TIMEOUT = 2000;
 
     private DFSearchAgent search;
+
     private boolean canStillBuyEnergy;
+
     private int duration = 365; // TODO: remove this at a further development stage
 
     public Broker(EnergyMarketLauncher model, GraphicSettings graphicSettings, int initialBudget) {

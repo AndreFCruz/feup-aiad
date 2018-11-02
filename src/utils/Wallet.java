@@ -16,6 +16,25 @@ public class Wallet implements Serializable {
             this.amount = amount;
             this.payer = payer;
             this.receiver = receiver;
+
+            System.out.println(this.toString());
+        }
+
+
+        @Override
+        public String toString() {
+            if (payer == null) {
+                return "INJECT " + amount + " to " + receiver.toString() + "\t(" + receiver.walletType;
+            } else if (receiver == null) {
+                return "CONSUME " + amount + " from " + payer.toString() + "\t(" + payer.walletType;
+            }
+
+            return "Transaction (" + payer.walletType + "): "
+                    + payer.toString() + " to "
+                    + receiver.toString()
+                    + ". \t\tValue: " + amount
+                    + ". \t\tPayer balance:\t" + payer.getBalance()
+                    + ". \t\tReceiver balance:\t" + receiver.getBalance();
         }
     }
 
@@ -46,7 +65,7 @@ public class Wallet implements Serializable {
     }
 
     public void withdraw(float amount, Wallet target) {
-        if (target.walletType != this.walletType) {
+        if (amount < 0 || target.walletType != this.walletType) {
             throw new IllegalArgumentException();
         }
         this.balance -= amount;
@@ -58,7 +77,7 @@ public class Wallet implements Serializable {
     }
 
     public void deposit(float amount, Wallet target) {
-        if (target.walletType != this.walletType) {
+        if (amount < 0 || target.walletType != this.walletType) {
             throw new IllegalArgumentException();
         }
         this.balance += amount;
@@ -90,7 +109,7 @@ public class Wallet implements Serializable {
             throw new IllegalArgumentException();
         }
         this.balance -= amount;
-        Transaction t = new Transaction(-1 * amount, null, this);
+        Transaction t = new Transaction(-1 * amount, this, null);
         this.transactions.add(t);
     }
 
