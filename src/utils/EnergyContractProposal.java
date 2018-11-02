@@ -127,7 +127,7 @@ public class EnergyContractProposal implements Serializable {
      * Client signs contract proposal.
      */
     public void signContract(Agent agent) {
-        if (agent.getAID().getName() != energyClientAID.getName())
+        if (agent.getAID() != energyClientAID)
             throw new IllegalArgumentException("Signing agent was not the client.");
         this.state = ContractState.SIGNED;
     }

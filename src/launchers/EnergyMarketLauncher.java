@@ -65,7 +65,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 
     private List<EnergyContract> energyContracts;
 
-    private Map<String, GenericAgent> agents;
+    private Map<AID, GenericAgent> agents;
 
     public static void main(String[] args) {
         boolean BATCH_MODE = false;
@@ -171,10 +171,10 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         agents = new HashMap<>();
 
         Stream<GenericAgent> stream = Stream.concat(producers.stream(), brokers.stream());
-        stream = Stream.concat(stream, consumers.stream());
+        Stream.concat(stream, consumers.stream());
 
         stream.forEach(
-                (GenericAgent a) -> agents.put(a.getAID().getName(), a)
+                (GenericAgent a) -> agents.put(a.getAID(), a)
         );
     }
 
@@ -262,7 +262,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     }
 
     private GenericAgent getAgentByAID(AID agentAID) {
-        return agents.get(agentAID.getName());
+        return agents.get(agentAID);
     }
 
     public void addContract(EnergyContractProposal contractProposal) {
