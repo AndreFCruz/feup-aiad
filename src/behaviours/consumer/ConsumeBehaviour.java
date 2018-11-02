@@ -17,7 +17,11 @@ public class ConsumeBehaviour extends SimpleBehaviour {
 
     @Override
     public void action() {
-        myConsumer.getEnergyWallet().consume(myConsumer.getEnergyConsumptionPerMonth() / 30f);
+        if (myConsumer.hasBrokerService()) {
+            myConsumer.getEnergyWallet().consume(myConsumer.getEnergyConsumptionPerMonth() / 30f);
+        } else {
+            // Has no contract yet. Try harder?
+        }
     }
 
     @Override

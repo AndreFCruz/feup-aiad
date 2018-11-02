@@ -36,22 +36,22 @@ public class BrokerContractInitiator extends FIPAContractNetInitiator {
     protected Vector prepareCfps(ACLMessage cfp) {
         List<Producer> orderedListOfPreferences = getOrderedListOfPreferences();
 
-        Vector v = new Vector();
+         Vector v = new Vector();
 
-        boolean contactedAtLeastOne = false;
+        boolean willContactAtLeastOne = false;
         float brokersCash = ((Broker) myAgent).getMoneyWallet().getBalance();
         for (Producer p : orderedListOfPreferences) {
             // get price for producer's total energy per month
             int contractCost = p.getEnergyProductionPerMonth() * p.getEnergyUnitSellPrice();
 
             if (brokersCash > contractCost) {
-                contactedAtLeastOne = true;
+                willContactAtLeastOne = true;
                 cfp.addReceiver(p.getAID());
                 brokersCash -= contractCost;
             }
         }
 
-        if (contactedAtLeastOne) {
+        if (willContactAtLeastOne) {
             // if at least one producer can supply this broker, create a draft contract
             EnergyContractProposal ec = EnergyContractProposal.makeContractDraft(myAgent.getAID(), ((Broker) myAgent).getDuration());
             try {
