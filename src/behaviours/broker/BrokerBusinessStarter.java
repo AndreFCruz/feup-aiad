@@ -15,6 +15,6 @@ public class BrokerBusinessStarter extends WakerBehaviour {
     public void onWake() {
         // initiate Communication protocol
         BrokerContractInitiator contract = new BrokerContractInitiator((Broker) myAgent);
-        myAgent.addBehaviour(new ContractBehaviourWrapper(contract));
+        myAgent.addBehaviour(new BrokerContractWrapperBehaviour(contract));
     }
 }

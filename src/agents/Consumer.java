@@ -1,5 +1,7 @@
 package agents;
 
+import behaviours.consumer.ConsumeBehaviour;
+import behaviours.consumer.ConsumerBusinessStarter;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import launchers.EnergyMarketLauncher;
 import utils.AgentType;
@@ -14,6 +16,8 @@ import java.util.List;
  * Some Consumers prefer green energy;
  */
 public class Consumer extends DFSearchAgent {
+
+    private static final int TIMEOUT = 3000;
 
     private int energyConsumptionPerMonth;
 
@@ -36,11 +40,17 @@ public class Consumer extends DFSearchAgent {
     @Override
     protected void setup() {
         super.setup();
+        addBehaviour(new ConsumerBusinessStarter(this, TIMEOUT));
+        addBehaviour(new ConsumeBehaviour(this));
         System.out.println("Consumer " + this.getLocalName() + " was created.");
     }
 
     public int getEnergyConsumptionPerMonth() {
         return energyConsumptionPerMonth;
+    }
+
+    public boolean hasEnoughEnergy() {
+        return false;
     }
 
 }

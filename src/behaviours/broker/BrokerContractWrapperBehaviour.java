@@ -4,9 +4,9 @@ import agents.Broker;
 import sajas.core.behaviours.Behaviour;
 import sajas.core.behaviours.WrapperBehaviour;
 
-public class ContractBehaviourWrapper extends WrapperBehaviour {
+public class BrokerContractWrapperBehaviour extends WrapperBehaviour {
 
-    public ContractBehaviourWrapper(Behaviour wrapped) {
+    public BrokerContractWrapperBehaviour(Behaviour wrapped) {
         super(wrapped);
     }
 
@@ -17,7 +17,7 @@ public class ContractBehaviourWrapper extends WrapperBehaviour {
         } else {
             // This behavior is responsible for choosing producers
             BrokerContractInitiator contract = new BrokerContractInitiator((Broker) myAgent);
-            myAgent.addBehaviour(new ContractBehaviourWrapper(contract));
+            myAgent.addBehaviour(new BrokerContractWrapperBehaviour(contract));
         }
 
         return 0;
