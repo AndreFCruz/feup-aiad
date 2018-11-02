@@ -2,7 +2,6 @@ package agents;
 
 import behaviours.consumer.ConsumeBehaviour;
 import behaviours.consumer.ConsumerBusinessStarter;
-import behaviours.consumer.IncomeBehaviour;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import launchers.EnergyMarketLauncher;
 import utils.AgentType;
@@ -23,6 +22,8 @@ public class Consumer extends DFSearchAgent {
     private int energyConsumptionPerMonth;
 
     private boolean brokerService = false;
+
+    private int contractDuration = 365; // One year contracts
 
     public Consumer(EnergyMarketLauncher model, GraphicSettings graphicSettings, int energyConsumptionPerMonth) {
         super(model, graphicSettings);
@@ -47,9 +48,8 @@ public class Consumer extends DFSearchAgent {
     @Override
     protected void setup() {
         super.setup();
-        addBehaviour(new ConsumerBusinessStarter(this, TIMEOUT));
-        addBehaviour(new IncomeBehaviour(this, 120000)); // TODO change hardcoded monthly income
-         addBehaviour(new ConsumeBehaviour(this));
+        //addBehaviour(new ConsumerBusinessStarter(this, TIMEOUT));
+        addBehaviour(new ConsumeBehaviour(this));
         System.out.println("Consumer " + this.getLocalName() + " was created.");
     }
 
@@ -65,4 +65,7 @@ public class Consumer extends DFSearchAgent {
         brokerService = b;
     }
 
+    public int getContractDuration() {
+        return contractDuration;
+    }
 }
