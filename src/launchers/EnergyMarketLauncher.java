@@ -171,7 +171,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         agents = new HashMap<>();
 
         Stream<GenericAgent> stream = Stream.concat(producers.stream(), brokers.stream());
-        Stream.concat(stream, consumers.stream());
+        stream = Stream.concat(stream, consumers.stream());
 
         stream.forEach(
                 (GenericAgent a) -> agents.put(a.getAID(), a)
