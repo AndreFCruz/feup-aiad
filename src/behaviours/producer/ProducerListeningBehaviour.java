@@ -21,6 +21,7 @@ public class ProducerListeningBehaviour extends FIPAContractNetResponder {
 
         if (((Producer) myAgent).hasContract()) {
             reply.setPerformative(ACLMessage.REFUSE);
+            System.out.println("Producer refused contract as it already has one.");
             return reply;
         }
 

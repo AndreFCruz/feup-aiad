@@ -16,8 +16,8 @@ import java.util.Comparator;
 import java.util.Vector;
 
 /**
- *  This class represents the behaviour of the Brokers when they are trying to
- *  talk with the Producers to get energy supplied.
+ * This class represents the behaviour of the Brokers when they are trying to
+ * talk with the Producers to get energy supplied.
  */
 public class BrokerContractInitiator extends FIPAContractNetInitiator {
 
@@ -42,22 +42,20 @@ public class BrokerContractInitiator extends FIPAContractNetInitiator {
 
         boolean contactedAtLeastOne = false;
         float brokersCash = ((Broker) myAgent).getMoneyWallet().getBalance();
-        for (Producer p: orderedListOfPreferences){
-            // get price for producer's whole energy
-            int energyProduction = p.getEnergyProductionPerMonth();
-            int energyCost = p.getEnergyUnitSellPrice();
+        for (Producer p : orderedListOfPreferences) {
+            // get price for producer's total energy per month
+            int contractCost = p.getEnergyProductionPerMonth() * p.getEnergyUnitSellPrice();
 
-            if (brokersCash > (energyCost * energyProduction)){
+            if (brokersCash > contractCost) {
                 contactedAtLeastOne = true;
                 cfp.addReceiver(p.getAID());
-                brokersCash -= energyCost * energyProduction;
+                brokersCash -= contractCost;
             }
-
         }
 
-        if (contactedAtLeastOne){
+        if (contactedAtLeastOne) {
             // if at least one producer can supply this broker, create a draft contract
-            EnergyContract ec = EnergyContract.makeContractDraft((Broker) myAgent, ((Broker) myAgent).getDuration() );
+            EnergyContract ec = EnergyContract.makeContractDraft((Broker) myAgent, ((Broker) myAgent).getDuration());
             try {
                 cfp.setContentObject(ec);
             } catch (IOException e) {
@@ -65,8 +63,7 @@ public class BrokerContractInitiator extends FIPAContractNetInitiator {
             }
 
             v.add(cfp);
-        }
-        else {
+        } else {
             // can't buy any more energy from anyone
             ((Broker) myAgent).setCanStillBuyEnergy(false);
         }
@@ -79,22 +76,22 @@ public class BrokerContractInitiator extends FIPAContractNetInitiator {
      * In this function the Broker checks if all the Producers he contacted are able to enter in a contract
      * with him and acts accordingly.
      *
-     * @param responses Each response from the Producers.
+     * @param responses   Each response from the Producers.
      * @param acceptances A Vector where all the messages will be stored to answer the Producers.
      */
     @Override
     protected void handleAllResponses(Vector responses, Vector acceptances) {
 
-        for (Object response : responses){
+        for (Object response : responses) {
             ACLMessage msg = ((ACLMessage) response).createReply();
-            if (msg.getPerformative() == ACLMessage.PROPOSE){   // performative of the answer
+            if (msg.getPerformative() == ACLMessage.PROPOSE) {   // performative of the answer
                 try {
                     EnergyContract ec = (EnergyContract) msg.getContentObject();
                     // TODO: check if this makes sense, the transaction of energy for money...
                     // adding contract to the world model
                     ((Broker) myAgent).getWorldModel().addContract(ec);
                     ec.step(); // think this is needed to avoid race conditions between choosing next producers
-                                // and world step
+                    // and world step
                     msg.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
                     acceptances.add(msg);
 
@@ -104,8 +101,7 @@ public class BrokerContractInitiator extends FIPAContractNetInitiator {
                     msg.setPerformative(ACLMessage.REJECT_PROPOSAL);
                     acceptances.add(msg);
                 }
-            }
-            else {
+            } else {
                 msg.setPerformative(ACLMessage.REJECT_PROPOSAL);
                 acceptances.add(msg);
             }
@@ -125,7 +121,6 @@ public class BrokerContractInitiator extends FIPAContractNetInitiator {
     }
 
     /**
-     *
      * @return An ordered ArrayList of the preferred order to contact the Producers.
      */
     private ArrayList<Producer> getOrderedListOfPreferences() {

@@ -25,11 +25,10 @@ public class Broker extends DFRegisterAgent {
     private int duration = 365; // TODO: remove this at a further development stage
 
     public Broker(EnergyMarketLauncher model, GraphicSettings graphicSettings, int initialBudget) {
-        super(model, graphicSettings);
+        super(model, graphicSettings, AgentType.BROKER);
         this.search = new DFSearchAgent(model, graphicSettings);
 
-        this.setType(AgentType.BROKER);
-        this.search.setType(AgentType.PRODUCER);
+        this.search.setSearchType(AgentType.PRODUCER);
 
         this.moneyWallet.inject(initialBudget);
         this.canStillBuyEnergy = true;
@@ -38,12 +37,12 @@ public class Broker extends DFRegisterAgent {
     @Override
     protected void setup() {
         super.setup();
-        this.register();
         this.addBehaviour(new BrokerBusinessStarter(this, TIMEOUT));
     }
 
     /**
      * Fetches the list of promising (available) producers for new contracts.
+     *
      * @return the list of producers.
      */
     public List<String> getPromisingProducers() {
@@ -59,15 +58,15 @@ public class Broker extends DFRegisterAgent {
         return worldModel;
     }
 
-    public boolean canStillBuyEnergy(){
+    public boolean canStillBuyEnergy() {
         return canStillBuyEnergy;
     }
 
-    public void setCanStillBuyEnergy(boolean b){
+    public void setCanStillBuyEnergy(boolean b) {
         this.canStillBuyEnergy = b;
     }
 
-    public int getDuration(){
+    public int getDuration() {
         return duration;
     }
 

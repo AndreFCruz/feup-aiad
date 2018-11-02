@@ -12,9 +12,10 @@ import java.util.ArrayList;
 
 public abstract class GenericAgent extends Agent implements Drawable, Serializable {
 
+    protected transient EnergyMarketLauncher worldModel;
+
     protected ArrayList<GenericAgent> contacts;
 
-    protected EnergyMarketLauncher worldModel;
     protected GraphicSettings graphicSettings;
 
     /**
@@ -29,8 +30,6 @@ public abstract class GenericAgent extends Agent implements Drawable, Serializab
 
 
     GenericAgent(EnergyMarketLauncher model, GraphicSettings graphicSettings) {
-        super();
-
         this.worldModel = model;
         this.graphicSettings = graphicSettings;
         this.contacts = new ArrayList<>();

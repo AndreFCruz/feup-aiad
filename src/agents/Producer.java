@@ -17,7 +17,7 @@ public class Producer extends DFRegisterAgent {
     private int sellPricePerUnit;
 
     private int energyProductionPerMonth;
-    private int unallocatedEnergyProductionPerMonth;
+//    private int unallocatedEnergyProductionPerMonth; // For when a producer may supply multiple brokers
 
     private EnergyContract currentEnergyContract = null;
 
@@ -39,7 +39,7 @@ public class Producer extends DFRegisterAgent {
     }
 
     public Producer(EnergyMarketLauncher model, GraphicSettings graphicSettings, EnergySource energySource, int energyProductionPerMonth) {
-        super(model, graphicSettings);
+        super(model, graphicSettings, AgentType.PRODUCER);
         this.energySource = energySource;
         this.energyProductionPerMonth = energyProductionPerMonth;
         Random rand = new Random();
@@ -47,15 +47,12 @@ public class Producer extends DFRegisterAgent {
         // profit margin of 5% to 20%
         this.sellPricePerUnit = (int) (this.energySource.getCostPerUnit() * (1f + (0.05f + 0.15f * rand.nextFloat())));
 
-        //For DFService
-        this.setType(AgentType.PRODUCER);
         addBehaviour(new ProducerListeningBehaviour(this, MessageTemplate.MatchPerformative(ACLMessage.CFP)));
     }
 
     @Override
     protected void setup() {
         super.setup();
-        this.register();
         System.out.println("Producer " + this.getLocalName() + " was created.");
     }
 
@@ -63,9 +60,9 @@ public class Producer extends DFRegisterAgent {
         return energyProductionPerMonth;
     }
 
-    public int getUnallocatedEnergyProductionPerMonth() {
-        return unallocatedEnergyProductionPerMonth;
-    }
+//    public int getUnallocatedEnergyProductionPerMonth() {
+//        return unallocatedEnergyProductionPerMonth;
+//    }
 
     public int getEnergyUnitSellPrice() {
         return sellPricePerUnit;

@@ -104,7 +104,8 @@ public class EnergyContract implements Serializable {
         this.state = ContractState.SIGNED;
     }
 
-    private EnergyContract() {}
+    private EnergyContract() {
+    }
 
     private void setEnergySupplier(GenericAgent supplier) {
         if (this.state == ContractState.SIGNED)

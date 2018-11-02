@@ -19,7 +19,7 @@ public class Consumer extends DFSearchAgent {
 
     public Consumer(EnergyMarketLauncher model, GraphicSettings graphicSettings, int energyConsumptionPerMonth) {
         super(model, graphicSettings);
-        this.setType(AgentType.BROKER);
+        this.setSearchType(AgentType.BROKER);
         this.energyConsumptionPerMonth = energyConsumptionPerMonth;
     }
 

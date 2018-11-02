@@ -274,7 +274,7 @@ public class NetworkTest extends TestCase {
    recorder.record(nodeList, "A Sample Comment");
 
    AbstractEdge edge = new AbstractEdge(a, c);
-   edge.setType("family");
+   edge.setSearchType("family");
    a.addOutEdge(edge);
    recorder.record(nodeList, "A second comment");
 

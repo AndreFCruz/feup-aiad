@@ -12,15 +12,15 @@ public class DFRegisterAgent extends GenericAgent {
 
     private AgentType type;
 
-    public DFRegisterAgent(EnergyMarketLauncher model, GraphicSettings graphicSettings) {
+    public DFRegisterAgent(EnergyMarketLauncher model, GraphicSettings graphicSettings, AgentType type) {
         super(model, graphicSettings);
-    }
-
-    protected void setType(AgentType type) {
         this.type = type;
     }
 
-    protected void register() {
+    @Override
+    protected void setup() {
+        super.setup();
+
         // Adding to the DF Service
         DFAgentDescription description = new DFAgentDescription();
         description.setName(getAID());
@@ -33,17 +33,18 @@ public class DFRegisterAgent extends GenericAgent {
         try {
             DFService.register(this, description);
         } catch (FIPAException e) {
+            System.err.println("Couldn't register DFService.");
             e.printStackTrace();
         }
     }
 
     @Override
     protected void takeDown() {
-        super.takeDown();
         try {
             DFService.deregister(this);
         } catch (FIPAException e) {
             e.printStackTrace();
         }
+        super.takeDown();
     }
 }

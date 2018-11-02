@@ -18,7 +18,7 @@ public class DFSearchAgent extends GenericAgent {
         super(model, graphicSettings);
     }
 
-    protected void setType(AgentType type) {
+    protected void setSearchType(AgentType type) {
         this.type = type;
     }
 

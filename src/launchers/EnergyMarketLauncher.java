@@ -25,7 +25,7 @@ import java.util.ListIterator;
 import java.util.Random;
 
 /**
- *  This class represents the world model and is the starting point of the simulation.
+ * This class represents the world model and is the starting point of the simulation.
  */
 public class EnergyMarketLauncher extends Repast3Launcher {
 
