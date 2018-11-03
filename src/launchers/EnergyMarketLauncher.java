@@ -226,6 +226,18 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         producers.forEach(GenericAgent::clearContacts);
         brokers.forEach(GenericAgent::clearContacts);
         consumers.forEach(GenericAgent::clearContacts);
+
+        for (EnergyContract ec: energyContractsBrokerProducer){
+            ec.getEnergyClient().addContact(ec.getEnergySupplier());
+            ec.getEnergySupplier().addContact(ec.getEnergyClient());
+        }
+
+        for (EnergyContract ec: energyContractsConsumerBroker){
+            ec.getEnergyClient().addContact(ec.getEnergySupplier());
+            ec.getEnergySupplier().addContact(ec.getEnergyClient());
+        }
+
+        displaySurface.updateDisplay();
     }
 
     @Override
