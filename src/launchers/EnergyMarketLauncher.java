@@ -39,6 +39,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     private OpenSequenceGraph energyGraphPB = null;
     private OpenSequenceGraph energyGraphBC = null;
     private OpenSequenceGraph energyGraphBA = null;
+    private OpenSequenceGraph consumersSatisfied = null;
 
     // Logic variables
     private static final int DELAY_SIMULATION = 100;
@@ -82,7 +83,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 
         NUM_PRODUCERS = 100;
         NUM_BROKERS = 5;
-        NUM_CONSUMERS = 15;
+        NUM_CONSUMERS = 50;
     }
 
     public static void main(String[] args) {
@@ -170,6 +171,14 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         energyGraphBA = new OpenSequenceGraph("Brokers Available Energy", this);
         energyGraphBA.setAxisTitles("time", "energy available");
         energyGraphBA.display();
+
+        if (consumersSatisfied != null)
+            consumersSatisfied.dispose();
+
+        consumersSatisfied = new OpenSequenceGraph("Consumers Satisfied", this);
+        consumersSatisfied.setAxisTitles("time", "consumers");
+        consumersSatisfied.addSequence("number", () -> energyContractsConsumerBroker.size());
+        consumersSatisfied.display();
     }
 
     private void addEnergyTrading(OpenSequenceGraph energyGraph, List<EnergyContract> energyContracts) {
@@ -219,6 +228,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         getSchedule().scheduleActionAtInterval(1, energyGraphPB, "step", Schedule.LAST);
         getSchedule().scheduleActionAtInterval(1, energyGraphBC, "step", Schedule.LAST);
         getSchedule().scheduleActionAtInterval(1, energyGraphBA, "step", Schedule.LAST);
+        getSchedule().scheduleActionAtInterval(1, consumersSatisfied, "step", Schedule.LAST);
         getSchedule().scheduleActionAtInterval(50, this, "updateGraph", Schedule.LAST);
     }
 
