@@ -52,6 +52,10 @@ public abstract class GenericAgent extends Agent implements Drawable, Serializab
         this.contacts.add(s);
     }
 
+    public void clearContacts() {
+        this.contacts = new ArrayList<>();
+    }
+
     public Wallet getMoneyWallet() {
         return this.moneyWallet;
     }

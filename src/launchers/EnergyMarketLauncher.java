@@ -219,6 +219,13 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         getSchedule().scheduleActionAtInterval(1, energyGraphPB, "step", Schedule.LAST);
         getSchedule().scheduleActionAtInterval(1, energyGraphBC, "step", Schedule.LAST);
         getSchedule().scheduleActionAtInterval(1, energyGraphBA, "step", Schedule.LAST);
+        getSchedule().scheduleActionAtInterval(50, this, "updateGraph", Schedule.LAST);
+    }
+
+    public void updateGraph() {
+        producers.forEach(GenericAgent::clearContacts);
+        brokers.forEach(GenericAgent::clearContacts);
+        consumers.forEach(GenericAgent::clearContacts);
     }
 
     @Override
