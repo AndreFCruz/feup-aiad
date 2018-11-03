@@ -51,7 +51,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     /**
      * Approximate value of the total energy produced per month in this energy market.
      */
-    private static final int TOTAL_ENERGY_PRODUCED_PER_MONTH = (int) Math.pow(10, 8); // 1 MWh
+    private static int TOTAL_ENERGY_PRODUCED_PER_MONTH = (int) Math.pow(10, 8); // 1 MWh
     private int actualTotalEnergyProducedPerMonth = 0;
 
     private ContainerController mainContainer;
@@ -398,8 +398,28 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         return NUM_PRODUCERS;
     }
 
-    public void setNUM_PRODUCERS(int NUM_PRODUCERS) {
-        this.NUM_PRODUCERS = NUM_PRODUCERS;
+    public void setNUM_PRODUCERS(int NUM_PRODUCERS) throws StaleProxyException {
+//        int producersDifference = NUM_PRODUCERS - this.NUM_PRODUCERS;
+//        if (producersDifference <= 0){
+//            System.out.println("Function Unsupported at the moment.");
+//        } else {
+//
+//            for (int i = 1; i <= producersDifference; ++i){
+//                int energyToAdd = (int) ((TOTAL_ENERGY_PRODUCED_PER_MONTH/this.NUM_PRODUCERS) * (0.5 + rand.nextFloat()));
+//                TOTAL_ENERGY_PRODUCED_PER_MONTH += energyToAdd;
+//                actualTotalEnergyProducedPerMonth += energyToAdd;
+//
+//                GraphicSettings gs = makeGraphicsSettings(NUM_PRODUCERS, i, 1, PRODUCER_COLOR);
+//                Producer p = Producer.createProducer(this, gs, energyToAdd);
+//                world.putObjectAt(p.getX(), p.getY(), p);
+//                producers.add(p);
+//                mainContainer.acceptNewAgent("producer-" + i+this.NUM_PRODUCERS, p).start();
+//            }
+
+            this.NUM_PRODUCERS = NUM_PRODUCERS;
+//        }
+
+
     }
 
     public int getNUM_BROKERS() {
