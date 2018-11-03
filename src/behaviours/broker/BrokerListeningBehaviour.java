@@ -31,6 +31,7 @@ public class BrokerListeningBehaviour extends FIPAContractNetResponder {
                         ec.getEnergyAmountPerCycle(),
                         ((Broker) myAgent).getEnergyUnitSellPrice()
                 );
+                reply.setPerformative(ACLMessage.PROPOSE);
                 reply.setContentObject(ec);
 
             } else

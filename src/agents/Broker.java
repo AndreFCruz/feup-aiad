@@ -91,7 +91,8 @@ public class Broker extends DFRegisterAgent {
     }
 
     public int getAvailableMonthlyEnergyQuota() {
-        return 10000; // TODO return consumers' - producers' energy
+        int sold = (int) consumerContracts.stream().mapToDouble(EnergyContract::getEnergyAmountPerMonth).sum();
+        return getMonthlyEnergy() - sold;
     }
 
     /**
