@@ -39,7 +39,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     private static final Color CONSUMER_COLOR = Color.RED;
     private OpenSequenceGraph energyGraphPB = null;
     private OpenSequenceGraph energyGraphBC = null;
-    private OpenSequenceGraph energyGraphBS = null;
+    private OpenSequenceGraph energyGraphBA = null;
 
     // Logic variables
     private static final int DELAY_SIMULATION = 100;
@@ -161,12 +161,12 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         energyGraphBC.addSequence("Total energy in System", () -> TOTAL_ENERGY_PRODUCED_PER_MONTH);
         energyGraphBC.display();
 
-        if (energyGraphBS != null)
-            energyGraphBS.dispose();
+        if (energyGraphBA != null)
+            energyGraphBA.dispose();
 
-        energyGraphBS = new OpenSequenceGraph("Brokers Stocked Energy", this);
-        energyGraphBS.setAxisTitles("time", "energy stocked");
-        energyGraphBS.display();
+        energyGraphBA = new OpenSequenceGraph("Brokers Available Energy", this);
+        energyGraphBA.setAxisTitles("time", "energy available");
+        energyGraphBA.display();
     }
 
     private void addEnergyTrading(OpenSequenceGraph energyGraph, List<EnergyContract> energyContracts) {
@@ -205,9 +205,9 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         }
     }
 
-    private void energyPlotBrokersStock() {
+    private void energyPlotBrokersAvailable() {
         for (Broker b : brokers)
-            energyGraphBS.addSequence("Broker: " + b.getLocalName(), b::getAvailableMonthlyEnergyQuota);
+            energyGraphBA.addSequence("Broker: " + b.getLocalName(), b::getAvailableMonthlyEnergyQuota);
     }
 
     private void scheduleConstructor() {
@@ -215,7 +215,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 //        getSchedule().scheduleActionAtInterval(1, this, "simulationDelay", Schedule.LAST);
         getSchedule().scheduleActionAtInterval(1, energyGraphPB, "step", Schedule.LAST);
         getSchedule().scheduleActionAtInterval(1, energyGraphBC, "step", Schedule.LAST);
-        getSchedule().scheduleActionAtInterval(1, energyGraphBS, "step", Schedule.LAST);
+        getSchedule().scheduleActionAtInterval(1, energyGraphBA, "step", Schedule.LAST);
     }
 
     @Override
@@ -298,7 +298,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         }
 
         energyPlotBuildBrokers();
-        energyPlotBrokersStock();
+        energyPlotBrokersAvailable();
     }
 
     private void launchConsumers() throws StaleProxyException {
