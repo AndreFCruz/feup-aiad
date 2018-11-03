@@ -5,6 +5,9 @@ import agents.Broker;
 import agents.Consumer;
 import agents.GenericAgent;
 import agents.Producer;
+import behaviours.broker.BrokerContractInitiator;
+import behaviours.broker.BrokerContractWrapperBehaviour;
+import behaviours.broker.BrokerListeningBehaviour;
 import jade.core.AID;
 import jade.core.ProfileImpl;
 import jade.wrapper.StaleProxyException;
@@ -229,7 +232,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         getSchedule().scheduleActionAtInterval(1, energyGraphBC, "step", Schedule.LAST);
         getSchedule().scheduleActionAtInterval(1, energyGraphBA, "step", Schedule.LAST);
         getSchedule().scheduleActionAtInterval(1, consumersSatisfied, "step", Schedule.LAST);
-        getSchedule().scheduleActionAtInterval(50, this, "updateGraph", Schedule.LAST);
+        getSchedule().scheduleActionAtInterval(1, this, "updateGraph", Schedule.LAST);
     }
 
     public void updateGraph() {
@@ -373,12 +376,42 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     }
 
     private void updateEnergyContracts() {
-        System.out.println("Currently with " + energyContractsBrokerProducer.size() + " contracts.");
-//        for (ListIterator<EnergyContractProposal> iter = energyContractProposals.listIterator(); iter.hasNext(); ) {
-//            EnergyContractProposal contract = iter.next();
+//        System.out.println("Currently with " + energyContractsBrokerProducer.size() + " contracts.");
+
+        // TODO: fix this part, figure out why can't restart brokers-producers process
+        for (ListIterator<EnergyContract> iter = energyContractsBrokerProducer.listIterator(); iter.hasNext(); ) {
+            EnergyContract contract = iter.next();
+            if (contract.hasEnded()) {
+                // dealing with Producer's side of the contract
+                contract.getEnergySupplier()
+                        .addBehaviour(
+                                new BrokerListeningBehaviour(contract.getEnergySupplier())
+                        );
+                ((Producer) contract.getEnergySupplier()).setContract(null);
+                ((Producer) contract.getEnergySupplier()).getEnergyWallet().inject(1000);
+
+                // dealing with Broker's side of the contract
+                ((Broker) contract.getEnergyClient()).setCanStillBuyEnergy(true);
+                ((Broker) contract.getEnergyClient()).getMoneyWallet().inject(1000000);
+                contract.getEnergyClient()
+                        .addBehaviour(
+                                new BrokerContractWrapperBehaviour(
+                                        new BrokerContractInitiator((Broker) contract.getEnergyClient())
+                                )
+                        );
+
+                iter.remove();
+
+            } else {
+                contract.step();
+            }
+        }
+
+//        for (ListIterator<EnergyContract> iter = energyContractsConsumerBroker.listIterator(); iter.hasNext(); ) {
+//            EnergyContract contract = iter.next();
 //            if (contract.hasEnded()) {
 //                iter.remove();
-//                // TODO inform Broker and Producer that contract ended
+//                // TODO inform Broker and Consumer that contract ended
 //            } else {
 //                contract.step();
 //            }
