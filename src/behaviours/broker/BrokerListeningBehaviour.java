@@ -7,6 +7,8 @@ import jade.lang.acl.UnreadableException;
 import sajas.core.Agent;
 import utils.EnergyContractProposal;
 
+import java.io.IOException;
+
 /**
  * Brokers listens for contract proposals from Consumers.
  */
@@ -29,20 +31,24 @@ public class BrokerListeningBehaviour extends FIPAContractNetResponder {
                         ec.getEnergyAmountPerCycle(),
                         ((Broker) myAgent).getEnergyUnitSellPrice()
                 );
-            }
 
+                reply.setContentObject(ec);
+                // ((Broker) myAgent).addConsumerContract(ec);
+            } else
+                reply.setPerformative(ACLMessage.REFUSE);
 
         } catch (UnreadableException e) {
             e.printStackTrace();
 
             System.out.println("Could not get Content Object.");
             reply.setPerformative(ACLMessage.REFUSE);
+        } catch (IOException e) {
+            e.printStackTrace();
+
+            reply.setPerformative(ACLMessage.REFUSE);
         }
 
-        //if (((Broker) myAgent).canSellEnergy())
-        // Check if Broker (self) can fulfill energy order
-
-        return super.handleCfp(cfp);
+        return reply;
     }
 
     @Override

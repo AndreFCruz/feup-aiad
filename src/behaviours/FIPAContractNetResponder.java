@@ -24,11 +24,8 @@ public abstract class FIPAContractNetResponder extends ContractNetResponder {
     }
 
     protected ACLMessage handleAcceptProposal(ACLMessage cfp, ACLMessage propose, ACLMessage accept) {
-        System.out.println(myAgent.getLocalName() + " got an accept!");
         ACLMessage result = accept.createReply();
         result.setPerformative(ACLMessage.INFORM);
-        result.setContent("this is the result");
-
         return result;
     }
 }

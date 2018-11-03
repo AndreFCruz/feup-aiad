@@ -70,6 +70,10 @@ public class Broker extends DFRegisterAgent {
         updateEnergyUnitSellPrice();
     }
 
+    public void addConsumerContract(EnergyContract ec) {
+        consumerContracts.add(ec);
+    }
+
     public EnergyMarketLauncher getWorldModel() {
         return worldModel;
     }
