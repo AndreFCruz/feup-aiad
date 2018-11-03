@@ -39,6 +39,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     private static final Color CONSUMER_COLOR = Color.RED;
     private OpenSequenceGraph energyGraphPB = null;
     private OpenSequenceGraph energyGraphBC = null;
+    private OpenSequenceGraph energyGraphBS = null;
 
     // Logic variables
     private static final int DELAY_SIMULATION = 100;
@@ -159,6 +160,13 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         addEnergyTrading(energyGraphBC, energyContractsConsumerBroker);
         energyGraphBC.addSequence("Total energy in System", () -> TOTAL_ENERGY_PRODUCED_PER_MONTH);
         energyGraphBC.display();
+
+        if (energyGraphBS != null)
+            energyGraphBS.dispose();
+
+        energyGraphBS = new OpenSequenceGraph("Brokers Stocked Energy", this);
+        energyGraphBS.setAxisTitles("time", "energy stocked");
+        energyGraphBS.display();
     }
 
     private void addEnergyTrading(OpenSequenceGraph energyGraph, List<EnergyContract> energyContracts) {
@@ -197,12 +205,17 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         }
     }
 
+    private void energyPlotBrokersStock() {
+        for (Broker b : brokers)
+            energyGraphBS.addSequence("Broker: " + b.getLocalName(), b::getAvailableMonthlyEnergyQuota);
+    }
+
     private void scheduleConstructor() {
         getSchedule().scheduleActionAtInterval(1, this, "simulationStep");
 //        getSchedule().scheduleActionAtInterval(1, this, "simulationDelay", Schedule.LAST);
         getSchedule().scheduleActionAtInterval(1, energyGraphPB, "step", Schedule.LAST);
         getSchedule().scheduleActionAtInterval(1, energyGraphBC, "step", Schedule.LAST);
-
+        getSchedule().scheduleActionAtInterval(1, energyGraphBS, "step", Schedule.LAST);
     }
 
     @Override
@@ -285,6 +298,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         }
 
         energyPlotBuildBrokers();
+        energyPlotBrokersStock();
     }
 
     private void launchConsumers() throws StaleProxyException {
