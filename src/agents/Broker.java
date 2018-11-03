@@ -19,6 +19,13 @@ import java.util.Map;
  * The Broker class represents the middleman between the energy suppliers and the final consumers.
  */
 public class Broker extends DFRegisterAgent {
+    public List<EnergyContract> getProducerContracts() {
+        return producerContracts;
+    }
+
+    public List<EnergyContract> getConsumerContracts() {
+        return consumerContracts;
+    }
 
     private List<EnergyContract> producerContracts = new ArrayList<>();
 

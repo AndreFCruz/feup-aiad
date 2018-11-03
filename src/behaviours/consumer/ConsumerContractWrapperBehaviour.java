@@ -9,7 +9,7 @@ import sajas.core.behaviours.WrapperBehaviour;
  */
 public class ConsumerContractWrapperBehaviour extends WrapperBehaviour {
 
-    ConsumerContractWrapperBehaviour(Behaviour wrapped) {
+    public ConsumerContractWrapperBehaviour(Behaviour wrapped) {
         super(wrapped);
     }
 

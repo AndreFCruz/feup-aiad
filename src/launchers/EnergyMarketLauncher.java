@@ -8,6 +8,9 @@ import agents.Producer;
 import behaviours.broker.BrokerContractInitiator;
 import behaviours.broker.BrokerContractWrapperBehaviour;
 import behaviours.broker.BrokerListeningBehaviour;
+import behaviours.consumer.ConsumerContractInitiator;
+import behaviours.consumer.ConsumerContractWrapperBehaviour;
+import behaviours.producer.ProducerListeningBehaviour;
 import jade.core.AID;
 import jade.core.ProfileImpl;
 import jade.wrapper.StaleProxyException;
@@ -378,21 +381,20 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     private void updateEnergyContracts() {
 //        System.out.println("Currently with " + energyContractsBrokerProducer.size() + " contracts.");
 
-        // TODO: fix this part, figure out why can't restart brokers-producers process
+        // TODO: figure out why the energy market trading is not restarting
         for (ListIterator<EnergyContract> iter = energyContractsBrokerProducer.listIterator(); iter.hasNext(); ) {
             EnergyContract contract = iter.next();
             if (contract.hasEnded()) {
                 // dealing with Producer's side of the contract
                 contract.getEnergySupplier()
                         .addBehaviour(
-                                new BrokerListeningBehaviour(contract.getEnergySupplier())
+                                new ProducerListeningBehaviour(contract.getEnergySupplier())
                         );
                 ((Producer) contract.getEnergySupplier()).setContract(null);
-                ((Producer) contract.getEnergySupplier()).getEnergyWallet().inject(1000);
 
                 // dealing with Broker's side of the contract
                 ((Broker) contract.getEnergyClient()).setCanStillBuyEnergy(true);
-                ((Broker) contract.getEnergyClient()).getMoneyWallet().inject(1000000);
+                ((Broker) contract.getEnergyClient()).getProducerContracts().remove(contract);
                 contract.getEnergyClient()
                         .addBehaviour(
                                 new BrokerContractWrapperBehaviour(
@@ -407,15 +409,31 @@ public class EnergyMarketLauncher extends Repast3Launcher {
             }
         }
 
-//        for (ListIterator<EnergyContract> iter = energyContractsConsumerBroker.listIterator(); iter.hasNext(); ) {
-//            EnergyContract contract = iter.next();
-//            if (contract.hasEnded()) {
-//                iter.remove();
-//                // TODO inform Broker and Consumer that contract ended
-//            } else {
-//                contract.step();
-//            }
-//        }
+        for (ListIterator<EnergyContract> iter = energyContractsConsumerBroker.listIterator(); iter.hasNext(); ) {
+            EnergyContract contract = iter.next();
+            if (contract.hasEnded()) {
+
+                // dealing with Broker's side of the contract
+                contract.getEnergySupplier()
+                        .addBehaviour(
+                                new BrokerListeningBehaviour(contract.getEnergySupplier())
+                        );
+                ((Broker) contract.getEnergySupplier()).getConsumerContracts().remove(contract);
+
+                // dealing with Consumer's side of the contract
+                ((Consumer) contract.getEnergyClient()).setHasBrokerService(false);
+                contract.getEnergyClient()
+                        .addBehaviour(
+                                new ConsumerContractWrapperBehaviour(
+                                        new ConsumerContractInitiator((Consumer) contract.getEnergyClient())
+                                )
+                        );
+
+                iter.remove();
+            } else {
+                contract.step();
+            }
+        }
     }
 
     private GenericAgent getAgentByAID(AID agentAID) {
