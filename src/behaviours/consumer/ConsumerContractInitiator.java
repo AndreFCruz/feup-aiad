@@ -31,8 +31,6 @@ public class ConsumerContractInitiator extends FIPAContractNetInitiator {
         boolean contactedAtLeastOne = false;
 
         for (Broker b : orderedListOfPreferences) {
-            int cenas = b.getAvailableMonthlyEnergyQuota();
-            int cenas2 = c.getEnergyConsumptionPerMonth();
             if (b.getAvailableMonthlyEnergyQuota() >= c.getEnergyConsumptionPerMonth()) {
                 contactedAtLeastOne = true;
                 cfp.addReceiver(b.getAID());
@@ -57,7 +55,7 @@ public class ConsumerContractInitiator extends FIPAContractNetInitiator {
 
     @Override
     protected void handleAllResponses(Vector responses, Vector acceptances) {
-        for (Object response: responses) {
+        for (Object response : responses) {
             ACLMessage received = ((ACLMessage) response);
             ACLMessage reply = ((ACLMessage) response).createReply();
 

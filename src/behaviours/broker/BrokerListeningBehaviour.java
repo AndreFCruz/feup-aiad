@@ -25,7 +25,7 @@ public class BrokerListeningBehaviour extends FIPAContractNetResponder {
         try {
             EnergyContractProposal ec = (EnergyContractProposal) cfp.getContentObject();
 
-            if (((Broker) myAgent).getAvailableMonthlyEnergyQuota() > ec.getEnergyAmountPerCycle()) {
+            if (((Broker) myAgent).getAvailableMonthlyEnergyQuota() >= ec.getEnergyAmountPerCycle()) {
                 ec = ec.makeContractProposal(
                         myAgent.getAID(),
                         ec.getEnergyAmountPerCycle(),
