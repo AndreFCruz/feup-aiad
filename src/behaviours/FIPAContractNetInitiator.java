@@ -26,7 +26,7 @@ public abstract class FIPAContractNetInitiator extends ContractNetInitiator {
     }
 
     protected void handleAllResultNotifications(Vector resultNotifications) {
-        System.out.println("got " + resultNotifications.size() + " result notifcations!");
+        System.out.println(myAgent.getLocalName() + " received " + resultNotifications.size() + " results.");
     }
 
 }

@@ -354,6 +354,17 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         client.addEnergyContract(contract);
     }
 
+    public void addConsumerBrokerContract(EnergyContractProposal contractProposal) {
+        Broker supplier = (Broker) getAgentByAID(contractProposal.getEnergySupplierAID());
+        Consumer client = (Consumer) getAgentByAID(contractProposal.getEnergyClientAID());
+
+        EnergyContract contract = new EnergyContract(contractProposal, supplier, client);
+        energyContractsConsumerBroker.add(contract);
+        contract.step(); // first step, so first month's trades are promptly withdrawn
+
+        supplier.addConsumerContract(contract);
+    }
+
     public List<Producer> getProducers() {
         return producers;
     }

@@ -4,6 +4,7 @@ import agents.Broker;
 import agents.Consumer;
 import behaviours.FIPAContractNetInitiator;
 import jade.lang.acl.ACLMessage;
+import jade.lang.acl.UnreadableException;
 import utils.EnergyContractProposal;
 
 import java.io.IOException;
@@ -30,6 +31,8 @@ public class ConsumerContractInitiator extends FIPAContractNetInitiator {
         boolean contactedAtLeastOne = false;
 
         for (Broker b : orderedListOfPreferences) {
+            int cenas = b.getAvailableMonthlyEnergyQuota();
+            int cenas2 = c.getEnergyConsumptionPerMonth();
             if (b.getAvailableMonthlyEnergyQuota() >= c.getEnergyConsumptionPerMonth()) {
                 contactedAtLeastOne = true;
                 cfp.addReceiver(b.getAID());
@@ -45,7 +48,6 @@ public class ConsumerContractInitiator extends FIPAContractNetInitiator {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            c.setHasBrokerService(true);
             v.add(cfp);
         }
 
@@ -55,13 +57,36 @@ public class ConsumerContractInitiator extends FIPAContractNetInitiator {
 
     @Override
     protected void handleAllResponses(Vector responses, Vector acceptances) {
-        // TODO
-        super.handleAllResponses(responses, acceptances);
+        for (Object response: responses) {
+            ACLMessage received = ((ACLMessage) response);
+            ACLMessage reply = ((ACLMessage) response).createReply();
+
+            if (received.getPerformative() == ACLMessage.PROPOSE) {
+                try {
+                    EnergyContractProposal ec = (EnergyContractProposal) received.getContentObject();
+                    ec.signContract(myAgent);
+                    ((Consumer) myAgent).setHasBrokerService(true);
+
+                    ((Consumer) myAgent).getWorldModel().addConsumerBrokerContract(ec);
+
+                    reply.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
+                    acceptances.add(reply);
+
+                } catch (UnreadableException e) {
+                    e.printStackTrace();
+
+                    reply.setPerformative(ACLMessage.REJECT_PROPOSAL);
+                    acceptances.add(reply);
+                }
+            } else {
+                reply.setPerformative(ACLMessage.REJECT_PROPOSAL);
+                acceptances.add(reply);
+            }
+        }
     }
 
     @Override
     protected void handleAllResultNotifications(Vector resultNotifications) {
-        // TODO
         super.handleAllResultNotifications(resultNotifications);
     }
 

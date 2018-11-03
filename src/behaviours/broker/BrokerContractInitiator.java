@@ -115,7 +115,7 @@ public class BrokerContractInitiator extends FIPAContractNetInitiator {
      */
     @Override
     protected void handleAllResultNotifications(Vector resultNotifications) {
-        System.out.println(myAgent.getLocalName() + " received " + resultNotifications.size() + "results.");
+        super.handleAllResultNotifications(resultNotifications);
     }
 
     /**
