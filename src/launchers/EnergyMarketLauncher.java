@@ -12,7 +12,6 @@ import sajas.core.Runtime;
 import sajas.sim.repast3.Repast3Launcher;
 import sajas.wrapper.ContainerController;
 import uchicago.src.sim.analysis.OpenSequenceGraph;
-import uchicago.src.sim.analysis.Sequence;
 import uchicago.src.sim.engine.Schedule;
 import uchicago.src.sim.engine.SimInit;
 import uchicago.src.sim.gui.DisplayConstants;
@@ -43,9 +42,9 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 
     // Logic variables
     private static final int DELAY_SIMULATION = 100;
-    private static final int NUM_PRODUCERS = 100;
-    private static final int NUM_BROKERS = 5;
-    private static final int NUM_CONSUMERS = 15;
+    private int NUM_PRODUCERS;
+    private int NUM_BROKERS;
+    private int NUM_CONSUMERS;
 
 
     // Energy Variables
@@ -80,6 +79,10 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         worldHeight = 40 * density;
         DisplayConstants.CELL_WIDTH = 1;
         DisplayConstants.CELL_HEIGHT = 1;
+
+        NUM_PRODUCERS = 100;
+        NUM_BROKERS = 5;
+        NUM_CONSUMERS = 15;
     }
 
     public static void main(String[] args) {
@@ -225,7 +228,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 
     @Override
     public String[] getInitParam() {
-        return new String[]{"brokers", "producers", "consumers", "resources"};
+        return new String[]{"NUM_PRODUCERS", "NUM_BROKERS", "NUM_CONSUMERS"};
     }
 
     @Override
@@ -389,6 +392,30 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 
     public List<Consumer> getConsumers() {
         return consumers;
+    }
+
+    public int getNUM_PRODUCERS() {
+        return NUM_PRODUCERS;
+    }
+
+    public void setNUM_PRODUCERS(int NUM_PRODUCERS) {
+        this.NUM_PRODUCERS = NUM_PRODUCERS;
+    }
+
+    public int getNUM_BROKERS() {
+        return NUM_BROKERS;
+    }
+
+    public void setNUM_BROKERS(int NUM_BROKERS) {
+        this.NUM_BROKERS = NUM_BROKERS;
+    }
+
+    public int getNUM_CONSUMERS() {
+        return NUM_CONSUMERS;
+    }
+
+    public void setNUM_CONSUMERS(int NUM_CONSUMERS) {
+        this.NUM_CONSUMERS = NUM_CONSUMERS;
     }
 
 }
