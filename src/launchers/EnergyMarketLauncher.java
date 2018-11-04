@@ -96,7 +96,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         NUM_BROKERS = 5;
         NUM_CONSUMERS = 30;
         MONOPOLY_PROBABILITY = 0.5f;
-        AVG_DAYS_FOR_AUDIT = 360;
+        AVG_DAYS_FOR_AUDIT = 180;
     }
 
     public static void main(String[] args) {
