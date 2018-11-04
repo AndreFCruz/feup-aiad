@@ -65,8 +65,8 @@ public class EnergyContract {
     /**
      * @return Whether this contract can perform another step.
      */
-    public boolean canExchange(){
-        if (ticks % paymentCycle == 0){
+    public boolean canExchange() {
+        if (ticks % paymentCycle == 0) {
             return energySupplier.getEnergyWallet().getBalance() >= energyAmountPerCycle;
         }
         return true;
@@ -76,10 +76,8 @@ public class EnergyContract {
      * Steps this contract, meaning one day (tick) has passed.
      */
     public void step() {
-        if (this.hasEnded()) {
-            // TODO Inform client and supplier of finished contract.
+        if (this.hasEnded())
             return;
-        }
 
         // Pay day
         if (ticks % paymentCycle == 0) {
@@ -128,6 +126,10 @@ public class EnergyContract {
 
     public float getEnergyAmountPerMonth() {
         return energyAmountPerCycle * 30f / paymentCycle;
+    }
+
+    public float getMonthlyEnergyCost() {
+        return energyCostPerUnit * getEnergyAmountPerMonth();
     }
 
 }
