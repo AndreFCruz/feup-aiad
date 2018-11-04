@@ -18,6 +18,7 @@ import sajas.core.Runtime;
 import sajas.sim.repast3.Repast3Launcher;
 import sajas.wrapper.ContainerController;
 import uchicago.src.sim.analysis.OpenSequenceGraph;
+import uchicago.src.sim.analysis.Sequence;
 import uchicago.src.sim.engine.Schedule;
 import uchicago.src.sim.engine.SimInit;
 import uchicago.src.sim.gui.DisplayConstants;
@@ -46,6 +47,8 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     private OpenSequenceGraph energyGraphBC = null;
     private OpenSequenceGraph energyGraphBA = null;
     private OpenSequenceGraph consumersSatisfied = null;
+    private OpenSequenceGraph brokersEnergyWallet = null;
+    private OpenSequenceGraph brokersMoneyWallet = null;
 
     // Logic variables
     private static final int DELAY_SIMULATION = 100;
@@ -185,6 +188,22 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         consumersSatisfied.setAxisTitles("time", "consumers");
         consumersSatisfied.addSequence("number", () -> energyContractsConsumerBroker.size());
         consumersSatisfied.display();
+
+
+        if (brokersEnergyWallet != null)
+            brokersEnergyWallet.dispose();
+
+        brokersEnergyWallet = new OpenSequenceGraph("Energy Wallet", this);
+        brokersEnergyWallet.setAxisTitles("time", "energy");
+        brokersEnergyWallet.display();
+
+
+        if (brokersMoneyWallet != null)
+            brokersMoneyWallet.dispose();
+
+        brokersMoneyWallet = new OpenSequenceGraph("Money Wallet", this);
+        brokersMoneyWallet.setAxisTitles("time", "energy");
+        brokersMoneyWallet.display();
     }
 
     private void addEnergyTrading(OpenSequenceGraph energyGraph, List<EnergyContract> energyContracts) {
@@ -224,8 +243,11 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     }
 
     private void energyPlotBrokersAvailable() {
-        for (Broker b : brokers)
-            energyGraphBA.addSequence("Broker: " + b.getLocalName(), b::getAvailableMonthlyEnergyQuota);
+        for (Broker b : brokers){
+            energyGraphBA.addSequence(b.getLocalName(), b::getAvailableMonthlyEnergyQuota);
+            brokersEnergyWallet.addSequence(b.getLocalName(), () -> b.getEnergyWallet().getBalance());
+            brokersMoneyWallet.addSequence(b.getLocalName(), () -> b.getMoneyWallet().getBalance());
+        }
     }
 
     private void scheduleConstructor() {
@@ -235,6 +257,9 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         getSchedule().scheduleActionAtInterval(1, energyGraphBC, "step", Schedule.LAST);
         getSchedule().scheduleActionAtInterval(1, energyGraphBA, "step", Schedule.LAST);
         getSchedule().scheduleActionAtInterval(1, consumersSatisfied, "step", Schedule.LAST);
+        getSchedule().scheduleActionAtInterval(1, brokersEnergyWallet, "step", Schedule.LAST);
+        getSchedule().scheduleActionAtInterval(1, brokersMoneyWallet, "step", Schedule.LAST);
+
         getSchedule().scheduleActionAtInterval(1, this, "updateGraph", Schedule.LAST);
     }
 
