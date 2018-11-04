@@ -96,7 +96,7 @@ public class Broker extends DFRegisterAgent {
      */
     public void updateEnergyUnitSellPrice() {
         float costPerUnit = (float) getMonthlyCosts() / getMonthlyEnergy();
-        this.energyUnitSellPrice = (int) (costPerUnit * 1.1f);
+        this.energyUnitSellPrice = (int) (costPerUnit * 1.2f);
     }
 
     public int getEnergyUnitSellPrice() {
