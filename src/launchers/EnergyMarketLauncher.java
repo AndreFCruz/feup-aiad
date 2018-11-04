@@ -467,7 +467,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         }
     }
 
-    private GenericAgent getAgentByAID(AID agentAID) {
+    public GenericAgent getAgentByAID(AID agentAID) {
         return agents.get(agentAID);
     }
 

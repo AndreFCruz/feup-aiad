@@ -8,27 +8,22 @@ import jade.lang.acl.UnreadableException;
 import utils.EnergyContractProposal;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Vector;
 
 public class ConsumerContractInitiator extends FIPAContractNetInitiator {
 
-    List<String> brokers; // TODO get Brokers instead of Broker names from Consumer.getBrokers
-
     public ConsumerContractInitiator(Consumer agent) {
         super(agent);
-        // brokers = agent.getPromisingBrokers();
     }
 
     @Override
     protected Vector prepareCfps(ACLMessage cfp) {
-        List<Broker> orderedListOfPreferences = getOrderedListOfPreferences();
 
         Vector<ACLMessage> v = new Vector<>();
         Consumer c = (Consumer) myAgent;
 
+        List<Broker> orderedListOfPreferences = c.getOrderedBrokers();
         boolean contactedAtLeastOne = false;
 
         // If already has an associated Broker
@@ -94,19 +89,5 @@ public class ConsumerContractInitiator extends FIPAContractNetInitiator {
     @Override
     protected void handleAllResultNotifications(Vector resultNotifications) {
         super.handleAllResultNotifications(resultNotifications);
-    }
-
-    /**
-     * @return An ordered ArrayList of the preferred order to contact the Producers.
-     */
-    private List<Broker> getOrderedListOfPreferences() {
-        // getting all the agents
-        List<Broker> result = ((Consumer) myAgent).getWorldModel().getBrokers();
-
-        // this sorting can lead to a lot of agents trying to get the same producer
-//        result.sort(Comparator.comparingInt(Broker::getAvailableMonthlyEnergyQuota));
-        Collections.shuffle(result);
-
-        return result;
     }
 }

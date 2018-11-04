@@ -18,11 +18,8 @@ import java.util.Vector;
  */
 public class BrokerContractInitiator extends FIPAContractNetInitiator {
 
-//    private List<String> producers;
-
     public BrokerContractInitiator(Broker agent) {
         super(agent);
-//        producers = agent.getPromisingProducers();
     }
 
     /**
@@ -33,7 +30,7 @@ public class BrokerContractInitiator extends FIPAContractNetInitiator {
      */
     @Override
     protected Vector prepareCfps(ACLMessage cfp) {
-        List<Producer> orderedListOfPreferences = getOrderedListOfPreferences();
+        List<Producer> orderedListOfPreferences = ((Broker) myAgent).getOrderedProducers();
 
          Vector v = new Vector();
 
@@ -113,19 +110,5 @@ public class BrokerContractInitiator extends FIPAContractNetInitiator {
     @Override
     protected void handleAllResultNotifications(Vector resultNotifications) {
         super.handleAllResultNotifications(resultNotifications);
-    }
-
-    /**
-     * @return An ordered ArrayList of the preferred order to contact the Producers.
-     */
-    private List<Producer> getOrderedListOfPreferences() {
-        // getting all the agents
-        List<Producer> result = ((Broker) myAgent).getWorldModel().getProducers();
-
-        // this sorting can lead to a lot of agents trying to get the same producer
-//      result.sort(Comparator.comparingInt(Producer::getEnergyUnitSellPrice).reversed());
-        Collections.shuffle(result);
-
-        return result;
     }
 }
