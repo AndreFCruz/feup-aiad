@@ -415,7 +415,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 
         for (ListIterator<EnergyContract> iter = energyContractsBrokerProducer.listIterator(); iter.hasNext(); ) {
             EnergyContract contract = iter.next();
-            if (contract.hasEnded()) {
+            if (contract.hasEnded() || !contract.canExchange()) {
                 // dealing with Producer's side of the contract
                 ((Producer) contract.getEnergySupplier()).setContract(null);
                 // dealing with Broker's side of the contract
@@ -429,7 +429,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 
         for (ListIterator<EnergyContract> iter = energyContractsConsumerBroker.listIterator(); iter.hasNext(); ) {
             EnergyContract contract = iter.next();
-            if (contract.hasEnded()) {
+            if (contract.hasEnded() || !contract.canExchange()) {
                 // dealing with Broker's side of the contract
                 ((Broker) contract.getEnergySupplier()).getConsumerContracts().remove(contract);
 

@@ -63,6 +63,16 @@ public class EnergyContract {
     }
 
     /**
+     * @return Whether this contract can perform another step.
+     */
+    public boolean canExchange(){
+        if (ticks % paymentCycle == 0){
+            return energySupplier.getEnergyWallet().getBalance() >= energyAmountPerCycle;
+        }
+        return true;
+    }
+
+    /**
      * Steps this contract, meaning one day (tick) has passed.
      */
     public void step() {
