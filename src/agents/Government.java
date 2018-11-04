@@ -39,7 +39,14 @@ public class Government extends GenericAgent {
             List<Broker> brokers = worldModel.getBrokers();
 
             List<Integer> brokersNumProducers = brokers.stream().mapToInt(Broker::getNumberProducers).boxed().collect(Collectors.toList());
-
+            for (int i = 0; i < brokersNumProducers.size(); ++i){
+                Integer numProducers = brokersNumProducers.get(i);
+                if (numProducers/worldModel.getNUM_PRODUCERS() >= percentageMonopoly){
+                    // this guys has a monopoly
+                    // TODO: add punishment here
+                    break;
+                }
+            }
 
         }
     }
