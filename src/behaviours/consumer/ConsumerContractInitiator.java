@@ -30,6 +30,11 @@ public class ConsumerContractInitiator extends FIPAContractNetInitiator {
 
         boolean contactedAtLeastOne = false;
 
+        // If already has an associated Broker
+        if (c.hasBrokerService()) {
+            return v;
+        }
+
         for (Broker b : orderedListOfPreferences) {
             if (b.getAvailableMonthlyEnergyQuota() >= c.getEnergyConsumptionPerMonth()) {
                 contactedAtLeastOne = true;
@@ -55,11 +60,13 @@ public class ConsumerContractInitiator extends FIPAContractNetInitiator {
 
     @Override
     protected void handleAllResponses(Vector responses, Vector acceptances) {
+
         for (Object response : responses) {
             ACLMessage received = ((ACLMessage) response);
             ACLMessage reply = ((ACLMessage) response).createReply();
 
-            if (received.getPerformative() == ACLMessage.PROPOSE) {
+            // If meanwhile a contract was signed
+            if (received.getPerformative() == ACLMessage.PROPOSE && !((Consumer) myAgent).hasBrokerService()) {
                 try {
                     EnergyContractProposal ec = (EnergyContractProposal) received.getContentObject();
                     ec.signContract(myAgent);
