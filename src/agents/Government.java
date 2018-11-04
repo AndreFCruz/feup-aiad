@@ -15,7 +15,7 @@ import java.util.stream.IntStream;
  */
 public class Government extends GenericAgent {
 
-    private float percentageMonopoly = 0.8f;
+    private float percentageMonopoly;
 
     Government(EnergyMarketLauncher model, GraphicSettings graphicSettings, float pm) {
         super(model, graphicSettings);
@@ -38,11 +38,15 @@ public class Government extends GenericAgent {
         public void action() {
             List<Broker> brokers = worldModel.getBrokers();
 
-            List<Integer> brokersNumProducers = brokers.stream().mapToInt(Broker::getNumberProducers).boxed().collect(Collectors.toList());
-            for (int i = 0; i < brokersNumProducers.size(); ++i){
-                Integer numProducers = brokersNumProducers.get(i);
-                if (numProducers/worldModel.getNUM_PRODUCERS() >= percentageMonopoly){
-                    // this guys has a monopoly
+            List<Integer> brokersEnergyReceiving = brokers.stream().mapToInt(Broker::getMonthlyEnergy).boxed().collect(Collectors.toList());
+            //int totalEnergyBeingReceived = worldModel.getProducers().stream().mapToInt(Producer::getEnergyProductionPerMonth).sum();
+            int totalEnergyBeingReceived = brokersEnergyReceiving.stream().mapToInt(Integer::intValue).sum();
+
+            for (int i = 0; i < brokersEnergyReceiving.size(); ++i){
+                Integer energyReceiving = brokersEnergyReceiving.get(i);
+                if (((float) energyReceiving/totalEnergyBeingReceived) >= percentageMonopoly){
+                    Broker monopolyGuy = brokers.get(i);   // this guys has a monopoly
+
                     // TODO: add punishment here
                     break;
                 }
