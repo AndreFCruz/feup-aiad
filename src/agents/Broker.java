@@ -119,4 +119,8 @@ public class Broker extends DFRegisterAgent {
                 .mapToDouble(EnergyContract::getEnergyAmountPerMonth).sum();
     }
 
+    public int getNumberProducers() {
+        return producerContracts.size();
+    }
+
 }
