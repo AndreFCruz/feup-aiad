@@ -411,10 +411,6 @@ public class EnergyMarketLauncher extends Repast3Launcher {
             EnergyContract contract = iter.next();
             if (contract.hasEnded()) {
                 // dealing with Producer's side of the contract
-                contract.getEnergySupplier()
-                        .addBehaviour(
-                                new ProducerListeningBehaviour(contract.getEnergySupplier())
-                        );
                 ((Producer) contract.getEnergySupplier()).setContract(null);
 
                 // dealing with Broker's side of the contract
@@ -439,10 +435,6 @@ public class EnergyMarketLauncher extends Repast3Launcher {
             if (contract.hasEnded()) {
 
                 // dealing with Broker's side of the contract
-                contract.getEnergySupplier()
-                        .addBehaviour(
-                                new BrokerListeningBehaviour(contract.getEnergySupplier())
-                        );
                 ((Broker) contract.getEnergySupplier()).getConsumerContracts().remove(contract);
 
                 // dealing with Consumer's side of the contract
