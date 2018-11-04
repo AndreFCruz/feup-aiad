@@ -406,6 +406,16 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     private void updateEnergyContracts() {
 //        System.out.println("Currently with " + energyContractsBrokerProducer.size() + " contracts.");
 
+        for (Producer p: producers){
+            p.getEnergyWallet().inject(p.getEnergyProductionPerMonth() / 30f);
+        }
+
+        for (Consumer c: consumers){
+            if (c.hasBrokerService()) {
+                c.getEnergyWallet().consume(c.getEnergyConsumptionPerMonth() / 30f);
+            }
+        }
+
         // TODO: figure out why the energy market trading is not restarting
         for (ListIterator<EnergyContract> iter = energyContractsBrokerProducer.listIterator(); iter.hasNext(); ) {
             EnergyContract contract = iter.next();
