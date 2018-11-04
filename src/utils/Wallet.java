@@ -17,7 +17,7 @@ public class Wallet implements Serializable {
             this.payer = payer;
             this.receiver = receiver;
 
-            System.out.println(this.toString());
+//            System.out.println(this.toString());
         }
 
 
