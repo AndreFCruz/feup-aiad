@@ -9,6 +9,7 @@ import utils.EnergyContractProposal;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Vector;
 
@@ -105,6 +106,19 @@ public class ConsumerContractInitiator extends FIPAContractNetInitiator {
         // this sorting can lead to a lot of agents trying to get the same producer
 //      result.sort(Comparator.comparingInt(Producer::getEnergyUnitSellPrice).reversed());
         Collections.shuffle(result);
+        result.sort(new Comparator<Broker>() {
+            @Override
+            public int compare(Broker broker, Broker broker2) {
+                int bquota = broker.getAvailableMonthlyEnergyQuota();
+                int b2quota = broker2.getAvailableMonthlyEnergyQuota();
+
+                if (bquota < b2quota)
+                    return -1;
+                if (bquota > b2quota)
+                    return 1;
+                else return 0;
+            }
+        });
 
         return result;
     }
