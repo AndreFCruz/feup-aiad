@@ -1,10 +1,7 @@
 package launchers;
 
 
-import agents.Broker;
-import agents.Consumer;
-import agents.GenericAgent;
-import agents.Producer;
+import agents.*;
 import behaviours.broker.BrokerContractInitiator;
 import behaviours.broker.BrokerContractWrapperBehaviour;
 import behaviours.broker.BrokerListeningBehaviour;
@@ -55,6 +52,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     private int NUM_PRODUCERS;
     private int NUM_BROKERS;
     private int NUM_CONSUMERS;
+    private float MONOPOLY_PROBABILITY;
 
 
     // Energy Variables
@@ -76,11 +74,13 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     private List<Producer> producers;
     private List<Broker> brokers;
     private List<Consumer> consumers;
+    private Government government;
 
     private List<EnergyContract> energyContractsBrokerProducer;
     private List<EnergyContract> energyContractsConsumerBroker;
 
     private Map<AID, GenericAgent> agents;
+
 
     public EnergyMarketLauncher() {
         rand = new Random();
@@ -93,6 +93,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         NUM_PRODUCERS = 50;
         NUM_BROKERS = 5;
         NUM_CONSUMERS = 30;
+        MONOPOLY_PROBABILITY = 0.5f;
     }
 
     public static void main(String[] args) {
@@ -131,6 +132,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         producers = new ArrayList<>();
         brokers = new ArrayList<>();
         consumers = new ArrayList<>();
+
 
         energyContractsBrokerProducer = new ArrayList<>();
         energyContractsConsumerBroker = new ArrayList<>();
@@ -288,7 +290,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 
     @Override
     public String[] getInitParam() {
-        return new String[]{"NUM_PRODUCERS", "NUM_BROKERS", "NUM_CONSUMERS"};
+        return new String[]{"NUM_PRODUCERS", "NUM_BROKERS", "NUM_CONSUMERS", "MONOPOLY_PROBABILITY"};
     }
 
     @Override
@@ -307,6 +309,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         launchProducers();
         launchBrokers();
         launchConsumers();
+        launchGovernment();
 
         setUpAgentsAIDMap();
     }
@@ -381,7 +384,11 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         }
 
         energyPlotBuildConsumers();
+    }
 
+    private void launchGovernment() throws StaleProxyException {
+        government = new Government(this, null, MONOPOLY_PROBABILITY);
+        mainContainer.acceptNewAgent("government", government).start();
     }
 
     private GraphicSettings makeGraphicsSettings(int total, int idx, int yCoords, Color color) {
@@ -403,6 +410,8 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         consumersConsumeEnergy();
 
         updateEnergyContracts();
+
+        updateMonopolySearch();
     }
 
     private void producersProduceEnergy() {
@@ -446,6 +455,12 @@ public class EnergyMarketLauncher extends Repast3Launcher {
             } else {
                 contract.step();
             }
+        }
+    }
+
+    private void updateMonopolySearch() {
+        if (rand.nextFloat() < ((float)1/360)){
+            government.breakUpMonopoly();
         }
     }
 
@@ -529,6 +544,14 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 
     public void setNUM_CONSUMERS(int NUM_CONSUMERS) {
         this.NUM_CONSUMERS = NUM_CONSUMERS;
+    }
+
+    public float getMONOPOLY_PROBABILITY() {
+        return MONOPOLY_PROBABILITY;
+    }
+
+    public void setMONOPOLY_PROBABILITY(float MONOPOLY_PROBABILITY) {
+        this.MONOPOLY_PROBABILITY = MONOPOLY_PROBABILITY;
     }
 
 }

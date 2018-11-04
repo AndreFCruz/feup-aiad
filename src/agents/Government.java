@@ -17,7 +17,7 @@ public class Government extends GenericAgent {
 
     private float percentageMonopoly;
 
-    Government(EnergyMarketLauncher model, GraphicSettings graphicSettings, float pm) {
+    public Government(EnergyMarketLauncher model, GraphicSettings graphicSettings, float pm) {
         super(model, graphicSettings);
         this.percentageMonopoly = pm;
     }
@@ -46,7 +46,7 @@ public class Government extends GenericAgent {
                 Integer energyReceiving = brokersEnergyReceiving.get(i);
                 if (((float) energyReceiving/totalEnergyBeingReceived) >= percentageMonopoly){
                     Broker monopolyGuy = brokers.get(i);   // this guys has a monopoly
-
+                    
                     // TODO: add punishment here
                     break;
                 }
