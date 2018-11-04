@@ -49,7 +49,7 @@ public class Consumer extends DFSearchAgent {
     protected void setup() {
         super.setup();
         addBehaviour(new ConsumerBusinessStarter(this, TIMEOUT));
-        addBehaviour(new ConsumeBehaviour(this));
+//        addBehaviour(new ConsumeBehaviour(this));
         System.out.println("Consumer " + this.getLocalName() + " was created.");
     }
 

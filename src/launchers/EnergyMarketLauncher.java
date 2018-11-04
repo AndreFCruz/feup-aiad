@@ -327,8 +327,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
             GraphicSettings gs = makeGraphicsSettings(NUM_PRODUCERS, i, 1, PRODUCER_COLOR);
 
             int energyLeft = TOTAL_ENERGY_PRODUCED_PER_MONTH - actualTotalEnergyProducedPerMonth;
-            int monthlyEnergyQuota = (int) ((energyLeft / (NUM_PRODUCERS - i))
-                    * (0.5 + rand.nextFloat()));
+            int monthlyEnergyQuota = (int) ((energyLeft / (NUM_PRODUCERS - i)) * (0.5 + rand.nextFloat()));
             if (monthlyEnergyQuota > (TOTAL_ENERGY_PRODUCED_PER_MONTH - actualTotalEnergyProducedPerMonth))
                 monthlyEnergyQuota = TOTAL_ENERGY_PRODUCED_PER_MONTH - actualTotalEnergyProducedPerMonth;
             actualTotalEnergyProducedPerMonth += monthlyEnergyQuota;
@@ -343,14 +342,14 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     }
 
     private void launchBrokers() throws StaleProxyException {
-        int totalEneryCostPerMonth = producers.parallelStream().mapToInt(
+        int totalEnergyCostPerMonth = producers.parallelStream().mapToInt(
                 (Producer p) -> p.getEnergyProductionPerMonth() * p.getEnergyUnitSellPrice()
         ).sum();
 
         for (int i = 0; i < NUM_BROKERS; ++i) {
             GraphicSettings gs = makeGraphicsSettings(NUM_BROKERS, i, 2, BROKER_COLOR);
 
-            int initialInvestment = (int) ((totalEneryCostPerMonth / NUM_BROKERS)
+            int initialInvestment = (int) ((totalEnergyCostPerMonth / NUM_BROKERS)
                     * (1. + (1. / NUM_BROKERS) * rand.nextFloat()));
 
             Broker b = new Broker(this, gs, initialInvestment);
@@ -404,35 +403,25 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     }
 
     private void updateEnergyContracts() {
-//        System.out.println("Currently with " + energyContractsBrokerProducer.size() + " contracts.");
 
-        for (Producer p: producers){
+        // force the consume and produce actions to be taken each tick.
+        for (Producer p: producers)
             p.getEnergyWallet().inject(p.getEnergyProductionPerMonth() / 30f);
-        }
 
-        for (Consumer c: consumers){
-            if (c.hasBrokerService()) {
+        for (Consumer c: consumers)
+            if (c.hasBrokerService())
                 c.getEnergyWallet().consume(c.getEnergyConsumptionPerMonth() / 30f);
-            }
-        }
 
-        // TODO: figure out why the energy market trading is not restarting
+
         for (ListIterator<EnergyContract> iter = energyContractsBrokerProducer.listIterator(); iter.hasNext(); ) {
             EnergyContract contract = iter.next();
             if (contract.hasEnded()) {
                 // dealing with Producer's side of the contract
                 ((Producer) contract.getEnergySupplier()).setContract(null);
-
                 // dealing with Broker's side of the contract
                 ((Broker) contract.getEnergyClient()).getProducerContracts().remove(contract);
-                /*contract.getEnergyClient()
-                        .addBehaviour(
-                                new BrokerContractWrapperBehaviour(
-                                        new BrokerContractInitiator((Broker) contract.getEnergyClient())
-                                )
-                        );*/
-                iter.remove();
 
+                iter.remove();
             } else {
                 contract.step();
             }
@@ -441,7 +430,6 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         for (ListIterator<EnergyContract> iter = energyContractsConsumerBroker.listIterator(); iter.hasNext(); ) {
             EnergyContract contract = iter.next();
             if (contract.hasEnded()) {
-
                 // dealing with Broker's side of the contract
                 ((Broker) contract.getEnergySupplier()).getConsumerContracts().remove(contract);
 
@@ -471,7 +459,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 
         EnergyContract contract = new EnergyContract(contractProposal, supplier, client);
         energyContractsBrokerProducer.add(contract);
-        contract.step(); // first step, so first month's trades are promptly withdrawn
+        contract.step(); // so first month's trades are promptly withdrawn
 
         client.addEnergyContract(contract);
     }
@@ -482,7 +470,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 
         EnergyContract contract = new EnergyContract(contractProposal, supplier, client);
         energyContractsConsumerBroker.add(contract);
-        contract.step(); // first step, so first month's trades are promptly withdrawn
+        contract.step(); // so first month's trades are promptly withdrawn
 
         supplier.addConsumerContract(contract);
     }

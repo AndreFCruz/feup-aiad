@@ -35,7 +35,7 @@ public class Producer extends DFRegisterAgent {
         this.getEnergyWallet().inject(energyProductionPerMonth);
 
         addBehaviour(new ProducerListeningBehaviour(this));
-        addBehaviour(new ProduceBehaviour(this));
+//        addBehaviour(new ProduceBehaviour(this));
     }
 
     public static Producer createProducer(EnergyMarketLauncher model, GraphicSettings graphicSettings, int energyUnits) {

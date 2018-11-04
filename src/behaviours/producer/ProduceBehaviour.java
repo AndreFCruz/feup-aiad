@@ -16,7 +16,7 @@ public class ProduceBehaviour extends SimpleBehaviour {
 
     @Override
     public void action() {
-//        myProducer.getEnergyWallet().inject(myProducer.getEnergyProductionPerMonth() / 30f);
+        myProducer.getEnergyWallet().inject(myProducer.getEnergyProductionPerMonth() / 30f);
     }
 
     @Override
