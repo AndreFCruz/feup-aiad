@@ -104,8 +104,8 @@ public class ConsumerContractInitiator extends FIPAContractNetInitiator {
         List<Broker> result = ((Consumer) myAgent).getWorldModel().getBrokers();
 
         // this sorting can lead to a lot of agents trying to get the same producer
-//      result.sort(Comparator.comparingInt(Producer::getEnergyUnitSellPrice).reversed());
-        result.sort(Comparator.comparingInt(Broker::getAvailableMonthlyEnergyQuota));
+//        result.sort(Comparator.comparingInt(Broker::getAvailableMonthlyEnergyQuota));
+        Collections.shuffle(result);
 
         return result;
     }
