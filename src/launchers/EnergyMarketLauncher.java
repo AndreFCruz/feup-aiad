@@ -493,6 +493,10 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         supplier.addConsumerContract(contract);
     }
 
+    public List<Broker> getBrokers() {
+        return brokers;
+    }
+
     public int getNUM_PRODUCERS() {
         return NUM_PRODUCERS;
     }
