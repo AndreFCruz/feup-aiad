@@ -53,6 +53,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     private int NUM_BROKERS;
     private int NUM_CONSUMERS;
     private float MONOPOLY_PROBABILITY;
+    private int AVG_DAYS_FOR_AUDIT;
 
 
     // Energy Variables
@@ -82,6 +83,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     private Map<AID, GenericAgent> agents;
 
 
+
     public EnergyMarketLauncher() {
         rand = new Random();
 
@@ -94,6 +96,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         NUM_BROKERS = 5;
         NUM_CONSUMERS = 30;
         MONOPOLY_PROBABILITY = 0.5f;
+        AVG_DAYS_FOR_AUDIT = 360;
     }
 
     public static void main(String[] args) {
@@ -459,7 +462,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     }
 
     private void updateMonopolySearch() {
-        if (rand.nextFloat() < ((float)1/360)){
+        if (rand.nextFloat() < ((float)1/AVG_DAYS_FOR_AUDIT)){
             government.breakUpMonopoly();
         }
     }
@@ -552,6 +555,14 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 
     public void setMONOPOLY_PROBABILITY(float MONOPOLY_PROBABILITY) {
         this.MONOPOLY_PROBABILITY = MONOPOLY_PROBABILITY;
+    }
+
+    public int getAVG_DAYS_FOR_AUDIT() {
+        return AVG_DAYS_FOR_AUDIT;
+    }
+
+    public void setAVG_DAYS_FOR_AUDIT(int AVG_DAYS_FOR_AUDIT) {
+        this.AVG_DAYS_FOR_AUDIT = AVG_DAYS_FOR_AUDIT;
     }
 
 }

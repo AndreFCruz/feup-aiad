@@ -46,8 +46,17 @@ public class Government extends GenericAgent {
                 Integer energyReceiving = brokersEnergyReceiving.get(i);
                 if (((float) energyReceiving/totalEnergyBeingReceived) >= percentageMonopoly){
                     Broker monopolyGuy = brokers.get(i);   // this guys has a monopoly
-                    
-                    // TODO: add punishment here
+                    float difference = ((float) energyReceiving/totalEnergyBeingReceived) - percentageMonopoly;
+                    float correspondingMoney = monopolyGuy.getMoneyWallet().getBalance()*difference;
+                    // TODO: maybe chose another punishment
+                    for (Broker b: brokers){
+                        if (b.getLocalName().equals(monopolyGuy.getLocalName())){
+                            b.getMoneyWallet().consume(correspondingMoney);
+                        } else {
+                            if (correspondingMoney / (brokers.size() - 1) > 0)
+                                b.getMoneyWallet().inject(correspondingMoney / (brokers.size() - 1));
+                        }
+                    }
                     break;
                 }
             }
