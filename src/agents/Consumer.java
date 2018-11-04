@@ -2,6 +2,8 @@ package agents;
 
 import behaviours.consumer.ConsumeBehaviour;
 import behaviours.consumer.ConsumerBusinessStarter;
+import behaviours.consumer.ConsumerContractInitiator;
+import behaviours.consumer.ConsumerContractWrapperBehaviour;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import launchers.EnergyMarketLauncher;
 import utils.AgentType;
@@ -23,7 +25,7 @@ public class Consumer extends DFSearchAgent {
 
     private boolean brokerService = false;
 
-    private int contractDuration = 1000; // One year contracts
+    private int contractDuration = 360; // One year contracts
 
     public Consumer(EnergyMarketLauncher model, GraphicSettings graphicSettings, int energyConsumptionPerMonth) {
         super(model, graphicSettings);
@@ -63,6 +65,14 @@ public class Consumer extends DFSearchAgent {
 
     public void setHasBrokerService(boolean b) {
         brokerService = b;
+
+        if (! brokerService) {
+            this.addBehaviour(
+                    new ConsumerContractWrapperBehaviour(
+                            new ConsumerContractInitiator(this)
+                    )
+            );
+        }
     }
 
     public int getContractDuration() {

@@ -399,19 +399,25 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     }
 
     public void simulationStep() {
+        producersProduceEnergy();
+        consumersConsumeEnergy();
+
         updateEnergyContracts();
     }
 
-    private void updateEnergyContracts() {
-
+    private void producersProduceEnergy() {
         // force the consume and produce actions to be taken each tick.
         for (Producer p: producers)
             p.getEnergyWallet().inject(p.getEnergyProductionPerMonth() / 30f);
+    }
 
+    private void consumersConsumeEnergy() {
         for (Consumer c: consumers)
             if (c.hasBrokerService())
                 c.getEnergyWallet().consume(c.getEnergyConsumptionPerMonth() / 30f);
+    }
 
+    private void updateEnergyContracts() {
 
         for (ListIterator<EnergyContract> iter = energyContractsBrokerProducer.listIterator(); iter.hasNext(); ) {
             EnergyContract contract = iter.next();
@@ -435,12 +441,6 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 
                 // dealing with Consumer's side of the contract
                 ((Consumer) contract.getEnergyClient()).setHasBrokerService(false);
-                contract.getEnergyClient()
-                        .addBehaviour(
-                                new ConsumerContractWrapperBehaviour(
-                                        new ConsumerContractInitiator((Consumer) contract.getEnergyClient())
-                                )
-                        );
 
                 iter.remove();
             } else {

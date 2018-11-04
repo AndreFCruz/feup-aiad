@@ -2,34 +2,27 @@ package agents;
 
 import behaviours.broker.BrokerBusinessStarter;
 import behaviours.broker.BrokerListeningBehaviour;
-import sajas.core.AID;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import launchers.EnergyMarketLauncher;
 import utils.AgentType;
 import utils.EnergyContract;
-import utils.EnergyContractProposal;
 import utils.GraphicSettings;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * The Broker class represents the middleman between the energy suppliers and the final consumers.
  */
 public class Broker extends DFRegisterAgent {
-    public List<EnergyContract> getProducerContracts() {
-        return producerContracts;
-    }
-
-    public List<EnergyContract> getConsumerContracts() {
-        return consumerContracts;
-    }
 
     private List<EnergyContract> producerContracts = new ArrayList<>();
 
     private List<EnergyContract> consumerContracts = new ArrayList<>();
+
+    private float profitMargin = 0.10f;
+
+    private float profitMarginIncrements = 0.05f;
 
     private static final int TIMEOUT = 2000;
 
@@ -69,6 +62,14 @@ public class Broker extends DFRegisterAgent {
         return producersNames;
     }
 
+    public List<EnergyContract> getProducerContracts() {
+        return producerContracts;
+    }
+
+    public List<EnergyContract> getConsumerContracts() {
+        return consumerContracts;
+    }
+
     public void addEnergyContract(EnergyContract ec) {
         producerContracts.add(ec);
         updateEnergyUnitSellPrice();
@@ -87,16 +88,33 @@ public class Broker extends DFRegisterAgent {
     }
 
     public int getAvailableMonthlyEnergyQuota() {
-        int sold = (int) consumerContracts.stream().mapToDouble(EnergyContract::getEnergyAmountPerMonth).sum();
-        return getMonthlyEnergy() - sold;
+        return getMonthlyEnergy() - getMonthlySoldEnergy();
     }
 
     /**
      * Update the current energy
      */
     public void updateEnergyUnitSellPrice() {
+        updateProfitMargin();
+
         float costPerUnit = (float) getMonthlyCosts() / getMonthlyEnergy();
-        this.energyUnitSellPrice = (int) (costPerUnit * 1.2f);
+        this.energyUnitSellPrice = (int) (costPerUnit * (1f + this.profitMargin));
+    }
+
+    /**
+     * Rethinks the agent's profit margin, according to expected revenue/expenses.
+     */
+    private void updateProfitMargin() {
+        int revenue = getMonthlyRevenue();
+        int costs = getMonthlyCosts();
+
+        if (revenue < costs) {
+            this.profitMargin += profitMarginIncrements;
+            System.out.println("Increased profit margin to " + profitMargin);
+        } else if (revenue * (1 + profitMargin - profitMarginIncrements) / (1 + profitMargin) > costs) {
+            this.profitMargin -= profitMarginIncrements;
+            System.out.println("Reduced profit margin to " + profitMargin);
+        }
     }
 
     public int getEnergyUnitSellPrice() {
@@ -104,13 +122,19 @@ public class Broker extends DFRegisterAgent {
     }
 
     public int getMonthlyCosts() {
-        return (int) producerContracts.stream().mapToDouble(
-                (EnergyContract c) -> c.getEnergyCostPerUnit() * c.getEnergyAmountPerMonth()
-        ).sum();
+        return (int) producerContracts.stream().mapToDouble(EnergyContract::getMonthlyEnergyCost).sum();
+    }
+
+    public int getMonthlyRevenue() {
+        return (int) consumerContracts.stream().mapToDouble(EnergyContract::getMonthlyEnergyCost).sum();
     }
 
     public int getMonthlyEnergy() {
         return (int) producerContracts.stream().mapToDouble(EnergyContract::getEnergyAmountPerMonth).sum();
+    }
+
+    private int getMonthlySoldEnergy() {
+        return (int) consumerContracts.stream().mapToDouble(EnergyContract::getEnergyAmountPerMonth).sum();
     }
 
     public int getMonthlyRenewableEnergy() {
