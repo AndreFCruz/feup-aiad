@@ -39,6 +39,7 @@ public class BrokerContractInitiator extends FIPAContractNetInitiator {
 
         boolean willContactAtLeastOne = false;
         float brokersCash = ((Broker) myAgent).getMoneyWallet().getBalance();
+
         for (Producer p : orderedListOfPreferences) {
             // get price for producer's total energy per month
             int contractCost = p.getEnergyProductionPerMonth() * p.getEnergyUnitSellPrice();
@@ -60,12 +61,8 @@ public class BrokerContractInitiator extends FIPAContractNetInitiator {
             }
 
             v.add(cfp);
-        } else {
-            // can't buy any more energy from anyone
-            ((Broker) myAgent).setCanStillBuyEnergy(false);
         }
 
-        // TODO: check if there is a problem when this comes empty ?
         return v;
     }
 

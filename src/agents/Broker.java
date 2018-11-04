@@ -35,8 +35,6 @@ public class Broker extends DFRegisterAgent {
 
     private DFSearchAgent search;
 
-    private boolean canStillBuyEnergy;
-
     private int duration = 365; // TODO: remove this at a further development stage
 
     private int energyUnitSellPrice;
@@ -48,7 +46,6 @@ public class Broker extends DFRegisterAgent {
         this.search.setSearchType(AgentType.PRODUCER);
 
         this.moneyWallet.inject(initialBudget);
-        this.canStillBuyEnergy = true;
     }
 
     @Override
@@ -83,14 +80,6 @@ public class Broker extends DFRegisterAgent {
 
     public EnergyMarketLauncher getWorldModel() {
         return worldModel;
-    }
-
-    public boolean canStillBuyEnergy() {
-        return canStillBuyEnergy;
-    }
-
-    public void setCanStillBuyEnergy(boolean b) {
-        this.canStillBuyEnergy = b;
     }
 
     public int getDuration() {

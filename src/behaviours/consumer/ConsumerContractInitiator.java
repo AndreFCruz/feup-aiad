@@ -105,20 +105,7 @@ public class ConsumerContractInitiator extends FIPAContractNetInitiator {
 
         // this sorting can lead to a lot of agents trying to get the same producer
 //      result.sort(Comparator.comparingInt(Producer::getEnergyUnitSellPrice).reversed());
-        Collections.shuffle(result);
-        result.sort(new Comparator<Broker>() {
-            @Override
-            public int compare(Broker broker, Broker broker2) {
-                int bquota = broker.getAvailableMonthlyEnergyQuota();
-                int b2quota = broker2.getAvailableMonthlyEnergyQuota();
-
-                if (bquota < b2quota)
-                    return -1;
-                if (bquota > b2quota)
-                    return 1;
-                else return 0;
-            }
-        });
+        result.sort(Comparator.comparingInt(Broker::getAvailableMonthlyEnergyQuota));
 
         return result;
     }

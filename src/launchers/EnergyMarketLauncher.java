@@ -90,9 +90,9 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         DisplayConstants.CELL_WIDTH = 1;
         DisplayConstants.CELL_HEIGHT = 1;
 
-        NUM_PRODUCERS = 100;
+        NUM_PRODUCERS = 50;
         NUM_BROKERS = 5;
-        NUM_CONSUMERS = 50;
+        NUM_CONSUMERS = 30;
     }
 
     public static void main(String[] args) {
@@ -424,15 +424,13 @@ public class EnergyMarketLauncher extends Repast3Launcher {
                 ((Producer) contract.getEnergySupplier()).setContract(null);
 
                 // dealing with Broker's side of the contract
-                ((Broker) contract.getEnergyClient()).setCanStillBuyEnergy(true);
                 ((Broker) contract.getEnergyClient()).getProducerContracts().remove(contract);
-                contract.getEnergyClient()
+                /*contract.getEnergyClient()
                         .addBehaviour(
                                 new BrokerContractWrapperBehaviour(
                                         new BrokerContractInitiator((Broker) contract.getEnergyClient())
                                 )
-                        );
-
+                        );*/
                 iter.remove();
 
             } else {
