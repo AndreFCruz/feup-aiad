@@ -80,4 +80,8 @@ public class Producer extends DFRegisterAgent {
     public EnergySource getEnergySource() {
         return this.energySource;
     }
+
+    public void produce() {
+        getEnergyWallet().inject(getEnergyProductionPerMonth() / 30f);
+    }
 }

@@ -113,7 +113,6 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     }
 
     public void begin() { // called when "Play" pressed on repast gui
-
         modelConstructor();
         displayConstructor();
         scheduleConstructor();
@@ -128,7 +127,6 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         producers = new ArrayList<>();
         brokers = new ArrayList<>();
         consumers = new ArrayList<>();
-
 
         energyContractsBrokerProducer = new ArrayList<>();
         energyContractsConsumerBroker = new ArrayList<>();
@@ -200,7 +198,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
             brokersMoneyWallet.dispose();
 
         brokersMoneyWallet = new OpenSequenceGraph("Money Wallet", this);
-        brokersMoneyWallet.setAxisTitles("time", "energy");
+        brokersMoneyWallet.setAxisTitles("time", "money");
         brokersMoneyWallet.display();
     }
 
@@ -411,15 +409,13 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     }
 
     private void producersProduceEnergy() {
-        // force the consume and produce actions to be taken each tick.
         for (Producer p: producers)
-            p.getEnergyWallet().inject(p.getEnergyProductionPerMonth() / 30f);
+            p.produce();
     }
 
     private void consumersConsumeEnergy() {
         for (Consumer c: consumers)
-            if (c.hasBrokerService())
-                c.getEnergyWallet().consume(c.getEnergyConsumptionPerMonth() / 30f);
+            c.consume();
     }
 
     private void updateEnergyContracts() {

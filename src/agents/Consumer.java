@@ -90,4 +90,9 @@ public class Consumer extends DFSearchAgent {
     public int getContractDuration() {
         return contractDuration;
     }
+
+    public void consume() {
+        if (hasBrokerService())
+            getEnergyWallet().consume(getEnergyConsumptionPerMonth() / 30f);
+    }
 }
