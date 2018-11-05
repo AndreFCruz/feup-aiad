@@ -1,13 +1,7 @@
 package launchers;
 
-
 import agents.*;
-import behaviours.broker.BrokerContractInitiator;
-import behaviours.broker.BrokerContractWrapperBehaviour;
-import behaviours.broker.BrokerListeningBehaviour;
-import behaviours.consumer.ConsumerContractInitiator;
-import behaviours.consumer.ConsumerContractWrapperBehaviour;
-import behaviours.producer.ProducerListeningBehaviour;
+
 import jade.core.AID;
 import jade.core.ProfileImpl;
 import jade.wrapper.StaleProxyException;
@@ -15,7 +9,6 @@ import sajas.core.Runtime;
 import sajas.sim.repast3.Repast3Launcher;
 import sajas.wrapper.ContainerController;
 import uchicago.src.sim.analysis.OpenSequenceGraph;
-import uchicago.src.sim.analysis.Sequence;
 import uchicago.src.sim.engine.Schedule;
 import uchicago.src.sim.engine.SimInit;
 import uchicago.src.sim.gui.DisplayConstants;

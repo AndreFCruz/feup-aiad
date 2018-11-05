@@ -1,6 +1,5 @@
 package agents;
 
-import behaviours.consumer.ConsumeBehaviour;
 import behaviours.consumer.ConsumerBusinessStarter;
 import behaviours.consumer.ConsumerContractInitiator;
 import behaviours.consumer.ConsumerContractWrapperBehaviour;
@@ -65,7 +64,6 @@ public class Consumer extends DFSearchAgent {
     protected void setup() {
         super.setup();
         addBehaviour(new ConsumerBusinessStarter(this, TIMEOUT));
-//        addBehaviour(new ConsumeBehaviour(this));
         System.out.println("Consumer " + this.getLocalName() + " was created.");
     }
 

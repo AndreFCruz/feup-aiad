@@ -8,7 +8,6 @@ import jade.lang.acl.UnreadableException;
 import utils.EnergyContractProposal;
 
 import java.io.IOException;
-import java.util.Collections;
 import java.util.List;
 import java.util.Vector;
 
@@ -80,8 +79,6 @@ public class BrokerContractInitiator extends FIPAContractNetInitiator {
                 try {
                     EnergyContractProposal ec = (EnergyContractProposal) received.getContentObject();
                     ec.signContract(myAgent);
-
-                    // TODO EnergyMarket.addBrokerProducerContract should fetch correct agents from AID, and step 1 step of the contract (to withdraw money from respective agents)
 
                     ((Broker) myAgent).getWorldModel().addBrokerProducerContract(ec);
 

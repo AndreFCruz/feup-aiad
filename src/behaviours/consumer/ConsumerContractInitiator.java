@@ -50,7 +50,6 @@ public class ConsumerContractInitiator extends FIPAContractNetInitiator {
             v.add(cfp);
         }
 
-        // TODO: check if there is a problem when this comes empty ?
         return v;
     }
 
