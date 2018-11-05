@@ -2,16 +2,13 @@ package agents;
 
 import launchers.EnergyMarketLauncher;
 import sajas.core.behaviours.OneShotBehaviour;
-import utils.EnergyContract;
 import utils.GraphicSettings;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
- *  This agent is responsible for periodically break up monopolies.
+ * This agent is responsible for periodically break up monopolies.
  */
 public class Government extends GenericAgent {
 
@@ -23,14 +20,14 @@ public class Government extends GenericAgent {
     }
 
     /**
-     *  This function is called by the energy market from time to time.
+     * This function is called by the energy market from time to time.
      */
-    public void breakUpMonopoly(){
+    public void breakUpMonopoly() {
         this.addBehaviour(new MonopolyBreakerBehaviour());
     }
 
     /**
-     *  This behaviour breaks up a possible monopoly and redistributes the wealth among the other brokers.
+     * This behaviour breaks up a possible monopoly and redistributes the wealth among the other brokers.
      */
     class MonopolyBreakerBehaviour extends OneShotBehaviour {
 
@@ -42,22 +39,40 @@ public class Government extends GenericAgent {
             //int totalEnergyBeingReceived = worldModel.getProducers().stream().mapToInt(Producer::getEnergyProductionPerMonth).sum();
             int totalEnergyBeingReceived = brokersEnergyReceiving.stream().mapToInt(Integer::intValue).sum();
 
-            for (int i = 0; i < brokersEnergyReceiving.size(); ++i){
+            for (int i = 0; i < brokersEnergyReceiving.size(); ++i) {
                 Integer energyReceiving = brokersEnergyReceiving.get(i);
-                if (((float) energyReceiving/totalEnergyBeingReceived) >= percentageMonopoly){
+                if (((float) energyReceiving / totalEnergyBeingReceived) >= percentageMonopoly) {
                     Broker monopolyGuy = brokers.get(i);   // this guys has a monopoly
-                    float difference = ((float) energyReceiving/totalEnergyBeingReceived) - percentageMonopoly;
-                    float correspondingMoney = monopolyGuy.getMoneyWallet().getBalance()*difference;
-                    // TODO: maybe chose another punishment
-                    for (Broker b: brokers){
-                        if (b.getLocalName().equals(monopolyGuy.getLocalName())){
-                            b.getMoneyWallet().consume(correspondingMoney);
+                    float difference = ((float) energyReceiving / totalEnergyBeingReceived) - percentageMonopoly;
+                    float correspondingMoney = monopolyGuy.getMoneyWallet().getBalance() * difference;
+
+                    if (correspondingMoney <= 0) {
+                        // punish by removing energy (might lead to some contracts being revoked)
+                        float correspondingEnergy = monopolyGuy.getEnergyWallet().getBalance() * difference;
+                        if (correspondingEnergy < 0){
+                            // find another way to punish here
                         } else {
-                            if (correspondingMoney / (brokers.size() - 1) > 0)
-                                b.getMoneyWallet().inject(correspondingMoney / (brokers.size() - 1));
+                            float energyForEach = correspondingEnergy / (brokers.size() - 1);
+                            for (Broker b : brokers) {
+                                if (b.getLocalName().equals(monopolyGuy.getLocalName()))
+                                    b.getEnergyWallet().consume(correspondingEnergy);
+                                else
+                                    b.getEnergyWallet().inject(energyForEach);
+                            }
+                        }
+
+                    } else {
+                        // punish by removing money and redistributing it
+                        float moneyForEach = correspondingMoney / (brokers.size() - 1);
+                        for (Broker b : brokers) {
+                            if (b.getLocalName().equals(monopolyGuy.getLocalName()))
+                                b.getMoneyWallet().consume(correspondingMoney);
+                            else
+                                b.getMoneyWallet().inject(moneyForEach);
                         }
                     }
                     break;
+
                 }
             }
 
