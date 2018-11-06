@@ -27,7 +27,7 @@ public class Consumer extends DFSearchAgent {
 
     private boolean brokerService = false;
 
-    private int contractDuration = 360; // One year contracts
+    private int contractDuration = 3600; // One year contracts
 
     public Consumer(EnergyMarketLauncher model, GraphicSettings graphicSettings, int energyConsumptionPerMonth) {
         super(model, graphicSettings);
