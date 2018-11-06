@@ -31,7 +31,7 @@ public class Broker extends DFRegisterAgent {
 
     private DFSearchAgent search;
 
-    private int duration = 3650; // TODO: remove this at a further development stage
+    private int duration = 730; // TODO: remove this at a further development stage
 
     private int energyUnitSellPrice;
 
