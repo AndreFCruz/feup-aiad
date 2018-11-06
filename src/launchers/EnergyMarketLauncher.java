@@ -256,7 +256,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         getSchedule().scheduleActionAtInterval(1, brokersEnergyWallet, "step", Schedule.LAST);
         getSchedule().scheduleActionAtInterval(1, brokersMoneyWallet, "step", Schedule.LAST);
 
-//        getSchedule().scheduleActionAtInterval(1, this, "updateGraph", Schedule.LAST);
+        getSchedule().scheduleActionAtInterval(1, this, "updateGraph", Schedule.LAST);
     }
 
     public void updateGraph() {
