@@ -3,7 +3,6 @@ package behaviours.consumer;
 import agents.Consumer;
 import sajas.core.behaviours.WakerBehaviour;
 
-// TODO: later make a generic Business Starter
 public class ConsumerBusinessStarter extends WakerBehaviour {
 
     private static final long serialVersionUID = 1L;

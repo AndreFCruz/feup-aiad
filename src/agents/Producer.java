@@ -1,9 +1,6 @@
 package agents;
 
-import behaviours.producer.ProduceBehaviour;
 import behaviours.producer.ProducerListeningBehaviour;
-import jade.lang.acl.ACLMessage;
-import jade.lang.acl.MessageTemplate;
 import launchers.EnergyMarketLauncher;
 import resources.*;
 import utils.AgentType;
@@ -35,7 +32,6 @@ public class Producer extends DFRegisterAgent {
         this.getEnergyWallet().inject(energyProductionPerMonth);
 
         addBehaviour(new ProducerListeningBehaviour(this));
-//        addBehaviour(new ProduceBehaviour(this));
     }
 
     public static Producer createProducer(EnergyMarketLauncher model, GraphicSettings graphicSettings, int energyUnits) {
@@ -83,5 +79,9 @@ public class Producer extends DFRegisterAgent {
 
     public EnergySource getEnergySource() {
         return this.energySource;
+    }
+
+    public void produce() {
+        getEnergyWallet().inject(getEnergyProductionPerMonth() / 30f);
     }
 }

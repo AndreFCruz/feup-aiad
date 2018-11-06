@@ -1,16 +1,7 @@
 package launchers;
 
+import agents.*;
 
-import agents.Broker;
-import agents.Consumer;
-import agents.GenericAgent;
-import agents.Producer;
-import behaviours.broker.BrokerContractInitiator;
-import behaviours.broker.BrokerContractWrapperBehaviour;
-import behaviours.broker.BrokerListeningBehaviour;
-import behaviours.consumer.ConsumerContractInitiator;
-import behaviours.consumer.ConsumerContractWrapperBehaviour;
-import behaviours.producer.ProducerListeningBehaviour;
 import jade.core.AID;
 import jade.core.ProfileImpl;
 import jade.wrapper.StaleProxyException;
@@ -18,7 +9,6 @@ import sajas.core.Runtime;
 import sajas.sim.repast3.Repast3Launcher;
 import sajas.wrapper.ContainerController;
 import uchicago.src.sim.analysis.OpenSequenceGraph;
-import uchicago.src.sim.analysis.Sequence;
 import uchicago.src.sim.engine.Schedule;
 import uchicago.src.sim.engine.SimInit;
 import uchicago.src.sim.gui.DisplayConstants;
@@ -55,6 +45,8 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     private int NUM_PRODUCERS;
     private int NUM_BROKERS;
     private int NUM_CONSUMERS;
+    private float MONOPOLY_PROBABILITY;
+    private int AVG_DAYS_FOR_AUDIT;
 
 
     // Energy Variables
@@ -76,11 +68,14 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     private List<Producer> producers;
     private List<Broker> brokers;
     private List<Consumer> consumers;
+    private Government government;
 
     private List<EnergyContract> energyContractsBrokerProducer;
     private List<EnergyContract> energyContractsConsumerBroker;
 
     private Map<AID, GenericAgent> agents;
+
+
 
     public EnergyMarketLauncher() {
         rand = new Random();
@@ -93,6 +88,8 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         NUM_PRODUCERS = 50;
         NUM_BROKERS = 5;
         NUM_CONSUMERS = 30;
+        MONOPOLY_PROBABILITY = 0.5f;
+        AVG_DAYS_FOR_AUDIT = 90;
     }
 
     public static void main(String[] args) {
@@ -116,7 +113,6 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     }
 
     public void begin() { // called when "Play" pressed on repast gui
-
         modelConstructor();
         displayConstructor();
         scheduleConstructor();
@@ -202,7 +198,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
             brokersMoneyWallet.dispose();
 
         brokersMoneyWallet = new OpenSequenceGraph("Money Wallet", this);
-        brokersMoneyWallet.setAxisTitles("time", "energy");
+        brokersMoneyWallet.setAxisTitles("time", "money");
         brokersMoneyWallet.display();
     }
 
@@ -253,14 +249,14 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     private void scheduleConstructor() {
         getSchedule().scheduleActionAtInterval(1, this, "simulationStep");
 //        getSchedule().scheduleActionAtInterval(1, this, "simulationDelay", Schedule.LAST);
-        getSchedule().scheduleActionAtInterval(1, energyGraphPB, "step", Schedule.LAST);
-        getSchedule().scheduleActionAtInterval(1, energyGraphBC, "step", Schedule.LAST);
-        getSchedule().scheduleActionAtInterval(1, energyGraphBA, "step", Schedule.LAST);
+//        getSchedule().scheduleActionAtInterval(1, energyGraphPB, "step", Schedule.LAST);
+//        getSchedule().scheduleActionAtInterval(1, energyGraphBC, "step", Schedule.LAST);
+//        getSchedule().scheduleActionAtInterval(1, energyGraphBA, "step", Schedule.LAST);
         getSchedule().scheduleActionAtInterval(1, consumersSatisfied, "step", Schedule.LAST);
         getSchedule().scheduleActionAtInterval(1, brokersEnergyWallet, "step", Schedule.LAST);
         getSchedule().scheduleActionAtInterval(1, brokersMoneyWallet, "step", Schedule.LAST);
 
-        getSchedule().scheduleActionAtInterval(1, this, "updateGraph", Schedule.LAST);
+//        getSchedule().scheduleActionAtInterval(1, this, "updateGraph", Schedule.LAST);
     }
 
     public void updateGraph() {
@@ -288,7 +284,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 
     @Override
     public String[] getInitParam() {
-        return new String[]{"NUM_PRODUCERS", "NUM_BROKERS", "NUM_CONSUMERS"};
+        return new String[]{"NUM_PRODUCERS", "NUM_BROKERS", "NUM_CONSUMERS", "MONOPOLY_PROBABILITY", "AVG_DAYS_FOR_AUDIT"};
     }
 
     @Override
@@ -307,6 +303,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         launchProducers();
         launchBrokers();
         launchConsumers();
+        launchGovernment();
 
         setUpAgentsAIDMap();
     }
@@ -381,7 +378,11 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         }
 
         energyPlotBuildConsumers();
+    }
 
+    private void launchGovernment() throws StaleProxyException {
+        government = new Government(this, null, MONOPOLY_PROBABILITY);
+        mainContainer.acceptNewAgent("government", government).start();
     }
 
     private GraphicSettings makeGraphicsSettings(int total, int idx, int yCoords, Color color) {
@@ -403,18 +404,18 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         consumersConsumeEnergy();
 
         updateEnergyContracts();
+
+        updateMonopolySearch();
     }
 
     private void producersProduceEnergy() {
-        // force the consume and produce actions to be taken each tick.
         for (Producer p: producers)
-            p.getEnergyWallet().inject(p.getEnergyProductionPerMonth() / 30f);
+            p.produce();
     }
 
     private void consumersConsumeEnergy() {
         for (Consumer c: consumers)
-            if (c.hasBrokerService())
-                c.getEnergyWallet().consume(c.getEnergyConsumptionPerMonth() / 30f);
+            c.consume();
     }
 
     private void updateEnergyContracts() {
@@ -449,7 +450,13 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         }
     }
 
-    private GenericAgent getAgentByAID(AID agentAID) {
+    private void updateMonopolySearch() {
+        if (rand.nextFloat() < ((float)1/AVG_DAYS_FOR_AUDIT)){
+            government.breakUpMonopoly();
+        }
+    }
+
+    public GenericAgent getAgentByAID(AID agentAID) {
         return agents.get(agentAID);
     }
 
@@ -475,16 +482,8 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         supplier.addConsumerContract(contract);
     }
 
-    public List<Producer> getProducers() {
-        return producers;
-    }
-
     public List<Broker> getBrokers() {
         return brokers;
-    }
-
-    public List<Consumer> getConsumers() {
-        return consumers;
     }
 
     public int getNUM_PRODUCERS() {
@@ -529,6 +528,22 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 
     public void setNUM_CONSUMERS(int NUM_CONSUMERS) {
         this.NUM_CONSUMERS = NUM_CONSUMERS;
+    }
+
+    public float getMONOPOLY_PROBABILITY() {
+        return MONOPOLY_PROBABILITY;
+    }
+
+    public void setMONOPOLY_PROBABILITY(float MONOPOLY_PROBABILITY) {
+        this.MONOPOLY_PROBABILITY = MONOPOLY_PROBABILITY;
+    }
+
+    public int getAVG_DAYS_FOR_AUDIT() {
+        return AVG_DAYS_FOR_AUDIT;
+    }
+
+    public void setAVG_DAYS_FOR_AUDIT(int AVG_DAYS_FOR_AUDIT) {
+        this.AVG_DAYS_FOR_AUDIT = AVG_DAYS_FOR_AUDIT;
     }
 
 }

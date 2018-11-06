@@ -1,7 +1,5 @@
 package utils;
 
-import agents.GenericAgent;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

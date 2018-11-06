@@ -1,16 +1,18 @@
 package agents;
 
-import behaviours.consumer.ConsumeBehaviour;
 import behaviours.consumer.ConsumerBusinessStarter;
 import behaviours.consumer.ConsumerContractInitiator;
 import behaviours.consumer.ConsumerContractWrapperBehaviour;
+import jade.core.AID;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import launchers.EnergyMarketLauncher;
 import utils.AgentType;
 import utils.GraphicSettings;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Only subscribes ONE Broker;
@@ -25,7 +27,7 @@ public class Consumer extends DFSearchAgent {
 
     private boolean brokerService = false;
 
-    private int contractDuration = 360; // One year contracts
+    private int contractDuration = 3600; // One year contracts
 
     public Consumer(EnergyMarketLauncher model, GraphicSettings graphicSettings, int energyConsumptionPerMonth) {
         super(model, graphicSettings);
@@ -33,14 +35,25 @@ public class Consumer extends DFSearchAgent {
         this.energyConsumptionPerMonth = energyConsumptionPerMonth;
     }
 
-    // TODO return actual Brokers instead of Strings
-    public List<String> getPromisingBrokers() {
-        ArrayList<String> brokersNames = new ArrayList<>();
+    /**
+     * Fetches the list of promising (available) brokers for new contracts.
+     *
+     * @return the list of brokers.
+     */
+    public List<Broker> getOrderedBrokers() {
+        List<AID> brokersAID = new ArrayList<>();
 
         for (DFAgentDescription p : this.searchAndGet()) {
-            brokersNames.add(p.getName().getLocalName());
+            brokersAID.add(p.getName());
         }
-        return brokersNames;
+        List<Broker> brokers = brokersAID.stream().map((p) -> (Broker) getWorldModel().getAgentByAID(p)).collect(Collectors.toList());
+
+        // TODO sort Producers here
+        // this sorting can lead to a lot of agents trying to get the same producer
+        // result.sort(Comparator.comparingInt(Broker::getAvailableMonthlyEnergyQuota));
+        Collections.shuffle(brokers);
+
+        return brokers;
     }
 
     public EnergyMarketLauncher getWorldModel() {
@@ -51,7 +64,6 @@ public class Consumer extends DFSearchAgent {
     protected void setup() {
         super.setup();
         addBehaviour(new ConsumerBusinessStarter(this, TIMEOUT));
-//        addBehaviour(new ConsumeBehaviour(this));
         System.out.println("Consumer " + this.getLocalName() + " was created.");
     }
 
@@ -77,5 +89,10 @@ public class Consumer extends DFSearchAgent {
 
     public int getContractDuration() {
         return contractDuration;
+    }
+
+    public void consume() {
+        if (hasBrokerService())
+            getEnergyWallet().consume(getEnergyConsumptionPerMonth() / 30f);
     }
 }

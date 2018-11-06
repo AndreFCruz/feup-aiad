@@ -4,12 +4,15 @@ import behaviours.broker.BrokerBusinessStarter;
 import behaviours.broker.BrokerListeningBehaviour;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import launchers.EnergyMarketLauncher;
+import jade.core.AID;
 import utils.AgentType;
 import utils.EnergyContract;
 import utils.GraphicSettings;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * The Broker class represents the middleman between the energy suppliers and the final consumers.
@@ -28,7 +31,7 @@ public class Broker extends DFRegisterAgent {
 
     private DFSearchAgent search;
 
-    private int duration = 365; // TODO: remove this at a further development stage
+    private int duration = 3650; // TODO: remove this at a further development stage
 
     private int energyUnitSellPrice;
 
@@ -53,13 +56,18 @@ public class Broker extends DFRegisterAgent {
      *
      * @return the list of producers.
      */
-    public List<String> getPromisingProducers() {
-        ArrayList<String> producersNames = new ArrayList<>();
+    public List<Producer> getOrderedProducers() {
+        List<AID> producersAID = new ArrayList<>();
 
         for (DFAgentDescription p : this.search.searchAndGet()) {
-            producersNames.add(p.getName().getLocalName());
+            producersAID.add(p.getName());
         }
-        return producersNames;
+        List<Producer> producers = producersAID.stream().map((p) -> (Producer) getWorldModel().getAgentByAID(p)).collect(Collectors.toList());
+
+        // TODO sort Producers here
+        Collections.shuffle(producers);
+
+        return producers;
     }
 
     public List<EnergyContract> getProducerContracts() {
@@ -153,4 +161,8 @@ public class Broker extends DFRegisterAgent {
             return 0;
         }
     }
+    int getNumberProducers() {
+        return producerContracts.size();
+    }
+
 }

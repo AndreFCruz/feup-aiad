@@ -1,6 +1,5 @@
 package utils;
 
-import agents.GenericAgent;
 import jade.core.AID;
 import sajas.core.Agent;
 
