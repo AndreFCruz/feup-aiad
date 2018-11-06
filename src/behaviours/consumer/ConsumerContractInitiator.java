@@ -37,7 +37,7 @@ public class ConsumerContractInitiator extends FIPAContractNetInitiator {
         }
 
         for (Broker b : orderedListOfPreferences) {
-            if (b.getAvailableMonthlyEnergyQuota() >= c.getEnergyConsumptionPerMonth()) {
+            if (b.monthsThatMayFulfillContract(c.getEnergyConsumptionPerMonth()) >= 1) {
                 contactedAtLeastOne = true;
                 cfp.addReceiver(b.getAID());
             }
