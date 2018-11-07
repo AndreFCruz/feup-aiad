@@ -5,10 +5,13 @@ import agents.*;
 import jade.core.AID;
 import jade.core.ProfileImpl;
 import jade.wrapper.StaleProxyException;
+import recorders.SatisfiedConsumersRecorder;
 import sajas.core.Runtime;
 import sajas.sim.repast3.Repast3Launcher;
 import sajas.wrapper.ContainerController;
+import uchicago.src.sim.analysis.DataRecorder;
 import uchicago.src.sim.analysis.OpenSequenceGraph;
+import uchicago.src.sim.engine.BasicAction;
 import uchicago.src.sim.engine.Schedule;
 import uchicago.src.sim.engine.SimInit;
 import uchicago.src.sim.gui.DisplayConstants;
@@ -47,8 +50,11 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     private int NUM_CONSUMERS;
     private float MONOPOLY_PROBABILITY;
     private int AVG_DAYS_FOR_AUDIT;
-    private String LOGS_NAME;
 
+    // Recording variables
+    private String LOGS_NAME;
+    private Boolean STORE_RECORDS;
+    private DataRecorder dataRecorder;
 
     // Energy Variables
     /**
@@ -92,6 +98,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         MONOPOLY_PROBABILITY = 0.5f;
         AVG_DAYS_FOR_AUDIT = 90;
         LOGS_NAME = "experiment_" + rand.nextInt(10);
+        STORE_RECORDS = false;
     }
 
     public static void main(String[] args) {
@@ -132,6 +139,12 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 
         energyContractsBrokerProducer = new ArrayList<>();
         energyContractsConsumerBroker = new ArrayList<>();
+
+        if (STORE_RECORDS){
+            dataRecorder = new DataRecorder("./logs/" + LOGS_NAME, this);
+            dataRecorder.addNumericDataSource("satisfiedCustomers", new SatisfiedConsumersRecorder(this));
+//            dataRecorder.addObjectDataSource("SpaceData", new ObjDataSource());
+        }
     }
 
     private void displayConstructor() {
@@ -257,8 +270,19 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         getSchedule().scheduleActionAtInterval(1, consumersSatisfied, "step", Schedule.LAST);
         getSchedule().scheduleActionAtInterval(1, brokersEnergyWallet, "step", Schedule.LAST);
         getSchedule().scheduleActionAtInterval(1, brokersMoneyWallet, "step", Schedule.LAST);
-
         getSchedule().scheduleActionAtInterval(1, this, "updateGraph", Schedule.LAST);
+
+        if (STORE_RECORDS){
+            getSchedule().scheduleActionBeginning(0, new BasicAction() {
+                public void execute() {
+                    dataRecorder.record();
+                }
+            });
+
+            getSchedule().scheduleActionAtEnd(dataRecorder, "writeToFile");
+        }
+
+
     }
 
     public void updateGraph() {
@@ -287,7 +311,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     @Override
     public String[] getInitParam() {
         return new String[]{"NUM_PRODUCERS", "NUM_BROKERS", "NUM_CONSUMERS", "MONOPOLY_PROBABILITY",
-                "AVG_DAYS_FOR_AUDIT", "LOGS_NAME"};
+                "AVG_DAYS_FOR_AUDIT", "LOGS_NAME", "STORE_RECORDS"};
     }
 
     @Override
@@ -489,6 +513,10 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         return brokers;
     }
 
+    public List<EnergyContract> getEnergyContractsConsumerBroker() {
+        return energyContractsConsumerBroker;
+    }
+
     public int getNUM_PRODUCERS() {
         return NUM_PRODUCERS;
     }
@@ -555,5 +583,13 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 
     public void setLOGS_NAME(String LOGS_NAME) {
         this.LOGS_NAME = LOGS_NAME;
+    }
+
+    public Boolean getSTORE_RECORDS() {
+        return STORE_RECORDS;
+    }
+
+    public void setSTORE_RECORDS(Boolean STORE_RECORDS) {
+        this.STORE_RECORDS = STORE_RECORDS;
     }
 }
