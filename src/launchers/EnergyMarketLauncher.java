@@ -135,15 +135,15 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     private void displayConstructor() {
         Object2DDisplay displayProducers = new Object2DDisplay(world);
         displayProducers.setObjectList(producers);
-        displaySurface.addDisplayableProbeable(displayProducers, "show producers");
+        displaySurface.addDisplayable(displayProducers, "show producers");
 
         Object2DDisplay displayBrokers = new Object2DDisplay(world);
         displayBrokers.setObjectList(brokers);
-        displaySurface.addDisplayableProbeable(displayBrokers, "show brokers");
+        displaySurface.addDisplayable(displayBrokers, "show brokers");
 
         Object2DDisplay displayConsumers = new Object2DDisplay(world);
         displayConsumers.setObjectList(consumers);
-        displaySurface.addDisplayableProbeable(displayConsumers, "show consumers");
+        displaySurface.addDisplayable(displayConsumers, "show consumers");
 
         displaySurface.display();
 
