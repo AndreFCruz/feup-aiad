@@ -83,7 +83,6 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     private Map<AID, GenericAgent> agents;
 
 
-
     public EnergyMarketLauncher() {
         rand = new Random();
 
@@ -140,11 +139,15 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         energyContractsBrokerProducer = new ArrayList<>();
         energyContractsConsumerBroker = new ArrayList<>();
 
-        if (STORE_RECORDS){
-            dataRecorder = new DataRecorder("./logs/" + LOGS_NAME, this);
-            dataRecorder.addNumericDataSource("satisfiedCustomers", new SatisfiedConsumersRecorder(this));
-//            dataRecorder.addObjectDataSource("SpaceData", new ObjDataSource());
-        }
+        if (STORE_RECORDS)
+            dataRecorderConstructor();
+    }
+
+    private void dataRecorderConstructor() {
+        dataRecorder = new DataRecorder("./logs/" + LOGS_NAME, this);
+        dataRecorder.addNumericDataSource("satisfiedCustomers", new SatisfiedConsumersRecorder(this));
+//        dataRecorder.addObjectDataSource("SpaceData", new ObjDataSource());
+
     }
 
     private void displayConstructor() {
@@ -254,7 +257,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     }
 
     private void energyPlotBrokersAvailable() {
-        for (Broker b : brokers){
+        for (Broker b : brokers) {
             energyGraphBA.addSequence(b.getLocalName(), b::getAvailableMonthlyEnergyQuota);
             brokersEnergyWallet.addSequence(b.getLocalName(), () -> b.getEnergyWallet().getBalance());
             brokersMoneyWallet.addSequence(b.getLocalName(), () -> b.getMoneyWallet().getBalance());
@@ -272,7 +275,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         getSchedule().scheduleActionAtInterval(1, brokersMoneyWallet, "step", Schedule.LAST);
         getSchedule().scheduleActionAtInterval(1, this, "updateGraph", Schedule.LAST);
 
-        if (STORE_RECORDS){
+        if (STORE_RECORDS) {
             getSchedule().scheduleActionBeginning(0, new BasicAction() {
                 public void execute() {
                     dataRecorder.record();
@@ -290,12 +293,12 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         brokers.forEach(GenericAgent::clearContacts);
         consumers.forEach(GenericAgent::clearContacts);
 
-        for (EnergyContract ec: energyContractsBrokerProducer){
+        for (EnergyContract ec : energyContractsBrokerProducer) {
             ec.getEnergyClient().addContact(ec.getEnergySupplier());
             ec.getEnergySupplier().addContact(ec.getEnergyClient());
         }
 
-        for (EnergyContract ec: energyContractsConsumerBroker){
+        for (EnergyContract ec : energyContractsConsumerBroker) {
             ec.getEnergyClient().addContact(ec.getEnergySupplier());
             ec.getEnergySupplier().addContact(ec.getEnergyClient());
         }
@@ -436,12 +439,12 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     }
 
     private void producersProduceEnergy() {
-        for (Producer p: producers)
+        for (Producer p : producers)
             p.produce();
     }
 
     private void consumersConsumeEnergy() {
-        for (Consumer c: consumers)
+        for (Consumer c : consumers)
             c.consume();
     }
 
@@ -478,7 +481,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     }
 
     private void updateMonopolySearch() {
-        if (rand.nextFloat() < ((float)1/AVG_DAYS_FOR_AUDIT)){
+        if (rand.nextFloat() < ((float) 1 / AVG_DAYS_FOR_AUDIT)) {
             government.breakUpMonopoly();
         }
     }
@@ -539,7 +542,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 //                mainContainer.acceptNewAgent("producer-" + i+this.NUM_PRODUCERS, p).start();
 //            }
 
-            this.NUM_PRODUCERS = NUM_PRODUCERS;
+        this.NUM_PRODUCERS = NUM_PRODUCERS;
 //        }
 
 
