@@ -5,6 +5,8 @@ import agents.*;
 import jade.core.AID;
 import jade.core.ProfileImpl;
 import jade.wrapper.StaleProxyException;
+import recorders.BrokersWalletEnergyRecorder;
+import recorders.BrokersWalletMoneyRecorder;
 import recorders.SatisfiedConsumersRecorder;
 import sajas.core.Runtime;
 import sajas.sim.repast3.Repast3Launcher;
@@ -143,11 +145,22 @@ public class EnergyMarketLauncher extends Repast3Launcher {
             dataRecorderConstructor();
     }
 
+    /**
+     *  This function is called before the agents have been launched.
+     */
     private void dataRecorderConstructor() {
         dataRecorder = new DataRecorder("./logs/" + LOGS_NAME, this);
-        dataRecorder.addNumericDataSource("satisfiedCustomers", new SatisfiedConsumersRecorder(this));
-//        dataRecorder.addObjectDataSource("SpaceData", new ObjDataSource());
+        dataRecorder.addNumericDataSource("Satisfied Customers", new SatisfiedConsumersRecorder(this));
+    }
 
+    /**
+     *  This function is called after the agents have been launched. {@link #launchJADE()}
+     */
+    private void setUpDataRecorder() {
+        for (Broker b: brokers){
+            dataRecorder.addNumericDataSource("money::" + b.getLocalName(), new BrokersWalletMoneyRecorder(this, b));
+            dataRecorder.addNumericDataSource("energy::" + b.getLocalName(), new BrokersWalletEnergyRecorder(this, b));
+        }
     }
 
     private void displayConstructor() {
@@ -281,7 +294,6 @@ public class EnergyMarketLauncher extends Repast3Launcher {
                     dataRecorder.record();
                 }
             });
-
             getSchedule().scheduleActionAtEnd(dataRecorder, "writeToFile");
         }
 
@@ -336,6 +348,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         launchGovernment();
 
         setUpAgentsAIDMap();
+        setUpDataRecorder();
     }
 
     private void setUpAgentsAIDMap() {
