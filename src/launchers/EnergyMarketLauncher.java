@@ -47,6 +47,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     private int NUM_CONSUMERS;
     private float MONOPOLY_PROBABILITY;
     private int AVG_DAYS_FOR_AUDIT;
+    private String LOGS_NAME;
 
 
     // Energy Variables
@@ -90,6 +91,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         NUM_CONSUMERS = 30;
         MONOPOLY_PROBABILITY = 0.5f;
         AVG_DAYS_FOR_AUDIT = 90;
+        LOGS_NAME = "experiment_" + rand.nextInt(10);
     }
 
     public static void main(String[] args) {
@@ -284,7 +286,8 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 
     @Override
     public String[] getInitParam() {
-        return new String[]{"NUM_PRODUCERS", "NUM_BROKERS", "NUM_CONSUMERS", "MONOPOLY_PROBABILITY", "AVG_DAYS_FOR_AUDIT"};
+        return new String[]{"NUM_PRODUCERS", "NUM_BROKERS", "NUM_CONSUMERS", "MONOPOLY_PROBABILITY",
+                "AVG_DAYS_FOR_AUDIT", "LOGS_NAME"};
     }
 
     @Override
@@ -546,4 +549,11 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         this.AVG_DAYS_FOR_AUDIT = AVG_DAYS_FOR_AUDIT;
     }
 
+    public String getLOGS_NAME() {
+        return LOGS_NAME;
+    }
+
+    public void setLOGS_NAME(String LOGS_NAME) {
+        this.LOGS_NAME = LOGS_NAME;
+    }
 }
