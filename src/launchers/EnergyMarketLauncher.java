@@ -279,10 +279,10 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 
     private void scheduleConstructor() {
         getSchedule().scheduleActionAtInterval(1, this, "simulationStep");
-//        getSchedule().scheduleActionAtInterval(1, this, "simulationDelay", Schedule.LAST);
-//        getSchedule().scheduleActionAtInterval(1, energyGraphPB, "step", Schedule.LAST);
-//        getSchedule().scheduleActionAtInterval(1, energyGraphBC, "step", Schedule.LAST);
-//        getSchedule().scheduleActionAtInterval(1, energyGraphBA, "step", Schedule.LAST);
+        getSchedule().scheduleActionAtInterval(1, this, "simulationDelay", Schedule.LAST);
+        getSchedule().scheduleActionAtInterval(1, energyGraphPB, "step", Schedule.LAST);
+        getSchedule().scheduleActionAtInterval(1, energyGraphBC, "step", Schedule.LAST);
+        getSchedule().scheduleActionAtInterval(1, energyGraphBA, "step", Schedule.LAST);
         getSchedule().scheduleActionAtInterval(1, consumersSatisfied, "step", Schedule.LAST);
         getSchedule().scheduleActionAtInterval(1, brokersEnergyWallet, "step", Schedule.LAST);
         getSchedule().scheduleActionAtInterval(1, brokersMoneyWallet, "step", Schedule.LAST);
@@ -348,7 +348,8 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         launchGovernment();
 
         setUpAgentsAIDMap();
-        setUpDataRecorder();
+        if (STORE_RECORDS)
+            setUpDataRecorder();
     }
 
     private void setUpAgentsAIDMap() {
