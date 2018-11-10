@@ -51,6 +51,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     private int NUM_CONSUMERS               = 50;
     private float PERCENT_LAZY_CONSUMERS    = 0.2f;
     private float PERCENT_ECO_CONSUMERS     = 0.2f;
+
     private float MONOPOLY_THRESHOLD;
     private int AVG_DAYS_FOR_AUDIT;
 
@@ -324,7 +325,8 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     @Override
     public String[] getInitParam() {
         return new String[]{"NUM_PRODUCERS", "NUM_BROKERS", "NUM_CONSUMERS", "MONOPOLY_THRESHOLD",
-                "AVG_DAYS_FOR_AUDIT", "LOGS_NAME", "STORE_RECORDS"};
+                "AVG_DAYS_FOR_AUDIT", "LOGS_NAME", "STORE_RECORDS", "PERCENT_ECO_CONSUMERS",
+                "PERCENT_LAZY_CONSUMERS"};
     }
 
     @Override
@@ -616,5 +618,21 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 
     public void setSTORE_RECORDS(Boolean STORE_RECORDS) {
         this.STORE_RECORDS = STORE_RECORDS;
+    }
+
+    public float getPERCENT_LAZY_CONSUMERS() {
+        return PERCENT_LAZY_CONSUMERS;
+    }
+
+    public void setPERCENT_LAZY_CONSUMERS(float PERCENT_LAZY_CONSUMERS) {
+        this.PERCENT_LAZY_CONSUMERS = PERCENT_LAZY_CONSUMERS;
+    }
+
+    public float getPERCENT_ECO_CONSUMERS() {
+        return PERCENT_ECO_CONSUMERS;
+    }
+
+    public void setPERCENT_ECO_CONSUMERS(float PERCENT_ECO_CONSUMERS) {
+        this.PERCENT_ECO_CONSUMERS = PERCENT_ECO_CONSUMERS;
     }
 }
