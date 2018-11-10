@@ -3,7 +3,7 @@ package utils;
 import agents.GenericAgent;
 import java.io.NotSerializableException;
 
-public class EnergyContract {
+public class EnergyContract extends BaseContract {
 
     /**
      * Agent that supplies/sells energy.
@@ -20,25 +20,6 @@ public class EnergyContract {
      */
     private int ticks = 0;
 
-    /**
-     * Total energy to be transferred every payment cycle.
-     */
-    private int energyAmountPerCycle;
-
-    /**
-     * Currency to be transferred every payment cycle, per energy unit.
-     */
-    private int energyCostPerUnit;
-
-    /**
-     * Length of the contract, in days (ticks).
-     */
-    private int duration;
-
-    /**
-     * Periodicity of payment, in days (ticks).
-     */
-    private int paymentCycle;
 
     public EnergyContract(EnergyContractProposal proposal, GenericAgent supplier, GenericAgent client) {
         if (! (proposal.isSigned()
@@ -52,6 +33,7 @@ public class EnergyContract {
         this.energyAmountPerCycle = proposal.getEnergyAmountPerCycle();
         this.energyCostPerUnit = proposal.getEnergyCostPerUnit();
         this.duration = proposal.getDuration();
+        this.startDate = proposal.getStartDate();
         this.paymentCycle = proposal.getPaymentCycle();
     }
 
@@ -98,7 +80,6 @@ public class EnergyContract {
         this.ticks += 1;
     }
 
-
     /**
      * Class is not serializable.
      * @throws NotSerializableException always.
@@ -123,13 +104,6 @@ public class EnergyContract {
         return energyClient;
     }
 
-    public int getEnergyAmountPerCycle() {
-        return energyAmountPerCycle;
-    }
-
-    public int getEnergyCostPerUnit() {
-        return energyCostPerUnit;
-    }
 
     public float getEnergyAmountPerMonth() {
         return energyAmountPerCycle * 30f / paymentCycle;

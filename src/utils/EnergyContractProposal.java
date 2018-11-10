@@ -1,6 +1,7 @@
 package utils;
 
 import jade.core.AID;
+import org.jetbrains.annotations.Nullable;
 import sajas.core.Agent;
 
 import java.io.Serializable;
@@ -9,7 +10,7 @@ import java.io.Serializable;
 /**
  * Proposal for an Energy Contract, to be sent by the client to the supplier, and possibly back-and-forth.
  */
-public class EnergyContractProposal implements Serializable {
+public class EnergyContractProposal extends BaseContract implements Serializable {
     static final long serialVersionUID = 142L;
 
     private enum ContractState {
@@ -27,31 +28,6 @@ public class EnergyContractProposal implements Serializable {
      * AID of the agent that buys energy.
      */
     private AID energyClientAID;
-
-    /**
-     * Total energy to be transferred every payment cycle.
-     */
-    private int energyAmountPerCycle;
-
-    /**
-     * Currency to be transferred every payment cycle, per energy unit.
-     */
-    private int energyCostPerUnit;
-
-    /**
-     * Length of the contract, in days (ticks).
-     */
-    private int duration;
-
-    /**
-     * Start date of the contract, in ticks since the start of the simulation.
-     */
-    private Integer startDate = null;
-
-    /**
-     * Periodicity of payment, in days (ticks).
-     */
-    private int paymentCycle = 30;
 
     /**
      * The state of this EnergyContractProposal.
@@ -146,35 +122,11 @@ public class EnergyContractProposal implements Serializable {
         this.startDate = startDate;
     }
 
-    public int getStartDate() {
-        return startDate;
-    }
-
-    public int getEndDate() {
-        return startDate + duration;
-    }
-
     public AID getEnergySupplierAID() {
         return energySupplierAID;
     }
 
     public AID getEnergyClientAID() {
         return energyClientAID;
-    }
-
-    public int getEnergyAmountPerCycle() {
-        return energyAmountPerCycle;
-    }
-
-    public int getEnergyCostPerUnit() {
-        return energyCostPerUnit;
-    }
-
-    public int getDuration() {
-        return duration;
-    }
-
-    public int getPaymentCycle() {
-        return paymentCycle;
     }
 }
