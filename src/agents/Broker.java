@@ -115,7 +115,7 @@ public class Broker extends DFRegisterAgent {
     }
 
     public int getAvailableMonthlyEnergyQuota() {
-        return getMonthlyEnergy() - getMonthlySoldEnergy();
+        return getMonthlyEnergy() - getMonthlySoldEnergy() + ((int) energyWallet.getBalance());
     }
 
     /**
