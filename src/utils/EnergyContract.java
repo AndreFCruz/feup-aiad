@@ -38,7 +38,7 @@ public class EnergyContract {
     /**
      * Periodicity of payment, in days (ticks).
      */
-    private int paymentCycle = 30;
+    private int paymentCycle;
 
     public EnergyContract(EnergyContractProposal proposal, GenericAgent supplier, GenericAgent client) {
         if (! (proposal.isSigned()
@@ -101,7 +101,7 @@ public class EnergyContract {
 
     /**
      * Class is not serializable.
-     * @throws NotSerializableException
+     * @throws NotSerializableException always.
      */
     private void writeObject(java.io.ObjectOutputStream stream) throws NotSerializableException {
         throw new NotSerializableException();
@@ -109,7 +109,7 @@ public class EnergyContract {
 
     /**
      * Class is not serializable.
-     * @throws NotSerializableException
+     * @throws NotSerializableException always.
      */
     private void readObject(java.io.ObjectInputStream stream) throws NotSerializableException {
         throw new NotSerializableException();

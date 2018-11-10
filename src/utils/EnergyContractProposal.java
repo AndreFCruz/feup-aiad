@@ -5,14 +5,9 @@ import sajas.core.Agent;
 
 import java.io.Serializable;
 
+
 /**
- * TODO Can this be implemented by extending Behaviour?
- * behaviour.action() -> step()
- * behaviour.done() -> hasEnded()
- * <p>
- * Actually, this can be a CompositeBehaviour, in which each part of the
- * contract (monetary and energy) is itself a Contract Behaviour (allows
- * for delivering energy daily with monthly payments).
+ * Proposal for an Energy Contract, to be sent by the client to the supplier, and possibly back-and-forth.
  */
 public class EnergyContractProposal implements Serializable {
     static final long serialVersionUID = 142L;
@@ -49,6 +44,11 @@ public class EnergyContractProposal implements Serializable {
     private int duration;
 
     /**
+     * Start date of the contract, in ticks since the start of the simulation.
+     */
+    private Integer startDate = null;
+
+    /**
      * Periodicity of payment, in days (ticks).
      */
     private int paymentCycle = 30;
@@ -58,6 +58,9 @@ public class EnergyContractProposal implements Serializable {
      */
     private ContractState state = ContractState.DRAFT;
 
+    /**
+     * Private default constructor.
+     */
     private EnergyContractProposal() {}
 
     /**
@@ -65,7 +68,7 @@ public class EnergyContractProposal implements Serializable {
      *
      * @param energyClientAID   The Energy Client.
      * @param duration          The duration of the contract.
-     * @return
+     * @return a new EnergyContractProposal object with the given draft settings.
      */
     public static EnergyContractProposal makeContractDraft(AID energyClientAID, int duration) {
         EnergyContractProposal contract = new EnergyContractProposal();
@@ -80,7 +83,7 @@ public class EnergyContractProposal implements Serializable {
      *
      * @param energyAmount the new energy amount to be traded every cycle.
      */
-    public void updateEnergyAmount(int energyAmount) { // For future iterative contract communications
+    public void updateEnergyAmount(int energyAmount) {
         if (this.state == ContractState.SIGNED) {
             System.err.println("Can't update energy amount of already signed contract.");
             return;
@@ -94,7 +97,7 @@ public class EnergyContractProposal implements Serializable {
      *
      * @param energyCost new total energy cost per payment cycle.
      */
-    public void updateEnergyCostPerUnit(int energyCost) { // For future iterative contract communications
+    public void updateEnergyCostPerUnit(int energyCost) {
         if (this.state == ContractState.SIGNED) {
             System.err.println("Can't update energy cost of already signed contract.");
             return;
@@ -135,6 +138,20 @@ public class EnergyContractProposal implements Serializable {
      */
     public boolean isSigned() {
         return this.state == ContractState.SIGNED;
+    }
+
+    public void setStartDate(int startDate) {
+        if (this.state == ContractState.SIGNED)
+            throw new IllegalArgumentException("Making contract proposal from already signed contract.");
+        this.startDate = startDate;
+    }
+
+    public int getStartDate() {
+        return startDate;
+    }
+
+    public int getEndDate() {
+        return startDate + duration;
     }
 
     public AID getEnergySupplierAID() {
