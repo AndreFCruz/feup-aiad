@@ -17,8 +17,11 @@ import java.util.Vector;
  */
 public class BrokerContractInitiator extends FIPAContractNetInitiator {
 
+    private Broker myBroker;
+
     public BrokerContractInitiator(Broker agent) {
         super(agent);
+        myBroker = agent;
     }
 
     /**
@@ -29,12 +32,12 @@ public class BrokerContractInitiator extends FIPAContractNetInitiator {
      */
     @Override
     protected Vector prepareCfps(ACLMessage cfp) {
-        List<Producer> orderedListOfPreferences = ((Broker) myAgent).getProducersByPreference();
+        List<Producer> orderedListOfPreferences = myBroker.getProducersByPreference();
 
          Vector v = new Vector();
 
         boolean willContactAtLeastOne = false;
-        float brokersCash = ((Broker) myAgent).getMoneyWallet().getBalance();
+        float brokersCash = myBroker.getMoneyWallet().getBalance();
 
         for (Producer p : orderedListOfPreferences) {
             // get price for producer's total energy per month
@@ -49,7 +52,7 @@ public class BrokerContractInitiator extends FIPAContractNetInitiator {
 
         if (willContactAtLeastOne) {
             // if at least one producer can supply this broker, create a draft contract
-            EnergyContractProposal ec = EnergyContractProposal.makeContractDraft(myAgent.getAID(), ((Broker) myAgent).getDuration());
+            EnergyContractProposal ec = EnergyContractProposal.makeContractDraft(myBroker.getAID(), myBroker.getDuration());
             try {
                 cfp.setContentObject(ec);
             } catch (IOException e) {
@@ -78,9 +81,9 @@ public class BrokerContractInitiator extends FIPAContractNetInitiator {
             if (received.getPerformative() == ACLMessage.PROPOSE) {
                 try {
                     EnergyContractProposal ec = (EnergyContractProposal) received.getContentObject();
-                    ec.signContract(myAgent);
+                    ec.signContract(myBroker);
 
-                    ((Broker) myAgent).getWorldModel().addBrokerProducerContract(ec);
+                    myBroker.getWorldModel().addBrokerProducerContract(ec);
 
                     reply.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
                     acceptances.add(reply);

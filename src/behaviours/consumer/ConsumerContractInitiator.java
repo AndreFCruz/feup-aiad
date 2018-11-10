@@ -13,34 +13,40 @@ import java.util.Vector;
 
 public class ConsumerContractInitiator extends FIPAContractNetInitiator {
 
+    private Consumer myConsumer;
+
     public ConsumerContractInitiator(Consumer agent) {
         super(agent);
+        myConsumer = agent;
     }
 
     @Override
     protected Vector prepareCfps(ACLMessage cfp) {
 
         Vector<ACLMessage> v = new Vector<>();
-        Consumer c = (Consumer) myAgent;
 
-        List<Broker> orderedListOfPreferences = c.getBrokersByPreference();
+        List<Broker> orderedListOfPreferences = myConsumer.getBrokersByPreference();
         boolean contactedAtLeastOne = false;
 
         // If already has an associated Broker
-        if (c.hasBrokerService()) {
+        if (myConsumer.hasBrokerService()) {
             return v;
         }
 
         for (Broker b : orderedListOfPreferences) {
-            if (b.monthsThatMayFulfillContract(c.getEnergyConsumptionPerMonth()) >= 1) {
+            if (b.monthsThatMayFulfillContract(myConsumer.getEnergyConsumptionPerMonth()) >= 1) {
                 contactedAtLeastOne = true;
                 cfp.addReceiver(b.getAID());
             }
         }
 
+        int newContractDuration = myConsumer.getNewContractDuration();
         if (contactedAtLeastOne) {
-            EnergyContractProposal ec = EnergyContractProposal.makeContractDraft(myAgent.getAID(), c.getContractDuration());
-            ec.updateEnergyAmount(c.getEnergyConsumptionPerMonth());
+            EnergyContractProposal ec = EnergyContractProposal.makeContractDraft(
+                    myConsumer.getAID(),
+                    newContractDuration
+            );
+            ec.updateEnergyAmount(myConsumer.getEnergyConsumptionPerMonth());
 
             try {
                 cfp.setContentObject(ec);
@@ -61,13 +67,13 @@ public class ConsumerContractInitiator extends FIPAContractNetInitiator {
             ACLMessage reply = ((ACLMessage) response).createReply();
 
             // If meanwhile a contract was signed
-            if (received.getPerformative() == ACLMessage.PROPOSE && !((Consumer) myAgent).hasBrokerService()) {
+            if (received.getPerformative() == ACLMessage.PROPOSE && !myConsumer.hasBrokerService()) {
                 try {
                     EnergyContractProposal ec = (EnergyContractProposal) received.getContentObject();
                     ec.signContract(myAgent);
-                    ((Consumer) myAgent).setHasBrokerService(true);
+                    myConsumer.setHasBrokerService(true);
 
-                    ((Consumer) myAgent).getWorldModel().addConsumerBrokerContract(ec);
+                    myConsumer.getWorldModel().addConsumerBrokerContract(ec);
 
                     reply.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
                     acceptances.add(reply);

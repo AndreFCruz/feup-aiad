@@ -12,6 +12,7 @@ import utils.GraphicSettings;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 /**
@@ -27,7 +28,7 @@ public class Consumer extends DFSearchAgent {
 
     private boolean brokerService = false;
 
-    private int contractDuration = 720; // One year contracts
+    private int preferredContractDuration = 720;
 
     public Consumer(EnergyMarketLauncher model, GraphicSettings graphicSettings, int energyConsumptionPerMonth) {
         super(model, graphicSettings);
@@ -95,8 +96,11 @@ public class Consumer extends DFSearchAgent {
         }
     }
 
-    public int getContractDuration() {
-        return contractDuration;
+    public int getNewContractDuration() {
+        Random rand = new Random();
+        // std: 200; mean: 700;
+        int duration = (int) (rand.nextGaussian() * (preferredContractDuration / 4.) + preferredContractDuration);
+        return duration > 30 ? duration : 30;
     }
 
     public void consume() {

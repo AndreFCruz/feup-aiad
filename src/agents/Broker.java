@@ -52,9 +52,7 @@ public class Broker extends DFRegisterAgent {
     }
 
     /**
-     * Fetches the list of promising (available) producers for new contracts.
-     *
-     * @return the list of producers.
+     * @return Ordered list of Producers, sorted by preference, from highest to lowest.
      */
     public List<Producer> getProducersByPreference() {
         return orderProducersByPreference(getProducers());
@@ -177,9 +175,6 @@ public class Broker extends DFRegisterAgent {
         } else {
             return 0;
         }
-    }
-    int getNumberProducers() {
-        return producerContracts.size();
     }
 
 }
