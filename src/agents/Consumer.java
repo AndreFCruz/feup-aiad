@@ -62,7 +62,7 @@ public class Consumer extends DFSearchAgent {
         }
         return brokersAID.stream()
                 .map((p) -> (Broker) getWorldModel().getAgentByAID(p))
-                .filter((Broker b) -> b.getAvailableMonthlyEnergyQuota() > this.getEnergyConsumptionPerMonth())
+                .filter((Broker b) -> b.monthsThatMayFulfillContract(getEnergyConsumptionPerMonth()) > 2)
                 .collect(Collectors.toList());
     }
 

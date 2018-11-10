@@ -414,7 +414,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
                 agentConsumption = totalEnergyConsumed;
             totalEnergyConsumed -= agentConsumption;
 
-            Consumer c = new Consumer(this, gs, agentConsumption);
+            Consumer c = new LazyConsumer(this, gs, agentConsumption);
             world.putObjectAt(c.getX(), c.getY(), c);
             consumers.add(c);
             mainContainer.acceptNewAgent("consumer-" + i, c).start();
