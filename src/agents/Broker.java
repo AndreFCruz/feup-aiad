@@ -151,6 +151,10 @@ public class Broker extends DFRegisterAgent {
                 .mapToDouble(EnergyContract::getEnergyAmountPerMonth).sum();
     }
 
+    public float getPercentageOfRenewableEnergy() {
+        return (float) getMonthlyRenewableEnergy() / getMonthlyEnergy();
+    }
+
     public int monthsThatMayFulfillContract(int energyConsumptionPerMonth) {
         if (getAvailableMonthlyEnergyQuota() > energyConsumptionPerMonth)
             return 12;

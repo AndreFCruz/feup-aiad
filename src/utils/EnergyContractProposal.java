@@ -80,7 +80,6 @@ public class EnergyContractProposal implements Serializable {
      *
      * @param energyAmount the new energy amount to be traded every cycle.
      */
-    @Deprecated
     public void updateEnergyAmount(int energyAmount) { // For future iterative contract communications
         if (this.state == ContractState.SIGNED) {
             System.err.println("Can't update energy amount of already signed contract.");
@@ -95,7 +94,6 @@ public class EnergyContractProposal implements Serializable {
      *
      * @param energyCost new total energy cost per payment cycle.
      */
-    @Deprecated
     public void updateEnergyCostPerUnit(int energyCost) { // For future iterative contract communications
         if (this.state == ContractState.SIGNED) {
             System.err.println("Can't update energy cost of already signed contract.");

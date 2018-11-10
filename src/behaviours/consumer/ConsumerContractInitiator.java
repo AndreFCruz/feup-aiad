@@ -23,7 +23,7 @@ public class ConsumerContractInitiator extends FIPAContractNetInitiator {
         Vector<ACLMessage> v = new Vector<>();
         Consumer c = (Consumer) myAgent;
 
-        List<Broker> orderedListOfPreferences = c.getOrderedBrokers();
+        List<Broker> orderedListOfPreferences = c.getBrokersByPreference();
         boolean contactedAtLeastOne = false;
 
         // If already has an associated Broker

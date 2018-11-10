@@ -36,24 +36,32 @@ public class Consumer extends DFSearchAgent {
     }
 
     /**
-     * Fetches the list of promising (available) brokers for new contracts.
-     *
-     * @return the list of brokers.
+     * @return Ordered list of brokers, sorted by preference, from highest to lowest.
      */
-    public List<Broker> getOrderedBrokers() {
+    public List<Broker> getBrokersByPreference() {
+        return orderBrokersByPreference(this.getBrokers());
+    }
+
+    /**
+     * Factory method for sorting Brokers by preference, for Consumer specializations.
+     * @param brokers the available Brokers.
+     * @return ordered list of brokers, from highest preference to lowest.
+     */
+    protected List<Broker> orderBrokersByPreference(List<Broker> brokers) {
+        Collections.shuffle(brokers);
+        return brokers;
+    }
+
+    /**
+     * @return List of Brokers registered in the DF service (yellow-pages).
+     */
+    private List<Broker> getBrokers() {
         List<AID> brokersAID = new ArrayList<>();
 
         for (DFAgentDescription p : this.searchAndGet()) {
             brokersAID.add(p.getName());
         }
-        List<Broker> brokers = brokersAID.stream().map((p) -> (Broker) getWorldModel().getAgentByAID(p)).collect(Collectors.toList());
-
-        // TODO sort Producers here
-        // this sorting can lead to a lot of agents trying to get the same producer
-        // result.sort(Comparator.comparingInt(Broker::getAvailableMonthlyEnergyQuota));
-        Collections.shuffle(brokers);
-
-        return brokers;
+        return brokersAID.stream().map((p) -> (Broker) getWorldModel().getAgentByAID(p)).collect(Collectors.toList());
     }
 
     public EnergyMarketLauncher getWorldModel() {
