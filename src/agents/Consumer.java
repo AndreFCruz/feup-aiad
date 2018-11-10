@@ -42,6 +42,7 @@ public class Consumer extends DFSearchAgent {
 
     /**
      * Factory method for sorting Brokers by preference, for Consumer specializations.
+     *
      * @param brokers the available Brokers.
      * @return ordered list of brokers, from highest preference to lowest.
      */
@@ -87,7 +88,7 @@ public class Consumer extends DFSearchAgent {
     public void setHasBrokerService(boolean b) {
         brokerService = b;
 
-        if (! brokerService) {
+        if (!brokerService) {
             this.addBehaviour(
                     new ConsumerContractWrapperBehaviour(
                             new ConsumerContractInitiator(this)

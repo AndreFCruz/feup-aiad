@@ -5,7 +5,7 @@ import sajas.core.behaviours.Behaviour;
 import sajas.core.behaviours.WrapperBehaviour;
 
 /**
- *  Encapsulates a behaviour from the Consumer.
+ * Encapsulates a behaviour from the Consumer.
  */
 public class ConsumerContractWrapperBehaviour extends WrapperBehaviour {
 
@@ -14,7 +14,8 @@ public class ConsumerContractWrapperBehaviour extends WrapperBehaviour {
     }
 
     /**
-     *  This function is called when the behaviour wrapped ends.
+     * This function is called when the behaviour wrapped ends.
+     *
      * @return exit code
      */
     public int onEnd() {

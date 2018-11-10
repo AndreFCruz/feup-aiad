@@ -34,7 +34,7 @@ public class BrokerContractInitiator extends FIPAContractNetInitiator {
     protected Vector prepareCfps(ACLMessage cfp) {
         List<Producer> orderedListOfPreferences = myBroker.getProducersByPreference();
 
-         Vector v = new Vector();
+        Vector v = new Vector();
 
         boolean willContactAtLeastOne = false;
         float brokersCash = myBroker.getMoneyWallet().getBalance();

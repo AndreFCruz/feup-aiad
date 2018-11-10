@@ -1,14 +1,15 @@
 package agents;
 
 import launchers.EnergyMarketLauncher;
-import sajas.core.Agent;
 import utils.GraphicSettings;
 
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
+/**
+ * Prefers Brokers that are physically closest to him.
+ */
 public class LazyConsumer extends Consumer {
     public LazyConsumer(EnergyMarketLauncher model, GraphicSettings graphicSettings, int energyConsumptionPerMonth) {
         super(model, graphicSettings, energyConsumptionPerMonth);

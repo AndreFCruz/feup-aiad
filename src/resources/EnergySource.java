@@ -12,6 +12,7 @@ public interface EnergySource {
 
     /**
      * Is this energy source renewable?
+     *
      * @return whether this is renewable energy.
      */
     boolean isRenewable();

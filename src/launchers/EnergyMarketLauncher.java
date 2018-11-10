@@ -1,7 +1,6 @@
 package launchers;
 
 import agents.*;
-
 import jade.core.AID;
 import jade.core.ProfileImpl;
 import jade.wrapper.StaleProxyException;
@@ -146,7 +145,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     }
 
     /**
-     *  This function is called before the agents have been launched.
+     * This function is called before the agents have been launched.
      */
     private void dataRecorderConstructor() {
         dataRecorder = new DataRecorder("./logs/" + LOGS_NAME, this);
@@ -154,10 +153,10 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     }
 
     /**
-     *  This function is called after the agents have been launched. {@link #launchJADE()}
+     * This function is called after the agents have been launched. {@link #launchJADE()}
      */
     private void setUpDataRecorder() {
-        for (Broker b: brokers){
+        for (Broker b : brokers) {
             dataRecorder.addNumericDataSource("money::" + b.getLocalName(), new BrokersWalletMoneyRecorder(this, b));
             dataRecorder.addNumericDataSource("energy::" + b.getLocalName(), new BrokersWalletEnergyRecorder(this, b));
         }

@@ -36,13 +36,14 @@ public class EnergyContractProposal extends BaseContract implements Serializable
     /**
      * Private default constructor.
      */
-    private EnergyContractProposal() {}
+    private EnergyContractProposal() {
+    }
 
     /**
      * Creates a contract draft, sent from the Client to the Producer.
      *
-     * @param energyClientAID   The Energy Client.
-     * @param duration          The duration of the contract.
+     * @param energyClientAID The Energy Client.
+     * @param duration        The duration of the contract.
      * @return a new EnergyContractProposal object with the given draft settings.
      */
     public static EnergyContractProposal makeContractDraft(AID energyClientAID, int duration) {
@@ -83,9 +84,10 @@ public class EnergyContractProposal extends BaseContract implements Serializable
     /**
      * Makes a contract proposal from a contract draft, by specifying the energy supplier
      * the energy amount to be traded per cycle, and cost per unit.
-     * @param energySupplierAID     AID of the energy supplier.
-     * @param energyAmount          Amount of energy to be traded every cycle.
-     * @param energyCostPerUnit     Cost per energy unit.
+     *
+     * @param energySupplierAID AID of the energy supplier.
+     * @param energyAmount      Amount of energy to be traded every cycle.
+     * @param energyCostPerUnit Cost per energy unit.
      * @return the EnergyContractProposal object.
      */
     public EnergyContractProposal makeContractProposal(AID energySupplierAID, int energyAmount, int energyCostPerUnit) {
@@ -102,13 +104,14 @@ public class EnergyContractProposal extends BaseContract implements Serializable
      * Client signs contract proposal.
      */
     public void signContract(Agent agent) {
-        if (! agent.getAID().equals(energyClientAID))
+        if (!agent.getAID().equals(energyClientAID))
             throw new IllegalArgumentException("Signing agent was not the client.");
         this.state = ContractState.SIGNED;
     }
 
     /**
      * Checks whether contract is signed (final).
+     *
      * @return whether contract is signed.
      */
     public boolean isSigned() {

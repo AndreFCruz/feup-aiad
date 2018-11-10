@@ -89,6 +89,7 @@ public class Wallet implements Serializable {
     /**
      * Method for injections to the Wallet's balance.
      * Useful for producers, which, by producing energy, inject their energy wallet with energy units.
+     *
      * @param amount to be injected.
      */
     public void inject(float amount) {
@@ -103,6 +104,7 @@ public class Wallet implements Serializable {
     /**
      * Method for consuming units from this wallet's balance.
      * Useful for consumers, that consume energy daily.
+     *
      * @param amount to be consumed.
      */
     public void consume(float amount) {

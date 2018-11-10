@@ -8,6 +8,9 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+/**
+ * Prefers Brokers that use renewable energy.
+ */
 public class EcologicalConsumer extends Consumer {
     public EcologicalConsumer(EnergyMarketLauncher model, GraphicSettings graphicSettings, int energyConsumptionPerMonth) {
         super(model, graphicSettings, energyConsumptionPerMonth);

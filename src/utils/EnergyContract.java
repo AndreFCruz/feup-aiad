@@ -1,6 +1,7 @@
 package utils;
 
 import agents.GenericAgent;
+
 import java.io.NotSerializableException;
 
 public class EnergyContract extends BaseContract {
@@ -22,9 +23,9 @@ public class EnergyContract extends BaseContract {
 
 
     public EnergyContract(EnergyContractProposal proposal, GenericAgent supplier, GenericAgent client) {
-        if (! (proposal.isSigned()
+        if (!(proposal.isSigned()
                 && supplier.getAID().equals(proposal.getEnergySupplierAID())
-                && client.getAID().equals(proposal.getEnergyClientAID())) ) {
+                && client.getAID().equals(proposal.getEnergyClientAID()))) {
             throw new IllegalArgumentException();
         }
 
@@ -82,6 +83,7 @@ public class EnergyContract extends BaseContract {
 
     /**
      * Class is not serializable.
+     *
      * @throws NotSerializableException always.
      */
     private void writeObject(java.io.ObjectOutputStream stream) throws NotSerializableException {
@@ -90,6 +92,7 @@ public class EnergyContract extends BaseContract {
 
     /**
      * Class is not serializable.
+     *
      * @throws NotSerializableException always.
      */
     private void readObject(java.io.ObjectInputStream stream) throws NotSerializableException {

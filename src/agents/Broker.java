@@ -2,9 +2,9 @@ package agents;
 
 import behaviours.broker.BrokerBusinessStarter;
 import behaviours.broker.BrokerListeningBehaviour;
+import jade.core.AID;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import launchers.EnergyMarketLauncher;
-import jade.core.AID;
 import utils.AgentType;
 import utils.EnergyContract;
 import utils.GraphicSettings;
@@ -60,6 +60,7 @@ public class Broker extends DFRegisterAgent {
 
     /**
      * Factory method for ordering Producers according to different preferences.
+     *
      * @param producers the list of available producers.
      * @return the sorted list of producers, from highest to lowest preference.
      */
@@ -70,6 +71,7 @@ public class Broker extends DFRegisterAgent {
 
     /**
      * Returns all available producers from the DF service (yellow-pages).
+     *
      * @return the list of producers.
      */
     private List<Producer> getProducers() {
@@ -80,7 +82,7 @@ public class Broker extends DFRegisterAgent {
 
         return producersAID.stream()
                 .map((p) -> (Producer) getWorldModel().getAgentByAID(p))
-                .filter((Producer p) -> ! p.hasContract())
+                .filter((Producer p) -> !p.hasContract())
                 .collect(Collectors.toList());
     }
 

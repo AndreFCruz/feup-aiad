@@ -4,7 +4,6 @@ import agents.Broker;
 import behaviours.FIPAContractNetResponder;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
-import sajas.core.Agent;
 import utils.EnergyContractProposal;
 
 import java.io.IOException;

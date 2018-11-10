@@ -49,7 +49,7 @@ public class Government extends GenericAgent {
                     if (correspondingMoney <= 0) {
                         // punish by removing energy (might lead to some contracts being revoked)
                         float correspondingEnergy = monopolyGuy.getEnergyWallet().getBalance() * difference;
-                        if (correspondingEnergy < 0){
+                        if (correspondingEnergy < 0) {
                             // TODO: find another way to punish here
                         } else {
                             float energyForEach = correspondingEnergy / (brokers.size() - 1);
