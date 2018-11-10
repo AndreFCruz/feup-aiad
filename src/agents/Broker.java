@@ -130,14 +130,22 @@ public class Broker extends DFRegisterAgent {
     private void updateProfitMargin() {
         int revenue = getMonthlyRevenue();
         int costs = getMonthlyCosts();
+        int profitChange = 0;
 
+        if (getMonthlySoldEnergy() < getMonthlyEnergy() * 0.5)
+            profitChange -= 1;      // make energy cheaper because you have plenty to sell
         if (revenue < costs) {
-            this.profitMargin += profitMarginIncrements;
-            System.out.println("Increased profit margin to " + profitMargin);
+            profitChange += 1;      // make energy pricier, because you're losing money
         } else if (revenue * (1 + profitMargin - profitMarginIncrements) / (1 + profitMargin) > costs) {
-            this.profitMargin -= profitMarginIncrements;
-            System.out.println("Reduced profit margin to " + profitMargin);
+            profitChange -= 1;      // make energy cheaper because you have a large profit margin
         }
+
+        System.out.println("Changed profit margin from " + profitMargin + " to "
+                + (profitMargin + (profitChange * profitMarginIncrements))
+        );
+        this.profitMargin += profitChange * profitMarginIncrements;
+        if (profitMargin < 1)
+            profitMargin = 1; // No dumping prices!!
     }
 
     public int getEnergyUnitSellPrice() {
