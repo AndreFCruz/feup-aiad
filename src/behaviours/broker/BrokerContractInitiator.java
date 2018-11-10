@@ -29,7 +29,7 @@ public class BrokerContractInitiator extends FIPAContractNetInitiator {
      */
     @Override
     protected Vector prepareCfps(ACLMessage cfp) {
-        List<Producer> orderedListOfPreferences = ((Broker) myAgent).getOrderedProducers();
+        List<Producer> orderedListOfPreferences = ((Broker) myAgent).getProducersByPreference();
 
          Vector v = new Vector();
 

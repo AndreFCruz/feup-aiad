@@ -89,9 +89,7 @@ public class Wallet implements Serializable {
     /**
      * Method for injections to the Wallet's balance.
      * Useful for producers, which, by producing energy, inject their energy wallet with energy units.
-     * For generation
-     *
-     * @param amount
+     * @param amount to be injected.
      */
     public void inject(float amount) {
         if (amount <= 0) {
@@ -102,6 +100,11 @@ public class Wallet implements Serializable {
         this.transactions.add(t);
     }
 
+    /**
+     * Method for consuming units from this wallet's balance.
+     * Useful for consumers, that consume energy daily.
+     * @param amount to be consumed.
+     */
     public void consume(float amount) {
         if (amount <= 0) {
             throw new IllegalArgumentException();

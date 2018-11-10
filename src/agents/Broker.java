@@ -56,18 +56,31 @@ public class Broker extends DFRegisterAgent {
      *
      * @return the list of producers.
      */
-    public List<Producer> getOrderedProducers() {
-        List<AID> producersAID = new ArrayList<>();
+    public List<Producer> getProducersByPreference() {
+        return orderProducersByPreference(getProducers());
+    }
 
+    /**
+     * Factory method for ordering Producers according to different preferences.
+     * @param producers the list of available producers.
+     * @return the sorted list of producers, from highest to lowest preference.
+     */
+    protected List<Producer> orderProducersByPreference(List<Producer> producers) {
+        Collections.shuffle(producers);
+        return producers;
+    }
+
+    /**
+     * Returns all available producers from the DF service (yellow-pages).
+     * @return the list of producers.
+     */
+    private List<Producer> getProducers() {
+        List<AID> producersAID = new ArrayList<>();
         for (DFAgentDescription p : this.search.searchAndGet()) {
             producersAID.add(p.getName());
         }
-        List<Producer> producers = producersAID.stream().map((p) -> (Producer) getWorldModel().getAgentByAID(p)).collect(Collectors.toList());
 
-        // TODO sort Producers here
-        Collections.shuffle(producers);
-
-        return producers;
+        return producersAID.stream().map((p) -> (Producer) getWorldModel().getAgentByAID(p)).collect(Collectors.toList());
     }
 
     public List<EnergyContract> getProducerContracts() {
