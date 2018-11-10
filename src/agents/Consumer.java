@@ -25,7 +25,7 @@ public class Consumer extends DFSearchAgent {
 
     private boolean brokerService = false;
 
-    private int preferredContractDuration = 720;
+    private int preferredContractDuration = 7200;
 
     public Consumer(EnergyMarketLauncher model, GraphicSettings graphicSettings, int energyConsumptionPerMonth) {
         super(model, graphicSettings);
@@ -62,7 +62,7 @@ public class Consumer extends DFSearchAgent {
         }
         return brokersAID.stream()
                 .map((p) -> (Broker) getWorldModel().getAgentByAID(p))
-                .filter((Broker b) -> b.monthsThatMayFulfillContract(getEnergyConsumptionPerMonth()) > 2)
+                .filter((Broker b) -> b.monthsThatMayFulfillContract(getEnergyConsumptionPerMonth()) > 1)
                 .collect(Collectors.toList());
     }
 
@@ -99,7 +99,7 @@ public class Consumer extends DFSearchAgent {
 
     public int getNewContractDuration() {
         Random rand = new Random();
-        int duration = (int) (rand.nextGaussian() * (preferredContractDuration / 3.) + preferredContractDuration);
+        int duration = (int) (rand.nextGaussian() * (preferredContractDuration / 2f) + preferredContractDuration);
         return duration > 60 ? duration : 60;
     }
 

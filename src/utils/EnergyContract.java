@@ -107,13 +107,4 @@ public class EnergyContract extends BaseContract {
         return energyClient;
     }
 
-
-    public float getEnergyAmountPerMonth() {
-        return energyAmountPerCycle * 30f / paymentCycle;
-    }
-
-    public float getMonthlyEnergyCost() {
-        return energyCostPerUnit * getEnergyAmountPerMonth();
-    }
-
 }

@@ -46,10 +46,12 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 
     // Logic variables
     private static final int DELAY_SIMULATION = 100;
-    private int NUM_PRODUCERS;
-    private int NUM_BROKERS;
-    private int NUM_CONSUMERS;
-    private float MONOPOLY_PROBABILITY;
+    private int NUM_PRODUCERS               = 30;
+    private int NUM_BROKERS                 = 5;
+    private int NUM_CONSUMERS               = 50;
+    private float PERCENT_LAZY_CONSUMERS    = 0.2f;
+    private float PERCENT_ECO_CONSUMERS     = 0.2f;
+    private float MONOPOLY_THRESHOLD;
     private int AVG_DAYS_FOR_AUDIT;
 
     // Recording variables
@@ -61,7 +63,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     /**
      * Approximate value of the total energy produced per month in this energy market.
      */
-    private static int TOTAL_ENERGY_PRODUCED_PER_MONTH = (int) Math.pow(10, 8); // 1 MWh
+    private static int TOTAL_ENERGY_PRODUCED_PER_MONTH = (int) Math.pow(10, 6); // 1 MWh
     private int actualTotalEnergyProducedPerMonth = 0;
 
     private ContainerController mainContainer;
@@ -92,10 +94,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         DisplayConstants.CELL_WIDTH = 1;
         DisplayConstants.CELL_HEIGHT = 1;
 
-        NUM_PRODUCERS = 50;
-        NUM_BROKERS = 5;
-        NUM_CONSUMERS = 30;
-        MONOPOLY_PROBABILITY = 0.5f;
+        MONOPOLY_THRESHOLD = 0.5f;
         AVG_DAYS_FOR_AUDIT = 180;
         LOGS_NAME = "experiment_" + rand.nextInt(10);
         STORE_RECORDS = false;
@@ -324,7 +323,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 
     @Override
     public String[] getInitParam() {
-        return new String[]{"NUM_PRODUCERS", "NUM_BROKERS", "NUM_CONSUMERS", "MONOPOLY_PROBABILITY",
+        return new String[]{"NUM_PRODUCERS", "NUM_BROKERS", "NUM_CONSUMERS", "MONOPOLY_THRESHOLD",
                 "AVG_DAYS_FOR_AUDIT", "LOGS_NAME", "STORE_RECORDS"};
     }
 
@@ -414,7 +413,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
                 agentConsumption = totalEnergyConsumed;
             totalEnergyConsumed -= agentConsumption;
 
-            Consumer c = new LazyConsumer(this, gs, agentConsumption);
+            Consumer c = makeNewConsumer(gs, agentConsumption);
             world.putObjectAt(c.getX(), c.getY(), c);
             consumers.add(c);
             mainContainer.acceptNewAgent("consumer-" + i, c).start();
@@ -423,8 +422,18 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         energyPlotBuildConsumers();
     }
 
+    private Consumer makeNewConsumer(GraphicSettings gs, int agentConsumption) {
+        float f = rand.nextFloat();
+        if (f < PERCENT_ECO_CONSUMERS)
+            return new EcologicalConsumer(this, gs, agentConsumption);
+        else if (f < PERCENT_ECO_CONSUMERS + PERCENT_LAZY_CONSUMERS)
+            return new LazyConsumer(this, gs, agentConsumption);
+        else
+            return new Consumer(this, gs, agentConsumption);
+    }
+
     private void launchGovernment() throws StaleProxyException {
-        government = new Government(this, null, MONOPOLY_PROBABILITY);
+        government = new Government(this, null, MONOPOLY_THRESHOLD);
         mainContainer.acceptNewAgent("government", government).start();
     }
 
@@ -577,12 +586,12 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         this.NUM_CONSUMERS = NUM_CONSUMERS;
     }
 
-    public float getMONOPOLY_PROBABILITY() {
-        return MONOPOLY_PROBABILITY;
+    public float getMONOPOLY_THRESHOLD() {
+        return MONOPOLY_THRESHOLD;
     }
 
-    public void setMONOPOLY_PROBABILITY(float MONOPOLY_PROBABILITY) {
-        this.MONOPOLY_PROBABILITY = MONOPOLY_PROBABILITY;
+    public void setMONOPOLY_THRESHOLD(float MONOPOLY_THRESHOLD) {
+        this.MONOPOLY_THRESHOLD = MONOPOLY_THRESHOLD;
     }
 
     public int getAVG_DAYS_FOR_AUDIT() {

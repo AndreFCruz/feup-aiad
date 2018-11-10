@@ -31,7 +31,7 @@ public class Broker extends DFRegisterAgent {
 
     private DFSearchAgent search;
 
-    private int preferredContractDuration = 360;
+    private int preferredContractDuration = 3600;
 
     private int energyUnitSellPrice;
 
