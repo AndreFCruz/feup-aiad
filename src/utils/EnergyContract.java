@@ -81,9 +81,16 @@ public class EnergyContract {
 
         // Pay day
         if (ticks % paymentCycle == 0) {
-            int totalEnergyCost = energyCostPerUnit * energyAmountPerCycle;
-            energySupplier.getEnergyWallet().withdraw(energyAmountPerCycle, energyClient.getEnergyWallet());
-            energyClient.getMoneyWallet().withdraw(totalEnergyCost, energySupplier.getMoneyWallet());
+            float energyAmount = energyAmountPerCycle;
+            float energyCost = energyAmount * getEnergyCostPerUnit();
+
+            if (ticks + paymentCycle > duration) { // less than a full cycle left
+                float ratioOfCycleLeft = (float) (duration - ticks) / paymentCycle;
+                energyAmount *= ratioOfCycleLeft;
+                energyCost *= ratioOfCycleLeft;
+            }
+            energySupplier.getEnergyWallet().withdraw(energyAmount, energyClient.getEnergyWallet());
+            energyClient.getMoneyWallet().withdraw(energyCost, energySupplier.getMoneyWallet());
         }
 
         // Ticks are updated at the end of each step, as such,
