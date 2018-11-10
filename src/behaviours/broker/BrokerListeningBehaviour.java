@@ -14,8 +14,11 @@ import java.io.IOException;
  */
 public class BrokerListeningBehaviour extends FIPAContractNetResponder {
 
-    public BrokerListeningBehaviour(Agent agent) {
+    private Broker myBroker;
+
+    public BrokerListeningBehaviour(Broker agent) {
         super(agent);
+        myBroker = agent;
     }
 
     @Override
@@ -25,11 +28,11 @@ public class BrokerListeningBehaviour extends FIPAContractNetResponder {
         try {
             EnergyContractProposal ec = (EnergyContractProposal) cfp.getContentObject();
 
-            if (((Broker) myAgent).getAvailableMonthlyEnergyQuota() >= ec.getEnergyAmountPerCycle()) {
+            if (myBroker.getAvailableMonthlyEnergyQuota() >= ec.getEnergyAmountPerCycle()) {
                 ec = ec.makeContractProposal(
-                        myAgent.getAID(),
+                        myBroker.getAID(),
                         ec.getEnergyAmountPerCycle(),
-                        ((Broker) myAgent).getEnergyUnitSellPrice()
+                        myBroker.getEnergyUnitSellPrice()
                 );
                 reply.setPerformative(ACLMessage.PROPOSE);
                 reply.setContentObject(ec);

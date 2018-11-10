@@ -50,9 +50,10 @@ public class BrokerContractInitiator extends FIPAContractNetInitiator {
             }
         }
 
+        int newContractDuration = myBroker.getNewContractDuration();
         if (willContactAtLeastOne) {
             // if at least one producer can supply this broker, create a draft contract
-            EnergyContractProposal ec = EnergyContractProposal.makeContractDraft(myBroker.getAID(), myBroker.getDuration());
+            EnergyContractProposal ec = EnergyContractProposal.makeContractDraft(myBroker.getAID(), newContractDuration);
             try {
                 cfp.setContentObject(ec);
             } catch (IOException e) {

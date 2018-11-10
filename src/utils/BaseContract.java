@@ -1,6 +1,8 @@
 package utils;
 
-public class BaseContract {
+import java.io.Serializable;
+
+public class BaseContract implements Serializable {
     /**
      * Total energy to be transferred every payment cycle.
      */

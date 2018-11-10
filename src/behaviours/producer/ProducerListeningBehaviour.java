@@ -14,15 +14,18 @@ import java.io.IOException;
  */
 public class ProducerListeningBehaviour extends FIPAContractNetResponder {
 
-    public ProducerListeningBehaviour(Agent agent) {
+    private Producer myProducer;
+
+    public ProducerListeningBehaviour(Producer agent) {
         super(agent);
+        myProducer = agent;
     }
 
     @Override
     protected ACLMessage handleCfp(ACLMessage cfp) {
         ACLMessage reply = cfp.createReply();
 
-        if (((Producer) myAgent).hasContract()) {
+        if (myProducer.hasContract()) {
             reply.setPerformative(ACLMessage.REFUSE);
             System.out.println("Producer refused contract as it already has one.");
             return reply;
@@ -34,13 +37,13 @@ public class ProducerListeningBehaviour extends FIPAContractNetResponder {
             EnergyContractProposal ec = (EnergyContractProposal) cfp.getContentObject();
             ec = ec.makeContractProposal(
                     myAgent.getAID(),
-                    ((Producer) myAgent).getEnergyProductionPerMonth(),
-                    ((Producer) myAgent).getEnergyUnitSellPrice()
+                    myProducer.getEnergyProductionPerMonth(),
+                    myProducer.getEnergyUnitSellPrice()
             );
 
             reply.setContentObject(ec);
             // assuming we will gain this contract, to reject others
-            ((Producer) myAgent).setContract(ec);
+            myProducer.setContract(ec);
 
 
         } catch (UnreadableException e) {
@@ -60,7 +63,7 @@ public class ProducerListeningBehaviour extends FIPAContractNetResponder {
     @Override
     protected void handleRejectProposal(ACLMessage cfp, ACLMessage propose, ACLMessage reject) {
         // invalidate previous contract to be able to accept new ones
-        ((Producer) myAgent).setContract(null);
+        myProducer.setContract(null);
     }
 
     @Override

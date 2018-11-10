@@ -12,6 +12,7 @@ import utils.GraphicSettings;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 /**
@@ -31,7 +32,7 @@ public class Broker extends DFRegisterAgent {
 
     private DFSearchAgent search;
 
-    private int duration = 730; // TODO: remove this at a further development stage
+    private int preferredContractDuration = 180;
 
     private int energyUnitSellPrice;
 
@@ -102,8 +103,11 @@ public class Broker extends DFRegisterAgent {
         return worldModel;
     }
 
-    public int getDuration() {
-        return duration;
+
+    public int getNewContractDuration() {
+        Random rand = new Random();
+        int duration = (int) (rand.nextGaussian() * (preferredContractDuration / 4.) + preferredContractDuration);
+        return duration > 30 ? duration : 30;
     }
 
     public int getAvailableMonthlyEnergyQuota() {
