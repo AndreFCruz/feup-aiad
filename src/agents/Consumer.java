@@ -98,8 +98,8 @@ public class Consumer extends DFSearchAgent {
 
     public int getNewContractDuration() {
         Random rand = new Random();
-        int duration = (int) (rand.nextGaussian() * (preferredContractDuration / 4.) + preferredContractDuration);
-        return duration > 30 ? duration : 30;
+        int duration = (int) (rand.nextGaussian() * (preferredContractDuration / 3.) + preferredContractDuration);
+        return duration > 60 ? duration : 60;
     }
 
     public void consume() {

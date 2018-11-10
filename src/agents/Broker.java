@@ -31,7 +31,7 @@ public class Broker extends DFRegisterAgent {
 
     private DFSearchAgent search;
 
-    private int preferredContractDuration = 180;
+    private int preferredContractDuration = 360;
 
     private int energyUnitSellPrice;
 
@@ -108,8 +108,8 @@ public class Broker extends DFRegisterAgent {
 
     public int getNewContractDuration() {
         Random rand = new Random();
-        int duration = (int) (rand.nextGaussian() * (preferredContractDuration / 4.) + preferredContractDuration);
-        return duration > 30 ? duration : 30;
+        int duration = (int) (rand.nextGaussian() * (preferredContractDuration / 3.) + preferredContractDuration);
+        return duration > 180 ? duration : 180;
     }
 
     public int getAvailableMonthlyEnergyQuota() {
