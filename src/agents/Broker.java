@@ -9,10 +9,7 @@ import utils.AgentType;
 import utils.EnergyContract;
 import utils.GraphicSettings;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -27,6 +24,8 @@ public class Broker extends DFRegisterAgent {
     private float profitMargin = 0.10f;
 
     private float profitMarginIncrements = 0.05f;
+
+    private float minimumProfitMargin = 0.05f;
 
     private static final int TIMEOUT = 2000;
 
@@ -65,7 +64,7 @@ public class Broker extends DFRegisterAgent {
      * @return the sorted list of producers, from highest to lowest preference.
      */
     protected List<Producer> orderProducersByPreference(List<Producer> producers) {
-        Collections.shuffle(producers);
+        Collections.sort(producers, Comparator.comparingInt(Producer::getEnergyUnitSellPrice));
         return producers;
     }
 
@@ -79,7 +78,10 @@ public class Broker extends DFRegisterAgent {
             producersAID.add(p.getName());
         }
 
-        return producersAID.stream().map((p) -> (Producer) getWorldModel().getAgentByAID(p)).collect(Collectors.toList());
+        return producersAID.stream()
+                .map((p) -> (Producer) getWorldModel().getAgentByAID(p))
+                .filter((Producer p) -> ! p.hasContract())
+                .collect(Collectors.toList());
     }
 
     public List<EnergyContract> getProducerContracts() {
@@ -144,8 +146,8 @@ public class Broker extends DFRegisterAgent {
                 + (profitMargin + (profitChange * profitMarginIncrements))
         );
         this.profitMargin += profitChange * profitMarginIncrements;
-        if (profitMargin < 1)
-            profitMargin = 1; // No dumping prices!!
+        if (profitMargin < minimumProfitMargin)
+            profitMargin = minimumProfitMargin;
     }
 
     public int getEnergyUnitSellPrice() {

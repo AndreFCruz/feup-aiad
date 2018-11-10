@@ -9,10 +9,7 @@ import launchers.EnergyMarketLauncher;
 import utils.AgentType;
 import utils.GraphicSettings;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
@@ -49,7 +46,7 @@ public class Consumer extends DFSearchAgent {
      * @return ordered list of brokers, from highest preference to lowest.
      */
     protected List<Broker> orderBrokersByPreference(List<Broker> brokers) {
-        Collections.shuffle(brokers);
+        Collections.sort(brokers, Comparator.comparingInt(Broker::getEnergyUnitSellPrice));
         return brokers;
     }
 
@@ -62,7 +59,10 @@ public class Consumer extends DFSearchAgent {
         for (DFAgentDescription p : this.searchAndGet()) {
             brokersAID.add(p.getName());
         }
-        return brokersAID.stream().map((p) -> (Broker) getWorldModel().getAgentByAID(p)).collect(Collectors.toList());
+        return brokersAID.stream()
+                .map((p) -> (Broker) getWorldModel().getAgentByAID(p))
+                .filter((Broker b) -> b.getAvailableMonthlyEnergyQuota() > this.getEnergyConsumptionPerMonth())
+                .collect(Collectors.toList());
     }
 
     public EnergyMarketLauncher getWorldModel() {

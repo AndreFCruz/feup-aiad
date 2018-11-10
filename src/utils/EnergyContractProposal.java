@@ -1,7 +1,6 @@
 package utils;
 
 import jade.core.AID;
-import org.jetbrains.annotations.Nullable;
 import sajas.core.Agent;
 
 import java.io.Serializable;
@@ -87,7 +86,7 @@ public class EnergyContractProposal extends BaseContract implements Serializable
      * @param energySupplierAID     AID of the energy supplier.
      * @param energyAmount          Amount of energy to be traded every cycle.
      * @param energyCostPerUnit     Cost per energy unit.
-     * @return
+     * @return the EnergyContractProposal object.
      */
     public EnergyContractProposal makeContractProposal(AID energySupplierAID, int energyAmount, int energyCostPerUnit) {
         if (this.state == ContractState.SIGNED)
