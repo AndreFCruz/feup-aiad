@@ -49,7 +49,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     private int NUM_PRODUCERS               = 30;
     private int NUM_BROKERS                 = 5;
     private int NUM_CONSUMERS               = 50;
-    private float PERCENT_LAZY_CONSUMERS    = 0.2f;
+    private float PERCENT_LAZY_CONSUMERS    = 0.6f;
     private float PERCENT_ECO_CONSUMERS     = 0.2f;
 
     private float MONOPOLY_THRESHOLD;

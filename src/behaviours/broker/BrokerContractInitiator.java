@@ -34,8 +34,8 @@ public class BrokerContractInitiator extends FIPAContractNetInitiator {
     protected Vector prepareCfps(ACLMessage cfp) {
         Vector v = new Vector();
 
-        if (((Broker) myAgent).monthsThatMayFulfillAllContracts() > Broker.MONTHS_STOPS_BUYING_ENERGY)
-            return v;
+//        if (((Broker) myAgent).monthsThatMayFulfillAllContracts() > Broker.MONTHS_STOPS_BUYING_ENERGY)
+//            return v;
 
         List<Producer> orderedListOfPreferences = myBroker.getProducersByPreference();
 

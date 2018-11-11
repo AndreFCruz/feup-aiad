@@ -19,9 +19,9 @@ public class Broker extends DFRegisterAgent {
 
     private static final int INFINITY = Integer.MAX_VALUE;
 
-    private static final int BASE_ENERGY_STORAGE = 100000000;
-
-    public static final int MONTHS_STOPS_BUYING_ENERGY = 5000;
+//    private static final int BASE_ENERGY_STORAGE = 100000000;
+//
+//    public static final int MONTHS_STOPS_BUYING_ENERGY = 5000;
 
     private List<EnergyContract> producerContracts = new ArrayList<>();
 
@@ -211,8 +211,8 @@ public class Broker extends DFRegisterAgent {
 
             monthsFulfilled += 1;
 
-            if (consumerContractsClone.size() == 0)
-                return energyBalance >= BASE_ENERGY_STORAGE? INFINITY : 0;
+//            if (consumerContractsClone.size() == 0)
+//                return energyBalance >= BASE_ENERGY_STORAGE? INFINITY : 0;
         }
         return monthsFulfilled;
     }
