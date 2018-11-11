@@ -7,8 +7,10 @@ import jade.core.AID;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import launchers.EnergyMarketLauncher;
 import utils.AgentType;
+import utils.EnergyContract;
 import utils.GraphicSettings;
 
+import javax.management.RuntimeErrorException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -23,9 +25,11 @@ public class Consumer extends DFSearchAgent {
 
     private int energyConsumptionPerMonth;
 
-    private boolean brokerService = false;
-
     private int preferredContractDuration = 7200;
+
+    private EnergyContract energyContract = null;
+
+    private boolean hasFutureContractSigned = false;
 
     public Consumer(EnergyMarketLauncher model, GraphicSettings graphicSettings, int energyConsumptionPerMonth) {
         super(model, graphicSettings);
@@ -82,19 +86,27 @@ public class Consumer extends DFSearchAgent {
     }
 
     public boolean hasBrokerService() {
-        return brokerService;
+        return energyContract != null;
     }
 
-    public void setHasBrokerService(boolean b) {
-        brokerService = b;
+    public void setBrokerService(EnergyContract ec) {
+        if (this.energyContract != null && !this.energyContract.hasEnded())
+            throw new RuntimeException("Signing new contract when previous was still active.");
+        energyContract = ec;
 
-        if (!brokerService) {
+        if (ec == null) {
             this.addBehaviour(
                     new ConsumerContractWrapperBehaviour(
                             new ConsumerContractInitiator(this)
                     )
             );
+        } else { // just signed a new contract
+            hasFutureContractSigned = false;
         }
+    }
+
+    public void setHasFutureContractSigned() {
+        this.hasFutureContractSigned = true;
     }
 
     public int getNewContractDuration() {

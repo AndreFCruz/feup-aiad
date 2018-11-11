@@ -71,9 +71,8 @@ public class ConsumerContractInitiator extends FIPAContractNetInitiator {
                 try {
                     EnergyContractProposal ec = (EnergyContractProposal) received.getContentObject();
                     ec.signContract(myAgent);
-                    myConsumer.setHasBrokerService(true);
 
-                    myConsumer.getWorldModel().addConsumerBrokerContract(ec);
+                    myConsumer.getWorldModel().addConsumerBrokerContractFromProposal(ec);
 
                     reply.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
                     acceptances.add(reply);
