@@ -104,13 +104,19 @@ public class ConsumerContractInitiator extends FIPAContractNetInitiator {
 
         for (int i = 0; i < potentialAcceptances.size(); ++i){
             OurPair<ACLMessage, EnergyContractProposal> pair = potentialAcceptances.get(i);
-            EnergyContractProposal ec = pair.second;
+            EnergyContractProposal ecp = pair.second;
             if (i == indexToChoose){
-                ec.signContract(myAgent);
-                if (ec.getStartDate() > myConsumer.getWorldModel().getTickCount())
-                    myConsumer.getWorldModel().addFutureConsumerBrokerContractFromProposal(ec);
-                else
-                    myConsumer.getWorldModel().addConsumerBrokerContractFromProposal(ec);
+                ecp.signContract(myAgent);
+                if (ecp.getStartDate() == null)
+                    myConsumer.getWorldModel().addConsumerBrokerContractFromProposal(ecp);
+                else {
+                    if (ecp.getStartDate() > myConsumer.getWorldModel().getTickCount())
+                        myConsumer.getWorldModel().addFutureConsumerBrokerContractFromProposal(ecp);
+                    else
+                        myConsumer.getWorldModel().addConsumerBrokerContractFromProposal(ecp);
+                }
+
+
                 pair.first.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
             } else {
                 pair.first.setPerformative(ACLMessage.REJECT_PROPOSAL);
