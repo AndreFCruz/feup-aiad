@@ -5,11 +5,11 @@ import agents.Consumer;
 import behaviours.FIPAContractNetInitiator;
 import jade.lang.acl.ACLMessage;
 import jade.lang.acl.UnreadableException;
+import javafx.util.Pair;
 import utils.EnergyContractProposal;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Vector;
+import java.util.*;
 
 public class ConsumerContractInitiator extends FIPAContractNetInitiator {
 
@@ -62,6 +62,8 @@ public class ConsumerContractInitiator extends FIPAContractNetInitiator {
     @Override
     protected void handleAllResponses(Vector responses, Vector acceptances) {
 
+        ArrayList<Pair<ACLMessage, EnergyContractProposal>> potentialAcceptances = new ArrayList<>();
+
         for (Object response : responses) {
             ACLMessage received = ((ACLMessage) response);
             ACLMessage reply = ((ACLMessage) response).createReply();
@@ -70,13 +72,8 @@ public class ConsumerContractInitiator extends FIPAContractNetInitiator {
             if (received.getPerformative() == ACLMessage.PROPOSE && !myConsumer.hasBrokerService()) {
                 try {
                     EnergyContractProposal ec = (EnergyContractProposal) received.getContentObject();
-                    ec.signContract(myAgent);
-                    myConsumer.setHasBrokerService(true);
-
-                    myConsumer.getWorldModel().addConsumerBrokerContract(ec);
-
-                    reply.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
-                    acceptances.add(reply);
+                    // add potential acceptances
+                    potentialAcceptances.add(new Pair<>(reply, ec));
 
                 } catch (UnreadableException e) {
                     e.printStackTrace();
@@ -88,6 +85,26 @@ public class ConsumerContractInitiator extends FIPAContractNetInitiator {
                 reply.setPerformative(ACLMessage.REJECT_PROPOSAL);
                 acceptances.add(reply);
             }
+        }
+
+        // order acceptances
+        Collections.sort(potentialAcceptances, (o1, o2) -> Float.compare(o1.getValue().getMonthlyEnergyCost(), o2.getValue().getMonthlyEnergyCost()));
+        float percentage = 0.2f;
+        int numberOfBrokers = Math.max((int) (percentage * potentialAcceptances.size()), 1);
+        Random rand = new Random();
+        int indexToChoose = rand.nextInt(numberOfBrokers);
+
+        for (int i = 0; i < potentialAcceptances.size(); ++i){
+            Pair<ACLMessage, EnergyContractProposal> pair = potentialAcceptances.get(i);
+            if (i == indexToChoose){
+                pair.getValue().signContract(myAgent);
+                myConsumer.setHasBrokerService(true);
+                myConsumer.getWorldModel().addConsumerBrokerContract(pair.getValue());
+                pair.getKey().setPerformative(ACLMessage.ACCEPT_PROPOSAL);
+            } else {
+                pair.getKey().setPerformative(ACLMessage.REJECT_PROPOSAL);
+            }
+            acceptances.add(pair.getKey());
         }
     }
 
