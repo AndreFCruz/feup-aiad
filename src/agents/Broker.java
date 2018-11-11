@@ -199,7 +199,7 @@ public class Broker extends DFRegisterAgent {
 
         float energyBalance = energyWallet.getBalance();
         int monthsFulfilled = 0;
-        while (energyBalance > 0 || (consumerContractsClone.size() == 0 && producerContractsClone.size() == 0) {
+        while (energyBalance > 0 || !(consumerContractsClone.size() == 0 && producerContractsClone.size() == 0)) {
             energyBalance += contractsSimulator(producerContractsClone);
             energyBalance -= contractsSimulator(consumerContractsClone);
 
