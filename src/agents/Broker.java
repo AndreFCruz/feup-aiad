@@ -193,13 +193,18 @@ public class Broker extends DFRegisterAgent {
         }
     }
 
+    /**
+     * Understand by how many months the Broker can fulfill the current contracts with the energy it has in its wallet.
+     *
+     * @return the number of months it can fulfill
+     */
     public int monthsThatMayFulfillAllContracts() {
         List<EnergyContract> consumerContractsClone = new ArrayList<>(consumerContracts);
         List<EnergyContract> producerContractsClone = new ArrayList<>(producerContracts);
 
         float energyBalance = energyWallet.getBalance();
         int monthsFulfilled = 0;
-        while (energyBalance > 0 || !(consumerContractsClone.size() == 0 && producerContractsClone.size() == 0)) {
+        while (energyBalance > 0 && !(consumerContractsClone.size() == 0 && producerContractsClone.size() == 0)) {
             energyBalance += contractsSimulator(producerContractsClone);
             energyBalance -= contractsSimulator(consumerContractsClone);
 
