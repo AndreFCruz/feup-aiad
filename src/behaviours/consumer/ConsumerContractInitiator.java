@@ -15,7 +15,7 @@ public class ConsumerContractInitiator extends FIPAContractNetInitiator {
 
     private Consumer myConsumer;
 
-    private static float CHEAPEST_CONTRACTS_THRESHOLD = 0.2f;
+    private static float CHEAPEST_CONTRACTS_THRESHOLD = 0.5f;
 
     public ConsumerContractInitiator(Consumer agent) {
         super(agent);
