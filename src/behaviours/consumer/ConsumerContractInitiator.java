@@ -53,6 +53,8 @@ public class ConsumerContractInitiator extends FIPAContractNetInitiator {
             ec.updateEnergyAmount(myConsumer.getEnergyConsumptionPerMonth());
             if (willSignFutureContract)
                 ec.setStartDate(myConsumer.getEnergyContract().getEndDate() + 1);
+            else
+                ec.setStartDate((int) myConsumer.getWorldModel().getTickCount());
 
             try {
                 cfp.setContentObject(ec);
@@ -107,14 +109,17 @@ public class ConsumerContractInitiator extends FIPAContractNetInitiator {
             EnergyContractProposal ecp = pair.second;
             if (i == indexToChoose){
                 ecp.signContract(myAgent);
-                if (ecp.getStartDate() == null)
-                    myConsumer.getWorldModel().addConsumerBrokerContractFromProposal(ecp);
-                else {
+//                if (ecp.getStartDate() == null){
+//                    ecp.signContract(myAgent);
+//                    myConsumer.getWorldModel().addConsumerBrokerContractFromProposal(ecp);
+//                }
+//                else {
                     if (ecp.getStartDate() > myConsumer.getWorldModel().getTickCount())
                         myConsumer.getWorldModel().addFutureConsumerBrokerContractFromProposal(ecp);
-                    else
+                    else {
                         myConsumer.getWorldModel().addConsumerBrokerContractFromProposal(ecp);
-                }
+                    }
+//                }
 
 
                 pair.first.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
