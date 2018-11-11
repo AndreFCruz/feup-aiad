@@ -85,7 +85,7 @@ public class Consumer extends DFSearchAgent {
     }
 
     public void setEnergyContract(EnergyContract ec) {
-        if (this.energyContract != null && !this.energyContract.hasEnded())
+        if (this.energyContract != null && !this.energyContract.hasEnded() && this.energyContract.canExchange())
             throw new RuntimeException("Signing new contract when previous was still active.");
         energyContract = ec;
 
