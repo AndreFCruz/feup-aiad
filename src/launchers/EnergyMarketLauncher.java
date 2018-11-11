@@ -508,7 +508,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
                 ((Broker) contract.getEnergySupplier()).getConsumerContracts().remove(contract);
 
                 // dealing with Consumer's side of the contract
-                ((Consumer) contract.getEnergyClient()).setBrokerService(null);
+                ((Consumer) contract.getEnergyClient()).setEnergyContract(null);
 
                 iter.remove();
             } else {
@@ -547,7 +547,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         contract.step(); // so first month's trades are promptly withdrawn
 
         ((Broker) contract.getEnergySupplier()).addConsumerContract(contract);
-        ((Consumer) contract.getEnergyClient()).setBrokerService(contract);
+        ((Consumer) contract.getEnergyClient()).setEnergyContract(contract);
     }
 
     private EnergyContract makeContractFromProposal(EnergyContractProposal contractProposal) {

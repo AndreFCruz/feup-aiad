@@ -103,11 +103,6 @@ public class Broker extends DFRegisterAgent {
         consumerContracts.add(ec);
     }
 
-    public EnergyMarketLauncher getWorldModel() {
-        return worldModel;
-    }
-
-
     public int getNewContractDuration() {
         Random rand = new Random();
         int duration = (int) (rand.nextGaussian() * (preferredContractDuration / 3.) + preferredContractDuration);

@@ -26,12 +26,14 @@ public class ConsumerContractInitiator extends FIPAContractNetInitiator {
         Vector<ACLMessage> v = new Vector<>();
 
         List<Broker> orderedListOfPreferences = myConsumer.getBrokersByPreference();
-        boolean contactedAtLeastOne = false;
 
-        // If already has an associated Broker
-        if (myConsumer.hasBrokerService()) {
+        boolean contactedAtLeastOne = false;
+        boolean willSignFutureContract = false;
+
+        if (myConsumer.hasEnergyContract() && myConsumer.getContractMonthsLeft() > 2)
             return v;
-        }
+        if (myConsumer.hasEnergyContract())
+            willSignFutureContract = true;
 
         for (Broker b : orderedListOfPreferences) {
             if (b.monthsThatMayFulfillContract(myConsumer.getEnergyConsumptionPerMonth()) > 1) {
@@ -47,6 +49,8 @@ public class ConsumerContractInitiator extends FIPAContractNetInitiator {
                     newContractDuration
             );
             ec.updateEnergyAmount(myConsumer.getEnergyConsumptionPerMonth());
+            if (willSignFutureContract)
+                ec.setStartDate(myConsumer.getEnergyContract().getEndDate() + 1);
 
             try {
                 cfp.setContentObject(ec);
@@ -59,6 +63,8 @@ public class ConsumerContractInitiator extends FIPAContractNetInitiator {
         return v;
     }
 
+    // TODO when receiving responses, add Future Contract if start date is in the future
+
     @Override
     protected void handleAllResponses(Vector responses, Vector acceptances) {
 
@@ -67,7 +73,7 @@ public class ConsumerContractInitiator extends FIPAContractNetInitiator {
             ACLMessage reply = ((ACLMessage) response).createReply();
 
             // If meanwhile a contract was signed
-            if (received.getPerformative() == ACLMessage.PROPOSE && !myConsumer.hasBrokerService()) {
+            if (received.getPerformative() == ACLMessage.PROPOSE && !myConsumer.hasEnergyContract()) {
                 try {
                     EnergyContractProposal ec = (EnergyContractProposal) received.getContentObject();
                     ec.signContract(myAgent);

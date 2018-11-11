@@ -10,7 +10,6 @@ import utils.AgentType;
 import utils.EnergyContract;
 import utils.GraphicSettings;
 
-import javax.management.RuntimeErrorException;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -70,10 +69,6 @@ public class Consumer extends DFSearchAgent {
                 .collect(Collectors.toList());
     }
 
-    public EnergyMarketLauncher getWorldModel() {
-        return worldModel;
-    }
-
     @Override
     protected void setup() {
         super.setup();
@@ -85,11 +80,11 @@ public class Consumer extends DFSearchAgent {
         return energyConsumptionPerMonth;
     }
 
-    public boolean hasBrokerService() {
+    public boolean hasEnergyContract() {
         return energyContract != null;
     }
 
-    public void setBrokerService(EnergyContract ec) {
+    public void setEnergyContract(EnergyContract ec) {
         if (this.energyContract != null && !this.energyContract.hasEnded())
             throw new RuntimeException("Signing new contract when previous was still active.");
         energyContract = ec;
@@ -105,8 +100,20 @@ public class Consumer extends DFSearchAgent {
         }
     }
 
+    public int getContractMonthsLeft() {
+        return (int) ((energyContract.getEndDate() - worldModel.getTickCount()) / 30);
+    }
+
+    public EnergyContract getEnergyContract() {
+        return energyContract;
+    }
+
     public void setHasFutureContractSigned() {
         this.hasFutureContractSigned = true;
+    }
+
+    public boolean getHasFutureContractSigned() {
+        return this.hasFutureContractSigned;
     }
 
     public int getNewContractDuration() {
@@ -116,7 +123,7 @@ public class Consumer extends DFSearchAgent {
     }
 
     public void consume() {
-        if (hasBrokerService())
+        if (hasEnergyContract())
             getEnergyWallet().consume(getEnergyConsumptionPerMonth() / 30f);
     }
 }
