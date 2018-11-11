@@ -29,13 +29,12 @@ public class EnergyContract extends BaseContract {
             throw new IllegalArgumentException();
         }
 
-        this.startDate = (int) supplier.getWorldModel().getTickCount();
+        this.startDate = proposal.getStartDate() != null ? proposal.getStartDate() : (int) supplier.getWorldModel().getTickCount();
         this.energySupplier = supplier;
         this.energyClient = client;
         this.energyAmountPerCycle = proposal.getEnergyAmountPerCycle();
         this.energyCostPerUnit = proposal.getEnergyCostPerUnit();
         this.duration = proposal.getDuration();
-        this.startDate = proposal.getStartDate();
         this.paymentCycle = proposal.getPaymentCycle();
     }
 
@@ -106,13 +105,6 @@ public class EnergyContract extends BaseContract {
 
     public GenericAgent getEnergyClient() {
         return energyClient;
-    }
-
-    /**
-     * Simulate a payment cycle
-     */
-    public void simulateCycle() {
-        ticks += paymentCycle;
     }
 
 }

@@ -17,11 +17,7 @@ import java.util.stream.Collectors;
  */
 public class Broker extends DFRegisterAgent {
 
-    private static final int INFINITY = Integer.MAX_VALUE;
-
-//    private static final int BASE_ENERGY_STORAGE = 100000000;
-//
-//    public static final int MONTHS_STOPS_BUYING_ENERGY = 5000;
+    private static final int BUY_ENERGY_THRESHOLD = (int) Math.pow(10, 6);
 
     private List<EnergyContract> producerContracts = new ArrayList<>();
 
@@ -204,15 +200,18 @@ public class Broker extends DFRegisterAgent {
         List<EnergyContract> producerContractsClone = new ArrayList<>(producerContracts);
 
         float energyBalance = energyWallet.getBalance();
+        int currentDate = (int) getWorldModel().getTickCount();
         int monthsFulfilled = 0;
+
         while (energyBalance > 0) {
-            energyBalance += contractsSimulator(producerContractsClone);
-            energyBalance -= contractsSimulator(consumerContractsClone);
+            energyBalance += simulateContractsOneMonth(producerContractsClone, currentDate);
+            energyBalance -= simulateContractsOneMonth(consumerContractsClone, currentDate);
 
             monthsFulfilled += 1;
+            currentDate += 30;
 
-//            if (consumerContractsClone.size() == 0)
-//                return energyBalance >= BASE_ENERGY_STORAGE? INFINITY : 0;
+            if (consumerContractsClone.size() == 0)
+                return energyBalance >= BUY_ENERGY_THRESHOLD ? Integer.MAX_VALUE : 0;
         }
         return monthsFulfilled;
     }
@@ -223,13 +222,12 @@ public class Broker extends DFRegisterAgent {
      * @param contracts The array of contracts
      * @return returns the sum of all the contracts monthly costs
      */
-    private int contractsSimulator(List<EnergyContract> contracts) {
+    private int simulateContractsOneMonth(List<EnergyContract> contracts, int currentTicks) {
         int total = 0;
         for (ListIterator<EnergyContract> iter = contracts.listIterator(); iter.hasNext(); ) {
             EnergyContract ec = iter.next();
-            if (!ec.hasEnded()) {
-                total += ec.getMonthlyEnergyCost();
-                ec.simulateCycle();
+            if (currentTicks >= ec.getEndDate()) {
+                total += ec.getEnergyAmountPerMonth();
             }
             else
                 iter.remove();

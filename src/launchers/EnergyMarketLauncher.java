@@ -26,6 +26,7 @@ import utils.GraphicSettings;
 import java.awt.*;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
 
 /**
@@ -356,7 +357,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     }
 
     private void setUpAgentsAIDMap() {
-        agents = new HashMap<>();
+        agents = new ConcurrentHashMap<>();
 
         Stream<GenericAgent> stream = Stream.concat(producers.stream(), brokers.stream());
         stream = Stream.concat(stream, consumers.stream());
@@ -525,7 +526,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         return agents.get(agentAID);
     }
 
-    public void addBrokerProducerContract(EnergyContractProposal contractProposal) {
+    synchronized public void addBrokerProducerContract(EnergyContractProposal contractProposal) {
         Producer supplier = (Producer) getAgentByAID(contractProposal.getEnergySupplierAID());
         Broker client = (Broker) getAgentByAID(contractProposal.getEnergyClientAID());
 
@@ -536,11 +537,11 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         client.addEnergyContract(contract);
     }
 
-    public void addConsumerBrokerContractFromProposal(EnergyContractProposal contractProposal) {
+    synchronized public void addConsumerBrokerContractFromProposal(EnergyContractProposal contractProposal) {
         addConsumerBrokerContract(makeContractFromProposal(contractProposal));
     }
 
-    public void addConsumerBrokerContract(EnergyContract contract) {
+    synchronized public void addConsumerBrokerContract(EnergyContract contract) {
         energyContractsConsumerBroker.add(contract);
         contract.step(); // so first month's trades are promptly withdrawn
 

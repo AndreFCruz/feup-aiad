@@ -21,7 +21,7 @@ public class BaseContract implements Serializable {
     /**
      * Start date of the contract, in ticks since the start of the simulation.
      */
-    protected Integer startDate = null;
+    protected Integer startDate;
 
     /**
      * Periodicity of payment, in days (ticks).
