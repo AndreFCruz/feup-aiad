@@ -448,11 +448,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     }
 
     public void simulationDelay() {
-        try {
-            Thread.sleep(DELAY_SIMULATION);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
+
     }
 
     public void simulationStep() {
@@ -492,6 +488,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
             if (contract.hasEnded() || !contract.canExchange()) {
                 // dealing with Producer's side of the contract
                 ((Producer) contract.getEnergySupplier()).setContract(null);
+
                 // dealing with Broker's side of the contract
                 ((Broker) contract.getEnergyClient()).getProducerContracts().remove(contract);
 
