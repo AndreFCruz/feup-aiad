@@ -52,4 +52,12 @@ public class BaseContract implements Serializable {
     public int getPaymentCycle() {
         return paymentCycle;
     }
+
+    public float getEnergyAmountPerMonth() {
+        return energyAmountPerCycle * 30f / paymentCycle;
+    }
+
+    public float getMonthlyEnergyCost() {
+        return energyCostPerUnit * getEnergyAmountPerMonth();
+    }
 }
