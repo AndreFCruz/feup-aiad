@@ -11,7 +11,6 @@ public class BrokerContractWrapperBehaviour extends WrapperBehaviour {
     }
 
     public int onEnd() {
-
         BrokerContractInitiator contract = new BrokerContractInitiator((Broker) myAgent);
         myAgent.addBehaviour(new BrokerContractWrapperBehaviour(contract));
 

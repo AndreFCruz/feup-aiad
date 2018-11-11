@@ -17,6 +17,8 @@ import java.util.stream.Collectors;
  */
 public class Broker extends DFRegisterAgent {
 
+    private static final int INFINITE = Integer.MAX_VALUE;
+
     private List<EnergyContract> producerContracts = new ArrayList<>();
 
     private List<EnergyContract> consumerContracts = new ArrayList<>();
@@ -199,11 +201,14 @@ public class Broker extends DFRegisterAgent {
 
         float energyBalance = energyWallet.getBalance();
         int monthsFulfilled = 0;
-        while (energyBalance > 0 && !(consumerContractsClone.size() == 0 && producerContractsClone.size() == 0)) {
+        while (energyBalance > 0) {
             energyBalance += contractsSimulator(producerContractsClone);
             energyBalance -= contractsSimulator(consumerContractsClone);
 
             monthsFulfilled += 1;
+
+            if (consumerContractsClone.size() == 0)
+                return INFINITE;
         }
         return monthsFulfilled;
     }
