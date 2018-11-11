@@ -15,6 +15,8 @@ public class ConsumerContractInitiator extends FIPAContractNetInitiator {
 
     private Consumer myConsumer;
 
+    private static float CHEAPEST_CONTRACTS_THRESHOLD = 0.2f;
+
     public ConsumerContractInitiator(Consumer agent) {
         super(agent);
         myConsumer = agent;
@@ -26,12 +28,14 @@ public class ConsumerContractInitiator extends FIPAContractNetInitiator {
         Vector<ACLMessage> v = new Vector<>();
 
         List<Broker> orderedListOfPreferences = myConsumer.getBrokersByPreference();
-        boolean contactedAtLeastOne = false;
 
-        // If already has an associated Broker
-        if (myConsumer.hasBrokerService()) {
+        boolean contactedAtLeastOne = false;
+        boolean willSignFutureContract = false;
+
+        if ( (myConsumer.hasEnergyContract() && myConsumer.getContractMonthsLeft() > 2) || myConsumer.hasFutureContractSigned() )
             return v;
-        }
+        if (myConsumer.hasEnergyContract())
+            willSignFutureContract = true;
 
         for (Broker b : orderedListOfPreferences) {
             if (b.monthsThatMayFulfillContract(myConsumer.getEnergyConsumptionPerMonth()) > 1) {
@@ -47,6 +51,8 @@ public class ConsumerContractInitiator extends FIPAContractNetInitiator {
                     newContractDuration
             );
             ec.updateEnergyAmount(myConsumer.getEnergyConsumptionPerMonth());
+            if (willSignFutureContract)
+                ec.setStartDate(myConsumer.getEnergyContract().getEndDate() + 1);
 
             try {
                 cfp.setContentObject(ec);
@@ -59,6 +65,8 @@ public class ConsumerContractInitiator extends FIPAContractNetInitiator {
         return v;
     }
 
+    // TODO when receiving responses, add Future Contract if start date is in the future
+
     @Override
     protected void handleAllResponses(Vector responses, Vector acceptances) {
 
@@ -69,12 +77,12 @@ public class ConsumerContractInitiator extends FIPAContractNetInitiator {
             ACLMessage reply = ((ACLMessage) response).createReply();
 
             // If meanwhile a contract was signed
-            if (received.getPerformative() == ACLMessage.PROPOSE && !myConsumer.hasBrokerService()) {
+            if (received.getPerformative() == ACLMessage.PROPOSE && !myConsumer.hasEnergyContract()) {
                 try {
                     EnergyContractProposal ec = (EnergyContractProposal) received.getContentObject();
+
                     // add potential acceptances
                     potentialAcceptances.add(new OurPair<>(reply, ec));
-
                 } catch (UnreadableException e) {
                     e.printStackTrace();
 
@@ -89,17 +97,20 @@ public class ConsumerContractInitiator extends FIPAContractNetInitiator {
 
         // order acceptances
         Collections.sort(potentialAcceptances, (o1, o2) -> Float.compare(o1.second.getMonthlyEnergyCost(), o2.second.getMonthlyEnergyCost()));
-        float percentage = 0.2f;
-        int numberOfBrokers = Math.max((int) (percentage * potentialAcceptances.size()), 1);
+        int numberOfBrokers = Math.max((int) (CHEAPEST_CONTRACTS_THRESHOLD * potentialAcceptances.size()), 1);
+
         Random rand = new Random();
         int indexToChoose = rand.nextInt(numberOfBrokers);
 
         for (int i = 0; i < potentialAcceptances.size(); ++i){
             OurPair<ACLMessage, EnergyContractProposal> pair = potentialAcceptances.get(i);
+            EnergyContractProposal ec = pair.second;
             if (i == indexToChoose){
-                pair.second.signContract(myAgent);
-                myConsumer.setHasBrokerService(true);
-                myConsumer.getWorldModel().addConsumerBrokerContract(pair.second);
+                ec.signContract(myAgent);
+                if (ec.getStartDate() > myConsumer.getWorldModel().getTickCount())
+                    myConsumer.getWorldModel().addFutureConsumerBrokerContractFromProposal(ec);
+                else
+                    myConsumer.getWorldModel().addConsumerBrokerContractFromProposal(ec);
                 pair.first.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
             } else {
                 pair.first.setPerformative(ACLMessage.REJECT_PROPOSAL);

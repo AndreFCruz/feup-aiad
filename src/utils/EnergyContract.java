@@ -29,6 +29,7 @@ public class EnergyContract extends BaseContract {
             throw new IllegalArgumentException();
         }
 
+        this.startDate = (int) supplier.getWorldModel().getTickCount();
         this.energySupplier = supplier;
         this.energyClient = client;
         this.energyAmountPerCycle = proposal.getEnergyAmountPerCycle();

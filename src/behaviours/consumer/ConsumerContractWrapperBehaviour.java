@@ -19,7 +19,7 @@ public class ConsumerContractWrapperBehaviour extends WrapperBehaviour {
      * @return exit code
      */
     public int onEnd() {
-        if (!((Consumer) myAgent).hasBrokerService()) {
+        if (!((Consumer) myAgent).hasEnergyContract()) {
             // This behavior is responsible for choosing brokers
             ConsumerContractInitiator contract = new ConsumerContractInitiator((Consumer) myAgent);
             myAgent.addBehaviour(new ConsumerContractWrapperBehaviour(contract));

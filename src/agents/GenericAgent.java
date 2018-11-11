@@ -64,6 +64,10 @@ public abstract class GenericAgent extends Agent implements Drawable, Serializab
         return this.energyWallet;
     }
 
+    public EnergyMarketLauncher getWorldModel() {
+        return worldModel;
+    }
+
     /**
      * Draw Methods
      **/

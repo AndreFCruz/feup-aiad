@@ -84,6 +84,8 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     private List<EnergyContract> energyContractsBrokerProducer;
     private List<EnergyContract> energyContractsConsumerBroker;
 
+    private List<EnergyContract> futureContractsConsumerBroker = new ArrayList<>();
+
     private Map<AID, GenericAgent> agents;
 
 
@@ -453,9 +455,20 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         producersProduceEnergy();
         consumersConsumeEnergy();
 
-        updateEnergyContracts();
+        checkContractStarts();
 
+        updateEnergyContracts();
         updateMonopolySearch();
+    }
+
+    private void checkContractStarts() {
+        for (ListIterator<EnergyContract> iter = futureContractsConsumerBroker.listIterator(); iter.hasNext(); ) {
+            EnergyContract ec = iter.next();
+            if (ec.getStartDate() >= this.getTickCount()) {
+                addConsumerBrokerContract(ec);
+                iter.remove();
+            }
+        }
     }
 
     private void producersProduceEnergy() {
@@ -492,7 +505,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
                 ((Broker) contract.getEnergySupplier()).getConsumerContracts().remove(contract);
 
                 // dealing with Consumer's side of the contract
-                ((Consumer) contract.getEnergyClient()).setHasBrokerService(false);
+                ((Consumer) contract.getEnergyClient()).setEnergyContract(null);
 
                 iter.remove();
             } else {
@@ -522,15 +535,29 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         client.addEnergyContract(contract);
     }
 
-    public void addConsumerBrokerContract(EnergyContractProposal contractProposal) {
-        Broker supplier = (Broker) getAgentByAID(contractProposal.getEnergySupplierAID());
-        Consumer client = (Consumer) getAgentByAID(contractProposal.getEnergyClientAID());
+    public void addConsumerBrokerContractFromProposal(EnergyContractProposal contractProposal) {
+        addConsumerBrokerContract(makeContractFromProposal(contractProposal));
+    }
 
-        EnergyContract contract = new EnergyContract(contractProposal, supplier, client);
+    public void addConsumerBrokerContract(EnergyContract contract) {
         energyContractsConsumerBroker.add(contract);
         contract.step(); // so first month's trades are promptly withdrawn
 
-        supplier.addConsumerContract(contract);
+        ((Broker) contract.getEnergySupplier()).addConsumerContract(contract);
+        ((Consumer) contract.getEnergyClient()).setEnergyContract(contract);
+    }
+
+    private EnergyContract makeContractFromProposal(EnergyContractProposal contractProposal) {
+        Broker supplier = (Broker) getAgentByAID(contractProposal.getEnergySupplierAID());
+        Consumer client = (Consumer) getAgentByAID(contractProposal.getEnergyClientAID());
+
+        return new EnergyContract(contractProposal, supplier, client);
+    }
+
+    public void addFutureConsumerBrokerContractFromProposal(EnergyContractProposal contractProposal) {
+        EnergyContract ec = makeContractFromProposal(contractProposal);
+        ((Consumer) ec.getEnergyClient()).setHasFutureContractSigned();
+        futureContractsConsumerBroker.add(ec);
     }
 
     public List<Broker> getBrokers() {
@@ -546,27 +573,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     }
 
     public void setNUM_PRODUCERS(int NUM_PRODUCERS) throws StaleProxyException {
-//        int producersDifference = NUM_PRODUCERS - this.NUM_PRODUCERS;
-//        if (producersDifference <= 0){
-//            System.out.println("Function Unsupported at the moment.");
-//        } else {
-//
-//            for (int i = 1; i <= producersDifference; ++i){
-//                int energyToAdd = (int) ((TOTAL_ENERGY_PRODUCED_PER_MONTH/this.NUM_PRODUCERS) * (0.5 + rand.nextFloat()));
-//                TOTAL_ENERGY_PRODUCED_PER_MONTH += energyToAdd;
-//                actualTotalEnergyProducedPerMonth += energyToAdd;
-//
-//                GraphicSettings gs = makeGraphicsSettings(NUM_PRODUCERS, i, 1, PRODUCER_COLOR);
-//                Producer p = Producer.createProducer(this, gs, energyToAdd);
-//                world.putObjectAt(p.getX(), p.getY(), p);
-//                producers.add(p);
-//                mainContainer.acceptNewAgent("producer-" + i+this.NUM_PRODUCERS, p).start();
-//            }
-
         this.NUM_PRODUCERS = NUM_PRODUCERS;
-//        }
-
-
     }
 
     public int getNUM_BROKERS() {

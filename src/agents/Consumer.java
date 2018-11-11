@@ -7,6 +7,7 @@ import jade.core.AID;
 import jade.domain.FIPAAgentManagement.DFAgentDescription;
 import launchers.EnergyMarketLauncher;
 import utils.AgentType;
+import utils.EnergyContract;
 import utils.GraphicSettings;
 
 import java.util.*;
@@ -23,9 +24,11 @@ public class Consumer extends DFSearchAgent {
 
     private int energyConsumptionPerMonth;
 
-    private boolean brokerService = false;
-
     private int preferredContractDuration = 7200;
+
+    private EnergyContract energyContract = null;
+
+    private boolean hasFutureContractSigned = false;
 
     public Consumer(EnergyMarketLauncher model, GraphicSettings graphicSettings, int energyConsumptionPerMonth) {
         super(model, graphicSettings);
@@ -66,10 +69,6 @@ public class Consumer extends DFSearchAgent {
                 .collect(Collectors.toList());
     }
 
-    public EnergyMarketLauncher getWorldModel() {
-        return worldModel;
-    }
-
     @Override
     protected void setup() {
         super.setup();
@@ -81,20 +80,40 @@ public class Consumer extends DFSearchAgent {
         return energyConsumptionPerMonth;
     }
 
-    public boolean hasBrokerService() {
-        return brokerService;
+    public boolean hasEnergyContract() {
+        return energyContract != null;
     }
 
-    public void setHasBrokerService(boolean b) {
-        brokerService = b;
+    public void setEnergyContract(EnergyContract ec) {
+        if (this.energyContract != null && !this.energyContract.hasEnded())
+            throw new RuntimeException("Signing new contract when previous was still active.");
+        energyContract = ec;
 
-        if (!brokerService) {
+        if (ec == null) {
             this.addBehaviour(
                     new ConsumerContractWrapperBehaviour(
                             new ConsumerContractInitiator(this)
                     )
             );
+        } else { // just signed a new contract
+            hasFutureContractSigned = false;
         }
+    }
+
+    public int getContractMonthsLeft() {
+        return (int) ((energyContract.getEndDate() - worldModel.getTickCount()) / 30);
+    }
+
+    public EnergyContract getEnergyContract() {
+        return energyContract;
+    }
+
+    public void setHasFutureContractSigned() {
+        this.hasFutureContractSigned = true;
+    }
+
+    public boolean hasFutureContractSigned() {
+        return this.hasFutureContractSigned;
     }
 
     public int getNewContractDuration() {
@@ -104,7 +123,7 @@ public class Consumer extends DFSearchAgent {
     }
 
     public void consume() {
-        if (hasBrokerService())
+        if (hasEnergyContract())
             getEnergyWallet().consume(getEnergyConsumptionPerMonth() / 30f);
     }
 }
