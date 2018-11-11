@@ -107,4 +107,11 @@ public class EnergyContract extends BaseContract {
         return energyClient;
     }
 
+    /**
+     * Simulate a payment cycle
+     */
+    public void simulateCycle() {
+        ticks += paymentCycle;
+    }
+
 }

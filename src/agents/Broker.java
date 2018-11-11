@@ -193,4 +193,38 @@ public class Broker extends DFRegisterAgent {
         }
     }
 
+    public int monthsThatMayFulfillAllContracts() {
+        List<EnergyContract> consumerContractsClone = new ArrayList<>(consumerContracts);
+        List<EnergyContract> producerContractsClone = new ArrayList<>(producerContracts);
+
+        float energyBalance = energyWallet.getBalance();
+        int monthsFulfilled = 0;
+        while (energyBalance > 0 || (consumerContractsClone.size() == 0 && producerContractsClone.size() == 0) {
+            energyBalance += contractsSimulator(producerContractsClone);
+            energyBalance -= contractsSimulator(consumerContractsClone);
+
+            monthsFulfilled += 1;
+        }
+        return monthsFulfilled;
+    }
+
+    /**
+     * Simulates one month of contracts in the given list of contracts, removing the contracts that have ended
+     *
+     * @param contracts The array of contracts
+     * @return returns the sum of all the contracts monthly costs
+     */
+    private int contractsSimulator(List<EnergyContract> contracts) {
+        int total = 0;
+        for (ListIterator<EnergyContract> iter = contracts.listIterator(); iter.hasNext(); ) {
+            EnergyContract ec = iter.next();
+            if (!ec.hasEnded()) {
+                total += ec.getMonthlyEnergyCost();
+                ec.simulateCycle();
+            }
+            else
+                iter.remove();
+        }
+        return total;
+    }
 }
