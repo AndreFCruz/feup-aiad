@@ -17,7 +17,7 @@ import java.util.stream.Collectors;
  */
 public class Broker extends DFRegisterAgent {
 
-    private static final int BUY_ENERGY_THRESHOLD = (int) Math.pow(10, 6);
+    private static final int BUY_ENERGY_THRESHOLD = (int) Math.pow(10, 7);
 
     private List<EnergyContract> producerContracts = new ArrayList<>();
 
