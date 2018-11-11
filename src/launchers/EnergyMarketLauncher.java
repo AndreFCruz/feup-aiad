@@ -51,6 +51,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     private int NUM_CONSUMERS               = 50;
     private float PERCENT_LAZY_CONSUMERS    = 0.6f;
     private float PERCENT_ECO_CONSUMERS     = 0.2f;
+    private float PERCENT_CONSUMED_ENERGY   = 0.9f;
 
     private float MONOPOLY_THRESHOLD;
     private int AVG_DAYS_FOR_AUDIT;
@@ -328,7 +329,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     public String[] getInitParam() {
         return new String[]{"NUM_PRODUCERS", "NUM_BROKERS", "NUM_CONSUMERS", "MONOPOLY_THRESHOLD",
                 "AVG_DAYS_FOR_AUDIT", "LOGS_NAME", "STORE_RECORDS", "PERCENT_ECO_CONSUMERS",
-                "PERCENT_LAZY_CONSUMERS"};
+                "PERCENT_LAZY_CONSUMERS", "PERCENT_CONSUMED_ENERGY"};
     }
 
     @Override
@@ -407,7 +408,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     }
 
     private void launchConsumers() throws StaleProxyException {
-        int totalEnergyConsumed = (int) (actualTotalEnergyProducedPerMonth * 0.90);
+        int totalEnergyConsumed = (int) (actualTotalEnergyProducedPerMonth * PERCENT_CONSUMED_ENERGY);
 
         for (int i = 0; i < NUM_CONSUMERS; i++) {
             GraphicSettings gs = makeGraphicsSettings(NUM_CONSUMERS, i, 3, CONSUMER_COLOR);
@@ -639,4 +640,13 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     public void setPERCENT_ECO_CONSUMERS(float PERCENT_ECO_CONSUMERS) {
         this.PERCENT_ECO_CONSUMERS = PERCENT_ECO_CONSUMERS;
     }
+
+    public float getPERCENT_CONSUMED_ENERGY() {
+        return PERCENT_CONSUMED_ENERGY;
+    }
+
+    public void setPERCENT_CONSUMED_ENERGY(float PERCENT_CONSUMED_ENERGY) {
+        this.PERCENT_CONSUMED_ENERGY = PERCENT_CONSUMED_ENERGY;
+    }
+
 }
