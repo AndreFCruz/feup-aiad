@@ -112,7 +112,7 @@ public class Consumer extends DFSearchAgent {
         this.hasFutureContractSigned = true;
     }
 
-    public boolean getHasFutureContractSigned() {
+    public boolean hasFutureContractSigned() {
         return this.hasFutureContractSigned;
     }
 

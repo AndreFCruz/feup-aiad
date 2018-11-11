@@ -554,8 +554,10 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         return new EnergyContract(contractProposal, supplier, client);
     }
 
-    public void addFutureConsumerBrokerContract(EnergyContractProposal contractProposal) {
-        futureContractsConsumerBroker.add(makeContractFromProposal(contractProposal));
+    public void addFutureConsumerBrokerContractFromProposal(EnergyContractProposal contractProposal) {
+        EnergyContract ec = makeContractFromProposal(contractProposal);
+        ((Consumer) ec.getEnergyClient()).setHasFutureContractSigned();
+        futureContractsConsumerBroker.add(ec);
     }
 
     public List<Broker> getBrokers() {

@@ -15,6 +15,8 @@ public class ConsumerContractInitiator extends FIPAContractNetInitiator {
 
     private Consumer myConsumer;
 
+    private static float CHEAPEST_CONTRACTS_THRESHOLD = 0.2f;
+
     public ConsumerContractInitiator(Consumer agent) {
         super(agent);
         myConsumer = agent;
@@ -30,7 +32,7 @@ public class ConsumerContractInitiator extends FIPAContractNetInitiator {
         boolean contactedAtLeastOne = false;
         boolean willSignFutureContract = false;
 
-        if (myConsumer.hasEnergyContract() && myConsumer.getContractMonthsLeft() > 2)
+        if ( (myConsumer.hasEnergyContract() && myConsumer.getContractMonthsLeft() > 2) || myConsumer.hasFutureContractSigned() )
             return v;
         if (myConsumer.hasEnergyContract())
             willSignFutureContract = true;
@@ -78,14 +80,6 @@ public class ConsumerContractInitiator extends FIPAContractNetInitiator {
             if (received.getPerformative() == ACLMessage.PROPOSE && !myConsumer.hasEnergyContract()) {
                 try {
                     EnergyContractProposal ec = (EnergyContractProposal) received.getContentObject();
-//<<<<<<< HEAD
-//                    ec.signContract(myAgent);
-//
-//                    myConsumer.getWorldModel().addConsumerBrokerContractFromProposal(ec);
-//
-//                    reply.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
-//                    acceptances.add(reply);
-//=======
 
                     // add potential acceptances
                     potentialAcceptances.add(new OurPair<>(reply, ec));
@@ -103,16 +97,20 @@ public class ConsumerContractInitiator extends FIPAContractNetInitiator {
 
         // order acceptances
         Collections.sort(potentialAcceptances, (o1, o2) -> Float.compare(o1.second.getMonthlyEnergyCost(), o2.second.getMonthlyEnergyCost()));
-        float percentage = 0.2f;
-        int numberOfBrokers = Math.max((int) (percentage * potentialAcceptances.size()), 1);
+        int numberOfBrokers = Math.max((int) (CHEAPEST_CONTRACTS_THRESHOLD * potentialAcceptances.size()), 1);
+
         Random rand = new Random();
         int indexToChoose = rand.nextInt(numberOfBrokers);
 
         for (int i = 0; i < potentialAcceptances.size(); ++i){
             OurPair<ACLMessage, EnergyContractProposal> pair = potentialAcceptances.get(i);
+            EnergyContractProposal ec = pair.second;
             if (i == indexToChoose){
-                pair.second.signContract(myAgent);
-                myConsumer.getWorldModel().addConsumerBrokerContractFromProposal(pair.second);
+                ec.signContract(myAgent);
+                if (ec.getStartDate() > myConsumer.getWorldModel().getTickCount())
+                    myConsumer.getWorldModel().addFutureConsumerBrokerContractFromProposal(ec);
+                else
+                    myConsumer.getWorldModel().addConsumerBrokerContractFromProposal(ec);
                 pair.first.setPerformative(ACLMessage.ACCEPT_PROPOSAL);
             } else {
                 pair.first.setPerformative(ACLMessage.REJECT_PROPOSAL);
