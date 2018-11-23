@@ -23,11 +23,11 @@ public class Broker extends DFRegisterAgent {
 
     private List<EnergyContract> consumerContracts = new ArrayList<>();
 
-    private float profitMargin = 0.10f;
+    private float profitMargin = 0.30f; // was 0.10f
 
     private float profitMarginIncrements = 0.05f;
 
-    private float minimumProfitMargin = 0.05f;
+    private float minimumProfitMargin = 0.20f;  // was 0.05f
 
     private static final int TIMEOUT = 2000;
 
