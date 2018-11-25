@@ -7,6 +7,7 @@ import jade.wrapper.StaleProxyException;
 import recorders.BrokersWalletEnergyRecorder;
 import recorders.BrokersWalletMoneyRecorder;
 import recorders.SatisfiedConsumersRecorder;
+import recorders.TypeOfConsumerRecorder;
 import sajas.core.Runtime;
 import sajas.sim.repast3.Repast3Launcher;
 import sajas.wrapper.ContainerController;
@@ -60,7 +61,8 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     // Recording variables
     private String LOGS_NAME;
     private Boolean STORE_RECORDS;
-    private DataRecorder dataRecorder;
+    private DataRecorder consumersSatisfiedRecorder;
+    private DataRecorder consumerTypeRecorder;
 
     // Energy Variables
     /**
@@ -152,18 +154,21 @@ public class EnergyMarketLauncher extends Repast3Launcher {
      * This function is called before the agents have been launched.
      */
     private void dataRecorderConstructor() {
-        dataRecorder = new DataRecorder("./logs/" + LOGS_NAME, this);
-        dataRecorder.addNumericDataSource("Satisfied Customers", new SatisfiedConsumersRecorder(this));
+        consumersSatisfiedRecorder = new DataRecorder("./logs/sceneB_" + LOGS_NAME, this);
+        consumersSatisfiedRecorder.addNumericDataSource("SatisfiedConsumers", new SatisfiedConsumersRecorder(this));
+        consumerTypeRecorder = new DataRecorder("./logs/sceneA_" + LOGS_NAME, this);
+
     }
 
     /**
      * This function is called after the agents have been launched. {@link #launchJADE()}
      */
     private void setUpDataRecorder() {
-        for (Broker b : brokers) {
-            dataRecorder.addNumericDataSource("money::" + b.getLocalName(), new BrokersWalletMoneyRecorder(this, b));
-            dataRecorder.addNumericDataSource("energy::" + b.getLocalName(), new BrokersWalletEnergyRecorder(this, b));
-        }
+//        for (Broker b : brokers) {
+//            dataRecorder.addNumericDataSource("money::" + b.getLocalName(), new BrokersWalletMoneyRecorder(this, b));
+//            dataRecorder.addNumericDataSource("energy::" + b.getLocalName(), new BrokersWalletEnergyRecorder(this, b));
+//        }
+        consumerTypeRecorder.addObjectDataSource("contracts", new TypeOfConsumerRecorder(this));
     }
 
     private void displayConstructor() {
@@ -294,10 +299,11 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         if (STORE_RECORDS) {
             getSchedule().scheduleActionBeginning(0, new BasicAction() {
                 public void execute() {
-                    dataRecorder.record();
+                    consumersSatisfiedRecorder.record();
                 }
             });
-            getSchedule().scheduleActionAtEnd(dataRecorder, "writeToFile");
+            getSchedule().scheduleActionAtEnd(consumersSatisfiedRecorder, "writeToFile");
+            getSchedule().scheduleActionAtEnd(consumerTypeRecorder, "writeToFile");
         }
 
 
