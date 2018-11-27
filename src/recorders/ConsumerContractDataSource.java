@@ -21,15 +21,16 @@ public class ConsumerContractDataSource implements DataSource {
     @Override
     public Object execute() {
         EnergyContract currentContract = consumer.getEnergyContract();
-        int currentHash = currentContract.hashCode();
-        if (currentHash == previousContractHash)
-            return null;
-        previousContractHash = currentHash;
-        return new float[] {
-                currentContract.getEnergyCostPerUnit(),
-                ((Broker) currentContract.getEnergySupplier()).getPercentageOfRenewableEnergy(),
-                distance(currentContract.getEnergyClient(), currentContract.getEnergySupplier())
-            };
+        if (currentContract == null || (previousContractHash != null && currentContract.hashCode() == previousContractHash))
+            return "";
+        previousContractHash = currentContract.hashCode();
+        return contractToString(currentContract);
+    }
+
+    private static String contractToString(EnergyContract currentContract) {
+        return "" + currentContract.getEnergyCostPerUnit()
+                + " " + ((Broker) currentContract.getEnergySupplier()).getPercentageOfRenewableEnergy()
+                + " " + distance(currentContract.getEnergyClient(), currentContract.getEnergySupplier());
     }
 
     private static float distance(GenericAgent a1, GenericAgent a2) {
@@ -37,4 +38,5 @@ public class ConsumerContractDataSource implements DataSource {
                 Math.pow(a1.getX() - a2.getX(), 2) + Math.pow(a1.getY() - a2.getY(), 2)
         );
     }
+
 }

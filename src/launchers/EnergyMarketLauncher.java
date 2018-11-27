@@ -4,6 +4,7 @@ import agents.*;
 import jade.core.AID;
 import jade.core.ProfileImpl;
 import jade.wrapper.StaleProxyException;
+import recorders.ConsumerContractDataSource;
 import recorders.SatisfiedConsumersDataSource;
 import sajas.core.Runtime;
 import sajas.sim.repast3.Repast3Launcher;
@@ -161,9 +162,8 @@ public class EnergyMarketLauncher extends Repast3Launcher {
      * This function is called after the agents have been launched. {@link #launchJADE()}
      */
     private void setUpDataRecorder() {
-//        consumersContractsRecorder.addObjectDataSource("contracts", new ConsumerContractDataSource(this));
         for (Consumer c : consumers) {
-
+            consumersContractsRecorder.addObjectDataSource(c.getClass().getSimpleName(), new ConsumerContractDataSource(c));
         }
     }
 
@@ -293,9 +293,10 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         getSchedule().scheduleActionAtInterval(1, this, "updateGraph", Schedule.LAST);
 
         if (STORE_RECORDS) {
-            getSchedule().scheduleActionBeginning(10, new BasicAction() {
+            getSchedule().scheduleActionAtInterval(10, new BasicAction() {
                 public void execute() {
                     consumersSatisfiedRecorder.record();
+                    consumersContractsRecorder.record();
                 }
             });
             getSchedule().scheduleActionAtEnd(consumersSatisfiedRecorder, "writeToFile");
