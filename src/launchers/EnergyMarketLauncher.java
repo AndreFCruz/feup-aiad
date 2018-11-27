@@ -4,10 +4,7 @@ import agents.*;
 import jade.core.AID;
 import jade.core.ProfileImpl;
 import jade.wrapper.StaleProxyException;
-import recorders.BrokersWalletEnergyRecorder;
-import recorders.BrokersWalletMoneyRecorder;
-import recorders.SatisfiedConsumersRecorder;
-import recorders.TypeOfConsumerRecorder;
+import recorders.SatisfiedConsumersDataSource;
 import sajas.core.Runtime;
 import sajas.sim.repast3.Repast3Launcher;
 import sajas.wrapper.ContainerController;
@@ -62,7 +59,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     private String LOGS_NAME;
     private Boolean STORE_RECORDS;
     private DataRecorder consumersSatisfiedRecorder;
-    private DataRecorder consumerTypeRecorder;
+    private DataRecorder consumersContractsRecorder;
 
     // Energy Variables
     /**
@@ -155,8 +152,8 @@ public class EnergyMarketLauncher extends Repast3Launcher {
      */
     private void dataRecorderConstructor() {
         consumersSatisfiedRecorder = new DataRecorder("./logs/sceneB_" + LOGS_NAME, this);
-        consumersSatisfiedRecorder.addNumericDataSource("SatisfiedConsumers", new SatisfiedConsumersRecorder(this));
-        consumerTypeRecorder = new DataRecorder("./logs/sceneA_" + LOGS_NAME, this);
+        consumersSatisfiedRecorder.addNumericDataSource("SatisfiedConsumers", new SatisfiedConsumersDataSource(this));
+        consumersContractsRecorder = new DataRecorder("./logs/sceneA_" + LOGS_NAME, this);
 
     }
 
@@ -164,11 +161,10 @@ public class EnergyMarketLauncher extends Repast3Launcher {
      * This function is called after the agents have been launched. {@link #launchJADE()}
      */
     private void setUpDataRecorder() {
-//        for (Broker b : brokers) {
-//            dataRecorder.addNumericDataSource("money::" + b.getLocalName(), new BrokersWalletMoneyRecorder(this, b));
-//            dataRecorder.addNumericDataSource("energy::" + b.getLocalName(), new BrokersWalletEnergyRecorder(this, b));
-//        }
-        consumerTypeRecorder.addObjectDataSource("contracts", new TypeOfConsumerRecorder(this));
+//        consumersContractsRecorder.addObjectDataSource("contracts", new ConsumerContractDataSource(this));
+        for (Consumer c : consumers) {
+
+        }
     }
 
     private void displayConstructor() {
@@ -286,8 +282,8 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     }
 
     private void scheduleConstructor() {
-        getSchedule().scheduleActionAtInterval(1, this, "simulationStep");
 //        getSchedule().scheduleActionAtInterval(1, this, "simulationDelay", Schedule.LAST);
+        getSchedule().scheduleActionAtInterval(1, this, "simulationStep");
         getSchedule().scheduleActionAtInterval(1, energyGraphPB, "step", Schedule.LAST);
         getSchedule().scheduleActionAtInterval(1, energyGraphBC, "step", Schedule.LAST);
         getSchedule().scheduleActionAtInterval(1, energyGraphBA, "step", Schedule.LAST);
@@ -297,13 +293,13 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         getSchedule().scheduleActionAtInterval(1, this, "updateGraph", Schedule.LAST);
 
         if (STORE_RECORDS) {
-            getSchedule().scheduleActionBeginning(0, new BasicAction() {
+            getSchedule().scheduleActionBeginning(10, new BasicAction() {
                 public void execute() {
                     consumersSatisfiedRecorder.record();
                 }
             });
             getSchedule().scheduleActionAtEnd(consumersSatisfiedRecorder, "writeToFile");
-            getSchedule().scheduleActionAtEnd(consumerTypeRecorder, "writeToFile");
+            getSchedule().scheduleActionAtEnd(consumersContractsRecorder, "writeToFile");
         }
 
 
