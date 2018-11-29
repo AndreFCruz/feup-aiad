@@ -176,7 +176,8 @@ public class Broker extends DFRegisterAgent {
     }
 
     public float getPercentageOfRenewableEnergy() {
-        return (float) getMonthlyRenewableEnergy() / getMonthlyEnergy();
+        float percent = (float) getMonthlyRenewableEnergy() / getMonthlyEnergy();
+        return percent != percent ? 0 : percent; // check if is NaN
     }
 
     public int monthsThatMayFulfillContract(int energyConsumptionPerMonth) {
