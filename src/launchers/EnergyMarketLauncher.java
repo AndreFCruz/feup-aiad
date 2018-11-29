@@ -3,6 +3,7 @@ package launchers;
 import agents.*;
 import jade.core.AID;
 import jade.core.ProfileImpl;
+import jade.wrapper.ControllerException;
 import jade.wrapper.StaleProxyException;
 import recorders.ConsumerContractDataSource;
 import recorders.SatisfiedConsumersDataSource;
@@ -101,16 +102,20 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 
         MONOPOLY_THRESHOLD = 0.5f;
         AVG_DAYS_FOR_AUDIT = 180;
-        LOGS_NAME = "experiment_" + rand.nextInt(10);
-        STORE_RECORDS = false;
+        LOGS_NAME = "exp_" + rand.nextInt(1000);
+        STORE_RECORDS = true;
     }
 
     public static void main(String[] args) {
         boolean BATCH_MODE = false;
 
+        EnergyMarketLauncher world = new EnergyMarketLauncher();
+
         SimInit init = new SimInit();
         init.setNumRuns(1); // works only in batch mode
-        init.loadModel(new EnergyMarketLauncher(), null, BATCH_MODE);
+        init.loadModel(world, null, BATCH_MODE);
+
+//        world.begin();
     }
 
     public void setup() { // called after constructor
@@ -123,6 +128,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 
         displaySurface = new DisplaySurface(this, surfaceName);
         registerDisplaySurface(surfaceName, displaySurface);
+
     }
 
     public void begin() { // called when "Play" pressed on repast gui
@@ -168,21 +174,21 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     }
 
     private void displayConstructor() {
-        Object2DDisplay displayProducers = new Object2DDisplay(world);
-        displayProducers.setObjectList(producers);
-        displaySurface.addDisplayable(displayProducers, "show producers");
+//        Object2DDisplay displayProducers = new Object2DDisplay(world);
+//        displayProducers.setObjectList(producers);
+//        displaySurface.addDisplayable(displayProducers, "show producers");
+//
+//        Object2DDisplay displayBrokers = new Object2DDisplay(world);
+//        displayBrokers.setObjectList(brokers);
+//        displaySurface.addDisplayable(displayBrokers, "show brokers");
+//
+//        Object2DDisplay displayConsumers = new Object2DDisplay(world);
+//        displayConsumers.setObjectList(consumers);
+//        displaySurface.addDisplayable(displayConsumers, "show consumers");
 
-        Object2DDisplay displayBrokers = new Object2DDisplay(world);
-        displayBrokers.setObjectList(brokers);
-        displaySurface.addDisplayable(displayBrokers, "show brokers");
+//        displaySurface.display();
 
-        Object2DDisplay displayConsumers = new Object2DDisplay(world);
-        displayConsumers.setObjectList(consumers);
-        displaySurface.addDisplayable(displayConsumers, "show consumers");
-
-        displaySurface.display();
-
-        energyPlotsBuild();
+        // energyPlotsBuild();
 
     }
 
@@ -284,13 +290,13 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     private void scheduleConstructor() {
 //        getSchedule().scheduleActionAtInterval(1, this, "simulationDelay", Schedule.LAST);
         getSchedule().scheduleActionAtInterval(1, this, "simulationStep");
-        getSchedule().scheduleActionAtInterval(1, energyGraphPB, "step", Schedule.LAST);
-        getSchedule().scheduleActionAtInterval(1, energyGraphBC, "step", Schedule.LAST);
-        getSchedule().scheduleActionAtInterval(1, energyGraphBA, "step", Schedule.LAST);
-        getSchedule().scheduleActionAtInterval(1, consumersSatisfied, "step", Schedule.LAST);
-        getSchedule().scheduleActionAtInterval(1, brokersEnergyWallet, "step", Schedule.LAST);
-        getSchedule().scheduleActionAtInterval(1, brokersMoneyWallet, "step", Schedule.LAST);
-        getSchedule().scheduleActionAtInterval(1, this, "updateGraph", Schedule.LAST);
+//        getSchedule().scheduleActionAtInterval(1, energyGraphPB, "step", Schedule.LAST);
+//        getSchedule().scheduleActionAtInterval(1, energyGraphBC, "step", Schedule.LAST);
+//        getSchedule().scheduleActionAtInterval(1, energyGraphBA, "step", Schedule.LAST);
+//        getSchedule().scheduleActionAtInterval(1, consumersSatisfied, "step", Schedule.LAST);
+//        getSchedule().scheduleActionAtInterval(1, brokersEnergyWallet, "step", Schedule.LAST);
+//        getSchedule().scheduleActionAtInterval(1, brokersMoneyWallet, "step", Schedule.LAST);
+//        getSchedule().scheduleActionAtInterval(1, this, "updateGraph", Schedule.LAST);
 
         if (STORE_RECORDS) {
             getSchedule().scheduleActionAtInterval(10, new BasicAction() {
@@ -303,7 +309,16 @@ public class EnergyMarketLauncher extends Repast3Launcher {
             getSchedule().scheduleActionAtEnd(consumersContractsRecorder, "writeToFile");
         }
 
-
+        getSchedule().scheduleActionAt(100000, new BasicAction() {
+            public void execute() {
+                try {
+                    mainContainer.getPlatformController().kill();
+                    stopSimulation();
+                } catch (ControllerException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 
     public void updateGraph() {
@@ -407,8 +422,8 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 
         }
 
-        energyPlotBuildBrokers();
-        energyPlotBrokersAvailable();
+//        energyPlotBuildBrokers();
+//        energyPlotBrokersAvailable();
     }
 
     private void launchConsumers() throws StaleProxyException {
@@ -428,7 +443,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
             mainContainer.acceptNewAgent("consumer-" + i, c).start();
         }
 
-        energyPlotBuildConsumers();
+//        energyPlotBuildConsumers();
     }
 
     private Consumer makeNewConsumer(GraphicSettings gs, int agentConsumption) {
