@@ -102,16 +102,20 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 
         MONOPOLY_THRESHOLD = 0.5f;
         AVG_DAYS_FOR_AUDIT = 180;
-        LOGS_NAME = "experiment_" + rand.nextInt(10);
-        STORE_RECORDS = false;
+        LOGS_NAME = "exp_" + rand.nextInt(1000);
+        STORE_RECORDS = true;
     }
 
     public static void main(String[] args) {
         boolean BATCH_MODE = false;
 
+        EnergyMarketLauncher world = new EnergyMarketLauncher();
+
         SimInit init = new SimInit();
         init.setNumRuns(1); // works only in batch mode
-        init.loadModel(new EnergyMarketLauncher(), null, BATCH_MODE);
+        init.loadModel(world, null, BATCH_MODE);
+
+//        world.begin();
     }
 
     public void setup() { // called after constructor
@@ -124,6 +128,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 
         displaySurface = new DisplaySurface(this, surfaceName);
         registerDisplaySurface(surfaceName, displaySurface);
+
     }
 
     public void begin() { // called when "Play" pressed on repast gui
