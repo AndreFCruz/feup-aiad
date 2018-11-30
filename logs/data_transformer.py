@@ -27,6 +27,7 @@ def transform_data_A(filename, num_contracts_per_row=5):
 
     ## Ignore first column ("ticks" column)
     classes = body[0].split(',')[1:]
+    classes = [clazz.replace('"','').strip() for clazz in classes]
 
     contracts = [list() for _ in range(len(classes))]
 
@@ -66,7 +67,6 @@ def transform_data_A(filename, num_contracts_per_row=5):
     for clazz in train_data:
         rows = train_data[clazz]
         new_df = pandas.DataFrame(data=rows, index=[clazz for _ in range(len(rows))])
-        from ipdb import set_trace; set_trace()
         df = df.append(new_df)
 
 
