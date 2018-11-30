@@ -107,7 +107,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     }
 
     public static void main(String[] args) {
-        boolean BATCH_MODE = false;
+        boolean BATCH_MODE = true;
 
         SimInit init = new SimInit();
         init.setNumRuns(1); // works only in batch mode
@@ -293,6 +293,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 //        getSchedule().scheduleActionAtInterval(1, brokersMoneyWallet, "step", Schedule.LAST);
 //        getSchedule().scheduleActionAtInterval(1, this, "updateGraph", Schedule.LAST);
 
+
         if (STORE_RECORDS) {
             getSchedule().scheduleActionAtInterval(10, new BasicAction() {
                 public void execute() {
@@ -300,11 +301,15 @@ public class EnergyMarketLauncher extends Repast3Launcher {
                     consumersContractsRecorder.record();
                 }
             });
+
+            getSchedule().scheduleActionAtInterval(Math.pow(10, 5), consumersSatisfiedRecorder, "writeToFile");
+            getSchedule().scheduleActionAtInterval(Math.pow(10, 5), consumersContractsRecorder, "writeToFile");
+
             getSchedule().scheduleActionAtEnd(consumersSatisfiedRecorder, "writeToFile");
             getSchedule().scheduleActionAtEnd(consumersContractsRecorder, "writeToFile");
         }
 
-        getSchedule().scheduleActionAt(100000, new BasicAction() {
+        getSchedule().scheduleActionAt(5 * Math.pow(10, 5), new BasicAction() {
             public void execute() {
                 try {
                     mainContainer.getPlatformController().kill();
