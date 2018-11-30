@@ -1,7 +1,9 @@
 # from ipdb import set_trace
 import sys
+import pandas
 
-NUMBER_ENVIRONMENT_VARS = 11
+NUM_ENV_VARS = 11
+NUM_FEATURES_PER_CONTRACT   = 3
 
 class Contract:
     def __init__(self, ticks, price_per_unit, percent_renewable, distance):
@@ -39,14 +41,40 @@ def transform_data_A(filename, num_contracts_per_row=5):
                 ticks, float(split_c[0]), float(split_c[1]), float(split_c[2])
             ))
 
-    # from ipdb import set_trace; set_trace()
 
     ## Data preparation
     ## Save one row for each N consumer contracts
-    file_out = open(filename + '_transformed', 'w')
+    train_data = dict()
+    for consumer_idx in range(len(contracts)):
+        consumer_class = classes[consumer_idx]
+        current_entry = list()
+        for contract in contracts[consumer_idx]:
+            current_entry.extend([
+                contract.price_per_unit,
+                contract.percent_renewable,
+                contract.distance
+            ])
+            if len(current_entry) == NUM_FEATURES_PER_CONTRACT * num_contracts_per_row:
+                if consumer_class not in train_data:
+                    train_data[consumer_class] = list()
+                train_data[consumer_class].append(current_entry)
+                current_entry = list()
 
-    ## TODO export contract data, N for each row, to a pandas DataFrame
-    # train_data = 
+
+    ## Label training data
+    df = pandas.DataFrame()
+    for clazz in train_data:
+        rows = train_data[clazz]
+        new_df = pandas.DataFrame(data=rows, index=[clazz for _ in range(len(rows))])
+        from ipdb import set_trace; set_trace()
+        df = df.append(new_df)
+
+
+    ## Shuffle rows
+    df = df.sample(frac=1)
+
+    ## Export data to file
+    df.to_csv(filename + '_transformed')
 
 
 def transform_data_B(filename):
@@ -69,7 +97,7 @@ def transform_data_B(filename):
     file.close()
 
 def split_header_data(data):
-    return data[0:NUMBER_ENVIRONMENT_VARS], data[NUMBER_ENVIRONMENT_VARS+2:]
+    return data[0:NUM_ENV_VARS], data[NUM_ENV_VARS+2:]
 
 
 if __name__ == "__main__":
