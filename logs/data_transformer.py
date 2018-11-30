@@ -13,7 +13,7 @@ class Contract:
         self.distance = distance
 
 
-def transform_data_A(filename, num_contracts_per_row=5):
+def transform_data_A(filename, num_contracts_per_row=5, batch_mode=False):
     """
     Function to transform a file of new contracts into a training dataset.
     :param filename: file path for the file outputted by Sajas,
@@ -25,16 +25,16 @@ def transform_data_A(filename, num_contracts_per_row=5):
 
     _, body = split_header_data(data)
 
-    ## Ignore first column ("ticks" column)
-    classes = body[0].split(',')[1:]
+    ## Ignore first column ("ticks" column) (and "run" column if in batch_mode)
+    classes = body[0].split(',')[3 if batch_mode else 1:]
     classes = [clazz.replace('"','').strip() for clazz in classes]
 
     contracts = [list() for _ in range(len(classes))]
 
-    for line in body[1:]:
+    for line in body[1:-2 if batch_mode else len(body)]: # from class names onwards
         split_line = line.rstrip().split(',')
-        ticks = int(float(split_line[0]))
-        for idx, c in enumerate(split_line[1:]):
+        ticks = int(float(split_line[1 if batch_mode else 0]))
+        for idx, c in enumerate(split_line[3 if batch_mode else 1:]):
             if len(c) == 0:
                 continue
             split_c = c.split(' ')
@@ -77,7 +77,7 @@ def transform_data_A(filename, num_contracts_per_row=5):
     df.to_csv(filename + '_transformed')
 
 
-def transform_data_B(filename):
+def transform_data_B(filename, batch_mode=False):
     filename_env_vars = filename + "_env_vars"
     filename_data = filename + "_ticks_consumers"
 
@@ -102,11 +102,13 @@ def split_header_data(data):
 
 if __name__ == "__main__":
 
-    if len(sys.argv) != 3:
-        print("Usage: python %s <filename> <scene: A/B>" % sys.argv[0])
+    if len(sys.argv) != 3 and len(sys.argv) != 4:
+        print("Usage: python %s <filename> <scene: A/B> [batch_mode: 1/0]" % sys.argv[0])
         sys.exit(-1)
 
     filename = sys.argv[1]
     scene = sys.argv[2].upper()
+    batch_mode = True if (len(sys.argv) == 4 and int(sys.argv[3]) == 1) else False
+    print('Running script ' + ('in NOT' if not batch_mode else 'IN') + ' batch mode.')
 
-    transform_data_A(filename) if scene == "A" else transform_data_B(filename)
+    transform_data_A(filename, batch_mode=batch_mode) if scene == "A" else transform_data_B(filename, batch_mode=batch_mode)
