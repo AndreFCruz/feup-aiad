@@ -310,7 +310,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
             getSchedule().scheduleActionAtEnd(consumersContractsRecorder, "writeToFile");
         }
 
-        getSchedule().scheduleActionAt(1 * Math.pow(10, 6), new BasicAction() {
+        getSchedule().scheduleActionAt(5 * Math.pow(10, 5), new BasicAction() {
             public void execute() {
                 try {
                     mainContainer.getPlatformController().kill();
