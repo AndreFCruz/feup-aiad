@@ -49,10 +49,11 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     private static final int DELAY_SIMULATION = 100;
     private int NUM_PRODUCERS               = 30;
     private int NUM_BROKERS                 = 5;
-    private int NUM_CONSUMERS               = 50;
-    private float PERCENT_LAZY_CONSUMERS    = 0.6f;
-    private float PERCENT_ECO_CONSUMERS     = 0.2f;
-    private float PERCENT_CONSUMED_ENERGY   = 0.9f;
+    private int NUM_CONSUMERS               = 100;
+    private float PERCENT_LAZY_CONSUMERS    = 0.33f;
+    private float PERCENT_ECO_CONSUMERS     = 0.33f;
+
+    private float PERCENT_CONSUMED_ENERGY   = 0.90f;
 
     private float MONOPOLY_THRESHOLD;
     private int AVG_DAYS_FOR_AUDIT;
@@ -102,7 +103,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 
         MONOPOLY_THRESHOLD = 0.5f;
         AVG_DAYS_FOR_AUDIT = 180;
-        LOGS_NAME = "experiment_" + rand.nextInt(10);
+        LOGS_NAME = "experiment_" + rand.nextInt(100);
         STORE_RECORDS = true;
     }
 
@@ -309,7 +310,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
             getSchedule().scheduleActionAtEnd(consumersContractsRecorder, "writeToFile");
         }
 
-        getSchedule().scheduleActionAt(5 * Math.pow(10, 5), new BasicAction() {
+        getSchedule().scheduleActionAt(1 * Math.pow(10, 6), new BasicAction() {
             public void execute() {
                 try {
                     mainContainer.getPlatformController().kill();

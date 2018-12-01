@@ -28,9 +28,12 @@ public class ConsumerContractDataSource implements DataSource {
     }
 
     private static String contractToString(EnergyContract currentContract) {
-        return "" + currentContract.getEnergyCostPerUnit()
+        String s = "" + currentContract.getEnergyCostPerUnit()
                 + " " + ((Broker) currentContract.getEnergySupplier()).getPercentageOfRenewableEnergy()
                 + " " + distance(currentContract.getEnergyClient(), currentContract.getEnergySupplier());
+        if (s.contains("NaN"))
+            return "";
+        return s;
     }
 
     private static float distance(GenericAgent a1, GenericAgent a2) {
