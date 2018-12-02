@@ -110,7 +110,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     }
 
     public static void main(String[] args) {
-        boolean BATCH_MODE = false;
+        boolean BATCH_MODE = true;
 
         SimInit init = new SimInit();
         init.setNumRuns(1); // works only in batch mode
