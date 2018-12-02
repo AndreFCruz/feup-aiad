@@ -64,6 +64,8 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     private DataRecorder consumersSatisfiedRecorder;
     private DataRecorder consumersContractsRecorder;
 
+    private List<Integer> satisfactionStatistics;
+
     // Energy Variables
     /**
      * Approximate value of the total energy produced per month in this energy market.
@@ -108,7 +110,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     }
 
     public static void main(String[] args) {
-        boolean BATCH_MODE = true;
+        boolean BATCH_MODE = false;
 
         SimInit init = new SimInit();
         init.setNumRuns(1); // works only in batch mode
@@ -146,8 +148,10 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         energyContractsBrokerProducer = new ArrayList<>();
         energyContractsConsumerBroker = new ArrayList<>();
 
-        if (STORE_RECORDS)
+        if (STORE_RECORDS) {
+            this.satisfactionStatistics = new ArrayList<>();
             dataRecorderConstructor();
+        }
     }
 
     /**
@@ -157,7 +161,6 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         consumersSatisfiedRecorder = new DataRecorder("./logs/sceneB_" + LOGS_NAME, this);
         consumersSatisfiedRecorder.addNumericDataSource("SatisfiedConsumers", new SatisfiedConsumersDataSource(this));
         consumersContractsRecorder = new DataRecorder("./logs/sceneA_" + LOGS_NAME, this);
-
     }
 
     /**
@@ -298,12 +301,17 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         if (STORE_RECORDS) {
             getSchedule().scheduleActionAtInterval(10, new BasicAction() {
                 public void execute() {
-                    consumersSatisfiedRecorder.record();
                     consumersContractsRecorder.record();
                 }
             });
 
-            getSchedule().scheduleActionAtInterval(Math.pow(10, 5), consumersSatisfiedRecorder, "writeToFile");
+            getSchedule().scheduleActionAtInterval(10, new BasicAction() {
+                public void execute() {
+                    satisfactionStatistics.add(energyContractsConsumerBroker.size());
+                }
+            });
+            getSchedule().scheduleActionAtEnd(consumersSatisfiedRecorder, "record");
+
             getSchedule().scheduleActionAtInterval(Math.pow(10, 5), consumersContractsRecorder, "writeToFile");
 
             getSchedule().scheduleActionAtEnd(consumersSatisfiedRecorder, "writeToFile");
@@ -668,4 +676,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         this.PERCENT_CONSUMED_ENERGY = PERCENT_CONSUMED_ENERGY;
     }
 
+    public List<Integer> getSatisfactionStatistics() {
+        return satisfactionStatistics;
+    }
 }

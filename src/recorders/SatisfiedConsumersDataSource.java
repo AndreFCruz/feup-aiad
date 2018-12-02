@@ -13,6 +13,6 @@ public class SatisfiedConsumersDataSource implements NumericDataSource {
 
     @Override
     public double execute() {
-        return worldModel.getEnergyContractsConsumerBroker().size();
+        return worldModel.getSatisfactionStatistics().stream().mapToInt(Integer::intValue).average().getAsDouble();
     }
 }
