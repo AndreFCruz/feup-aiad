@@ -1,0 +1,6 @@
+runs: 10
+NUM_CONSUMERS {
+ start: 10
+ end: 30
+ incr: 10
+}
