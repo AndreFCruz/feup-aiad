@@ -16,7 +16,7 @@ public abstract class FIPAContractNetInitiator extends ContractNetInitiator {
 
     protected void handleAllResponses(Vector responses, Vector acceptances) {
 
-        System.out.println("got " + responses.size() + " responses!");
+        // System.out.println("got " + responses.size() + " responses!");
 
         for (int i = 0; i < responses.size(); i++) {
             ACLMessage msg = ((ACLMessage) responses.get(i)).createReply();
@@ -26,7 +26,7 @@ public abstract class FIPAContractNetInitiator extends ContractNetInitiator {
     }
 
     protected void handleAllResultNotifications(Vector resultNotifications) {
-        System.out.println(myAgent.getLocalName() + " received " + resultNotifications.size() + " results.");
+        // System.out.println(myAgent.getLocalName() + " received " + resultNotifications.size() + " results.");
     }
 
 }

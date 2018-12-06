@@ -12,22 +12,27 @@ import sajas.sim.repast3.Repast3Launcher;
 import sajas.wrapper.ContainerController;
 import uchicago.src.sim.analysis.DataRecorder;
 import uchicago.src.sim.analysis.OpenSequenceGraph;
+import uchicago.src.sim.engine.AbstractGUIController;
 import uchicago.src.sim.engine.BasicAction;
 import uchicago.src.sim.engine.Schedule;
 import uchicago.src.sim.engine.SimInit;
 import uchicago.src.sim.gui.DisplayConstants;
 import uchicago.src.sim.gui.DisplaySurface;
 import uchicago.src.sim.gui.Object2DDisplay;
+import uchicago.src.sim.parameter.ParameterSetter;
+import uchicago.src.sim.parameter.ParameterSetterFactory;
 import uchicago.src.sim.space.Object2DGrid;
 import utils.EnergyContract;
 import utils.EnergyContractProposal;
 import utils.GraphicSettings;
 
 import java.awt.*;
+import java.io.IOException;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Stream;
+
 
 /**
  * This class represents the world model and is the starting point of the simulation.
@@ -107,10 +112,20 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         AVG_DAYS_FOR_AUDIT = 180;
         LOGS_NAME = "experiment_" + rand.nextInt(100);
         STORE_RECORDS = true;
+
+        AbstractGUIController.CONSOLE_ERR = false;
+        AbstractGUIController.CONSOLE_OUT = false;
     }
 
-    public static void main(String[] args) {
-        boolean BATCH_MODE = false;
+    public static void main(String[] args) throws IOException {
+        boolean BATCH_MODE = true;
+
+        String logsName = args[0];
+        int numProducers = Integer.parseInt(args[1]);
+        int numBrokers = Integer.parseInt(args[2]);
+        int numConsumers = Integer.parseInt(args[3]);
+        float percLazy = Float.parseFloat(args[4]);
+        float percEco = Float.parseFloat(args[5]);
 
         SimInit init = new SimInit();
         init.setNumRuns(1); // works only in batch mode
@@ -299,11 +314,11 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 
 
         if (STORE_RECORDS) {
-            getSchedule().scheduleActionAtInterval(10, new BasicAction() {
-                public void execute() {
-                    consumersContractsRecorder.record();
-                }
-            });
+//            getSchedule().scheduleActionAtInterval(10, new BasicAction() {
+//                public void execute() {
+//                    consumersContractsRecorder.record();
+//                }
+//            });
 
             getSchedule().scheduleActionAtInterval(10, new BasicAction() {
                 public void execute() {
@@ -312,10 +327,10 @@ public class EnergyMarketLauncher extends Repast3Launcher {
             });
             getSchedule().scheduleActionAtEnd(consumersSatisfiedRecorder, "record");
 
-            getSchedule().scheduleActionAtInterval(Math.pow(10, 5), consumersContractsRecorder, "writeToFile");
+//            getSchedule().scheduleActionAtInterval(Math.pow(10, 5), consumersContractsRecorder, "writeToFile");
 
             getSchedule().scheduleActionAtEnd(consumersSatisfiedRecorder, "writeToFile");
-            getSchedule().scheduleActionAtEnd(consumersContractsRecorder, "writeToFile");
+//            getSchedule().scheduleActionAtEnd(consumersContractsRecorder, "writeToFile");
         }
 
         getSchedule().scheduleActionAt(5 * Math.pow(10, 5), new BasicAction() {
@@ -394,6 +409,10 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     }
 
     private void launchProducers() throws StaleProxyException {
+        // TODO: this doesnt necessarily need to be here...
+        this.satisfactionStatistics = new ArrayList<>();
+
+        actualTotalEnergyProducedPerMonth = 0;
         for (int i = 0; i < NUM_PRODUCERS; ++i) {
             GraphicSettings gs = makeGraphicsSettings(NUM_PRODUCERS, i, 1, PRODUCER_COLOR);
 

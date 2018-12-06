@@ -20,7 +20,7 @@ public abstract class FIPAContractNetResponder extends ContractNetResponder {
     }
 
     protected void handleRejectProposal(ACLMessage cfp, ACLMessage propose, ACLMessage reject) {
-        System.out.println(myAgent.getLocalName() + " got a reject...");
+//        System.out.println(myAgent.getLocalName() + " got a reject...");
     }
 
     protected ACLMessage handleAcceptProposal(ACLMessage cfp, ACLMessage propose, ACLMessage accept) {

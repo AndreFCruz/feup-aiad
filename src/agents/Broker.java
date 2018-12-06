@@ -141,9 +141,9 @@ public class Broker extends DFRegisterAgent {
             profitChange -= 1;      // make energy cheaper because you have a large profit margin
         }
 
-        System.out.println("Changed profit margin from " + profitMargin + " to "
-                + (profitMargin + (profitChange * profitMarginIncrements))
-        );
+//        System.out.println("Changed profit margin from " + profitMargin + " to "
+//                + (profitMargin + (profitChange * profitMarginIncrements))
+//        );
         this.profitMargin += profitChange * profitMarginIncrements;
         if (profitMargin < minimumProfitMargin)
             profitMargin = minimumProfitMargin;
