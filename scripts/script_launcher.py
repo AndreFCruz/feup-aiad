@@ -52,7 +52,9 @@ classpath = "-classpath " \
             "C:\projects\feup-aiad\libs\sajas\lib\SAJaS.jar" \
             "\""
 
-launcher = "launchers.EnergyMarketLauncher"
+classpath = "-classpath C:\projects\\feup-aiad\out\production\\feup-aiad"
+
+launcher = "C:\projects\\feup-aiad\out\production\\feup-aiad\launchers\EnergyMarketLauncher"
 
 params = "teste.txt 10 10 10 0.5 0.5"
 
