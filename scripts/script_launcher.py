@@ -9,13 +9,17 @@ path_str = "C:/projects/feup-aiad/scripts"
 start = time.time()
 
 
-java_path = "C:/Program Files/Java/jdk1.8.0_171/bin/java.exe"
+java_path = 'java'
 
-memory_flags = "-Xms128m -Xmx4g"
+# memory_flags = "-Xms128m -Xmx4g"
 
-java_agent = "-javaagent:" \
-             "C:\\Users\\xfont\AppData\Local\JetBrains\Toolbox\apps\IDEA-U\ch-0\182.4892.20\lib\idea_rt.jar=65237" \
-             ":C:\\Users\\xfont\AppData\Local\JetBrains\Toolbox\apps\IDEA-U\ch-0\182.4892.20\bin -Dfile.encoding=UTF-8"
+memory_flags = "-verbose"
+
+# java_agent = "-javaagent:" \
+#              "C:\\Users\\xfont\AppData\Local\JetBrains\Toolbox\apps\IDEA-U\ch-0\182.4892.20\lib\idea_rt.jar=65237" \
+#              ":C:\\Users\\xfont\AppData\Local\JetBrains\Toolbox\apps\IDEA-U\ch-0\182.4892.20\bin -Dfile.encoding=UTF-8"
+
+java_agent = ""
 
 classpath = "-classpath " \
             "\"" \
