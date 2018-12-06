@@ -118,7 +118,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     }
 
     public static void main(String[] args) throws IOException {
-        boolean BATCH_MODE = true;
+        boolean BATCH_MODE = false;
 
         String logsName = args[0];
         int numProducers = Integer.parseInt(args[1]);
@@ -126,6 +126,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         int numConsumers = Integer.parseInt(args[3]);
         float percLazy = Float.parseFloat(args[4]);
         float percEco = Float.parseFloat(args[5]);
+        String paramFile = args[6];
 
         SimInit init = new SimInit();
         init.setNumRuns(1); // works only in batch mode
@@ -387,6 +388,24 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     }
 
     private void launchAgents() throws StaleProxyException {
+        producers = null;
+        consumers = null;
+        brokers = null;
+        satisfactionStatistics = null;
+        energyContractsBrokerProducer = null;
+        energyContractsConsumerBroker = null;
+        futureContractsConsumerBroker = null;
+        System.gc();
+        System.gc();
+        System.gc();
+        System.gc();
+
+        producers = new ArrayList<>();
+        brokers = new ArrayList<>();
+        consumers = new ArrayList<>();
+        energyContractsBrokerProducer = new ArrayList<>();
+        energyContractsConsumerBroker = new ArrayList<>();
+        futureContractsConsumerBroker = new ArrayList<>();
         launchProducers();
         launchBrokers();
         launchConsumers();
