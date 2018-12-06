@@ -110,7 +110,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 
         MONOPOLY_THRESHOLD = 0.5f;
         AVG_DAYS_FOR_AUDIT = 180;
-        LOGS_NAME = "experiment_" + rand.nextInt(100);
+        LOGS_NAME = "__experiment_" + rand.nextInt(100);
         STORE_RECORDS = true;
 
         AbstractGUIController.CONSOLE_ERR = false;
@@ -164,7 +164,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         energyContractsConsumerBroker = new ArrayList<>();
 
         if (STORE_RECORDS) {
-            this.satisfactionStatistics = new ArrayList<>();
+//            this.satisfactionStatistics = new ArrayList<>();
             dataRecorderConstructor();
         }
     }
@@ -173,8 +173,8 @@ public class EnergyMarketLauncher extends Repast3Launcher {
      * This function is called before the agents have been launched.
      */
     private void dataRecorderConstructor() {
-        consumersSatisfiedRecorder = new DataRecorder("./logs/sceneB_" + LOGS_NAME, this);
-        consumersSatisfiedRecorder.addNumericDataSource("SatisfiedConsumers", new SatisfiedConsumersDataSource(this));
+//        consumersSatisfiedRecorder = new DataRecorder("./logs/sceneB_" + LOGS_NAME, this);
+//        consumersSatisfiedRecorder.addNumericDataSource("SatisfiedConsumers", new SatisfiedConsumersDataSource(this));
         consumersContractsRecorder = new DataRecorder("./logs/sceneA_" + LOGS_NAME, this);
     }
 
@@ -232,13 +232,13 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         energyGraphBA.setAxisTitles("time", "energy available");
         energyGraphBA.display();
 
-        if (consumersSatisfied != null)
-            consumersSatisfied.dispose();
-
-        consumersSatisfied = new OpenSequenceGraph("Consumers Satisfied", this);
-        consumersSatisfied.setAxisTitles("time", "consumers");
-        consumersSatisfied.addSequence("number", () -> energyContractsConsumerBroker.size());
-        consumersSatisfied.display();
+//        if (consumersSatisfied != null)
+//            consumersSatisfied.dispose();
+//
+//        consumersSatisfied = new OpenSequenceGraph("Consumers Satisfied", this);
+//        consumersSatisfied.setAxisTitles("time", "consumers");
+//        consumersSatisfied.addSequence("number", () -> energyContractsConsumerBroker.size());
+//        consumersSatisfied.display();
 
 
         if (brokersEnergyWallet != null)
@@ -314,23 +314,23 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 
 
         if (STORE_RECORDS) {
-//            getSchedule().scheduleActionAtInterval(10, new BasicAction() {
-//                public void execute() {
-//                    consumersContractsRecorder.record();
-//                }
-//            });
-
             getSchedule().scheduleActionAtInterval(10, new BasicAction() {
                 public void execute() {
-                    satisfactionStatistics.add(energyContractsConsumerBroker.size());
+                    consumersContractsRecorder.record();
                 }
             });
-            getSchedule().scheduleActionAtEnd(consumersSatisfiedRecorder, "record");
 
-//            getSchedule().scheduleActionAtInterval(Math.pow(10, 5), consumersContractsRecorder, "writeToFile");
+//            getSchedule().scheduleActionAtInterval(10, new BasicAction() {
+//                public void execute() {
+//                    satisfactionStatistics.add(energyContractsConsumerBroker.size());
+//                }
+//            });
+//            getSchedule().scheduleActionAtEnd(consumersSatisfiedRecorder, "record");
 
-            getSchedule().scheduleActionAtEnd(consumersSatisfiedRecorder, "writeToFile");
-//            getSchedule().scheduleActionAtEnd(consumersContractsRecorder, "writeToFile");
+            getSchedule().scheduleActionAtInterval(Math.pow(10, 5), consumersContractsRecorder, "writeToFile");
+
+//            getSchedule().scheduleActionAtEnd(consumersSatisfiedRecorder, "writeToFile");
+            getSchedule().scheduleActionAtEnd(consumersContractsRecorder, "writeToFile");
         }
 
         getSchedule().scheduleActionAt(5 * Math.pow(10, 5), new BasicAction() {
@@ -428,7 +428,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
 
     private void launchProducers() throws StaleProxyException {
         // TODO: this doesnt necessarily need to be here...
-        this.satisfactionStatistics = new ArrayList<>();
+//        this.satisfactionStatistics = new ArrayList<>();
 
         actualTotalEnergyProducedPerMonth = 0;
         for (int i = 0; i < NUM_PRODUCERS; ++i) {
