@@ -118,7 +118,7 @@ public class EnergyMarketLauncher extends Repast3Launcher {
     }
 
     public static void main(String[] args) throws IOException {
-        boolean BATCH_MODE = false;
+        boolean BATCH_MODE = true;
 
         String logsName = args[0];
         int numProducers = Integer.parseInt(args[1]);
@@ -126,7 +126,6 @@ public class EnergyMarketLauncher extends Repast3Launcher {
         int numConsumers = Integer.parseInt(args[3]);
         float percLazy = Float.parseFloat(args[4]);
         float percEco = Float.parseFloat(args[5]);
-        String paramFile = args[6];
 
         SimInit init = new SimInit();
         init.setNumRuns(1); // works only in batch mode
