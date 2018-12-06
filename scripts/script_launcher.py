@@ -13,7 +13,7 @@ java_path = 'java'
 
 # memory_flags = "-Xms128m -Xmx4g"
 
-memory_flags = "-verbose"
+memory_flags = ""
 
 # java_agent = "-javaagent:" \
 #              "C:\\Users\\xfont\AppData\Local\JetBrains\Toolbox\apps\IDEA-U\ch-0\182.4892.20\lib\idea_rt.jar=65237" \
@@ -52,14 +52,16 @@ classpath = "-classpath " \
             "C:\projects\feup-aiad\libs\sajas\lib\SAJaS.jar" \
             "\""
 
-classpath = "-classpath C:\projects\\feup-aiad\out\production\\feup-aiad"
+# classpath = "-classpath C:\projects\\feup-aiad\out\production\\feup-aiad"
 
 launcher = "C:\projects\\feup-aiad\out\production\\feup-aiad\launchers\EnergyMarketLauncher"
+
+launcher = "launchers.EnergyMarketLauncher"
 
 params = "teste.txt 10 10 10 0.5 0.5"
 
 execute_string = "" + java_path + " " + \
-                 memory_flags + " " + \
+                 memory_flags  + " " + \
                  java_agent + " " + \
                  classpath + " " + \
                  launcher + " " + \
