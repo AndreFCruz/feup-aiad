@@ -1,4 +1,3 @@
-# from ipdb import set_trace
 import sys
 import pandas
 from collections import deque
@@ -81,13 +80,11 @@ def contracts_to_rolling_rows(contracts, classes, num_contracts_per_row):
                 contract.distance
             ])
             
-            import ipdb; ipdb.set_trace()
             if len(current_entry) == NUM_FEATURES_PER_CONTRACT * num_contracts_per_row:
                 train_data[consumer_class].append(list(current_entry))
                 
                 for _ in range(NUM_FEATURES_PER_CONTRACT):
                     current_entry.popleft()
-
 
     return train_data
 
