@@ -75,15 +75,19 @@ def contracts_to_rolling_rows(contracts, classes, num_contracts_per_row):
         current_entry = deque()
 
         for contract in contracts[consumer_idx]:
-            current_entry.append([
+            current_entry.extend([
                 contract.price_per_unit,
                 contract.percent_renewable,
                 contract.distance
             ])
             
+            import ipdb; ipdb.set_trace()
             if len(current_entry) == NUM_FEATURES_PER_CONTRACT * num_contracts_per_row:
                 train_data[consumer_class].append(list(current_entry))
-                current_entry.popleft()
+                
+                for _ in range(NUM_FEATURES_PER_CONTRACT):
+                    current_entry.popleft()
+
 
     return train_data
 
@@ -131,7 +135,7 @@ if __name__ == "__main__":
 
     if len(sys.argv) != 3 and len(sys.argv) != 4:
         print("Usage: python %s <filename> <scene: A/B> [batch_mode: 1/0]" % sys.argv[0])
-        sys.exit(-1)
+        sys.exit(1)
 
     filename = sys.argv[1]
     scene = sys.argv[2].upper()
