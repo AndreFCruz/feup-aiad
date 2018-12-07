@@ -13,7 +13,7 @@ class Contract:
         self.distance = distance
 
 
-def transform_data_A(filename, num_contracts_per_row=5, batch_mode=False):
+def transform_data_A(filename, num_contracts_per_row=10, batch_mode=False):
     """
     Function to transform a file of new contracts into a training dataset.
     :param filename: file path for the file outputted by Sajas,
@@ -42,8 +42,14 @@ def transform_data_A(filename, num_contracts_per_row=5, batch_mode=False):
                 ticks, float(split_c[0]), float(split_c[1]), float(split_c[2])
             ))
 
-
     ## Data preparation
+    contracts_to_data_rows(contracts, classes, num_contracts_per_row)
+
+    import ipdb; ipdb.set_trace()
+    data_to_csv(train_data, filename)
+
+
+def contracts_to_data_rows(contracts, classes, num_contracts_per_row):
     ## Save one row for each N consumer contracts
     train_data = dict()
     for consumer_idx in range(len(contracts)):
@@ -61,7 +67,10 @@ def transform_data_A(filename, num_contracts_per_row=5, batch_mode=False):
                 train_data[consumer_class].append(current_entry)
                 current_entry = list()
 
+    return train_data
 
+
+def data_to_csv(train_data, filename):
     ## Label training data
     df = pandas.DataFrame()
     for clazz in train_data:
