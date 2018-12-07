@@ -13,6 +13,4 @@ if __name__ == '__main__':
         else:
             df = df.append(pandas.read_csv(file_path, header=0, index_col=0))
 
-        # import ipdb; ipdb.set_trace()
-
     df.to_csv('joined_datasets.csv')
