@@ -1,6 +1,7 @@
 # from ipdb import set_trace
 import sys
 import pandas
+from collections import deque
 
 NUM_ENV_VARS = 11
 NUM_FEATURES_PER_CONTRACT   = 3
@@ -13,7 +14,7 @@ class Contract:
         self.distance = distance
 
 
-def transform_data_A(filename, num_contracts_per_row=10, batch_mode=False):
+def transform_data_A(filename, num_contracts_per_row=5, batch_mode=False):
     """
     Function to transform a file of new contracts into a training dataset.
     :param filename: file path for the file outputted by Sajas,
@@ -43,15 +44,14 @@ def transform_data_A(filename, num_contracts_per_row=10, batch_mode=False):
             ))
 
     ## Data preparation
-    contracts_to_data_rows(contracts, classes, num_contracts_per_row)
+    train_data = contracts_to_rolling_rows(contracts, classes, num_contracts_per_row)
 
-    import ipdb; ipdb.set_trace()
     data_to_csv(train_data, filename)
 
 
 def contracts_to_data_rows(contracts, classes, num_contracts_per_row):
     ## Save one row for each N consumer contracts
-    train_data = dict()
+    train_data = {clazz: list() for clazz in classes}
     for consumer_idx in range(len(contracts)):
         consumer_class = classes[consumer_idx]
         current_entry = list()
@@ -62,10 +62,28 @@ def contracts_to_data_rows(contracts, classes, num_contracts_per_row):
                 contract.distance
             ])
             if len(current_entry) == NUM_FEATURES_PER_CONTRACT * num_contracts_per_row:
-                if consumer_class not in train_data:
-                    train_data[consumer_class] = list()
                 train_data[consumer_class].append(current_entry)
                 current_entry = list()
+
+    return train_data
+
+
+def contracts_to_rolling_rows(contracts, classes, num_contracts_per_row):
+    train_data = {clazz: list() for clazz in classes}
+    for consumer_idx in range(len(contracts)):
+        consumer_class = classes[consumer_idx]
+        current_entry = deque()
+
+        for contract in contracts[consumer_idx]:
+            current_entry.append([
+                contract.price_per_unit,
+                contract.percent_renewable,
+                contract.distance
+            ])
+            
+            if len(current_entry) == NUM_FEATURES_PER_CONTRACT * num_contracts_per_row:
+                train_data[consumer_class].append(list(current_entry))
+                current_entry.popleft()
 
     return train_data
 
