@@ -1,6 +1,6 @@
-# from ipdb import set_trace
 import sys
 import pandas
+from collections import deque
 
 NUM_ENV_VARS = 11
 NUM_FEATURES_PER_CONTRACT   = 3
@@ -42,10 +42,15 @@ def transform_data_A(filename, num_contracts_per_row=5, batch_mode=False):
                 ticks, float(split_c[0]), float(split_c[1]), float(split_c[2])
             ))
 
-
     ## Data preparation
+    train_data = contracts_to_rolling_rows(contracts, classes, num_contracts_per_row)
+
+    data_to_csv(train_data, filename)
+
+
+def contracts_to_data_rows(contracts, classes, num_contracts_per_row):
     ## Save one row for each N consumer contracts
-    train_data = dict()
+    train_data = {clazz: list() for clazz in classes}
     for consumer_idx in range(len(contracts)):
         consumer_class = classes[consumer_idx]
         current_entry = list()
@@ -56,12 +61,35 @@ def transform_data_A(filename, num_contracts_per_row=5, batch_mode=False):
                 contract.distance
             ])
             if len(current_entry) == NUM_FEATURES_PER_CONTRACT * num_contracts_per_row:
-                if consumer_class not in train_data:
-                    train_data[consumer_class] = list()
                 train_data[consumer_class].append(current_entry)
                 current_entry = list()
 
+    return train_data
 
+
+def contracts_to_rolling_rows(contracts, classes, num_contracts_per_row):
+    train_data = {clazz: list() for clazz in classes}
+    for consumer_idx in range(len(contracts)):
+        consumer_class = classes[consumer_idx]
+        current_entry = deque()
+
+        for contract in contracts[consumer_idx]:
+            current_entry.extend([
+                contract.price_per_unit,
+                contract.percent_renewable,
+                contract.distance
+            ])
+            
+            if len(current_entry) == NUM_FEATURES_PER_CONTRACT * num_contracts_per_row:
+                train_data[consumer_class].append(list(current_entry))
+                
+                for _ in range(NUM_FEATURES_PER_CONTRACT):
+                    current_entry.popleft()
+
+    return train_data
+
+
+def data_to_csv(train_data, filename):
     ## Label training data
     df = pandas.DataFrame()
     for clazz in train_data:
@@ -104,7 +132,7 @@ if __name__ == "__main__":
 
     if len(sys.argv) != 3 and len(sys.argv) != 4:
         print("Usage: python %s <filename> <scene: A/B> [batch_mode: 1/0]" % sys.argv[0])
-        sys.exit(-1)
+        sys.exit(1)
 
     filename = sys.argv[1]
     scene = sys.argv[2].upper()
