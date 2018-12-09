@@ -12,10 +12,10 @@
     <parameter key="process_duration_for_mail" value="30"/>
     <parameter key="encoding" value="SYSTEM"/>
     <process expanded="true">
-      <operator activated="true" class="retrieve" compatibility="9.0.003" expanded="true" height="68" name="Retrieve joined_datasets_rolling" width="90" x="179" y="34">
+      <operator activated="true" class="retrieve" compatibility="9.0.003" expanded="true" height="68" name="Retrieve joined_datasets_rolling" width="90" x="581" y="34">
         <parameter key="repository_entry" value="../data/joined_datasets_rolling"/>
       </operator>
-      <operator activated="true" class="split_validation" compatibility="9.0.003" expanded="true" height="145" name="Validation" width="90" x="380" y="34">
+      <operator activated="true" class="split_validation" compatibility="9.0.003" expanded="true" height="145" name="Validation" width="90" x="782" y="34">
         <parameter key="create_complete_model" value="false"/>
         <parameter key="split" value="relative"/>
         <parameter key="split_ratio" value="0.7"/>
@@ -25,11 +25,11 @@
         <parameter key="use_local_random_seed" value="false"/>
         <parameter key="local_random_seed" value="1992"/>
         <process expanded="true">
-          <operator activated="true" class="select_subprocess" compatibility="9.0.003" expanded="true" height="103" name="Select Subprocess" width="90" x="112" y="34">
-            <parameter key="select_which" value="4"/>
+          <operator activated="true" class="select_subprocess" compatibility="9.0.003" expanded="true" height="103" name="Select Subprocess" width="90" x="45" y="34">
+            <parameter key="select_which" value="2"/>
             <process expanded="true">
               <operator activated="true" class="h2o:gradient_boosted_trees" compatibility="9.0.000" expanded="true" height="103" name="Gradient Boosted Trees" width="90" x="112" y="34">
-                <parameter key="number_of_trees" value="30"/>
+                <parameter key="number_of_trees" value="50"/>
                 <parameter key="reproducible" value="false"/>
                 <parameter key="maximum_number_of_threads" value="4"/>
                 <parameter key="use_local_random_seed" value="false"/>
@@ -60,8 +60,8 @@
             <process expanded="true">
               <operator activated="true" class="concurrency:parallel_random_forest" compatibility="9.0.003" expanded="true" height="103" name="Random Forest" width="90" x="112" y="34">
                 <parameter key="number_of_trees" value="100"/>
-                <parameter key="criterion" value="gain_ratio"/>
-                <parameter key="maximal_depth" value="10"/>
+                <parameter key="criterion" value="gini_index"/>
+                <parameter key="maximal_depth" value="100"/>
                 <parameter key="apply_pruning" value="true"/>
                 <parameter key="confidence" value="0.1"/>
                 <parameter key="apply_prepruning" value="false"/>
@@ -75,7 +75,7 @@
                 <parameter key="voting_strategy" value="confidence vote"/>
                 <parameter key="use_local_random_seed" value="false"/>
                 <parameter key="local_random_seed" value="1992"/>
-                <parameter key="enable_parallel_execution" value="true"/>
+                <parameter key="enable_parallel_execution" value="false"/>
               </operator>
               <connect from_port="input 1" to_op="Random Forest" to_port="training set"/>
               <connect from_op="Random Forest" from_port="model" to_port="output 1"/>
@@ -100,7 +100,7 @@
               <portSpacing port="sink_output 3" spacing="0"/>
             </process>
             <process expanded="true">
-              <operator activated="true" class="h2o:deep_learning" compatibility="9.0.000" expanded="true" height="82" name="Deep Learning" width="90" x="179" y="34">
+              <operator activated="true" class="h2o:deep_learning" compatibility="9.0.000" expanded="true" height="82" name="Deep Learning" width="90" x="45" y="34">
                 <parameter key="activation" value="RectifierWithDropout"/>
                 <enumeration key="hidden_layer_sizes">
                   <parameter key="hidden_layer_sizes" value="64"/>
