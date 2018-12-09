@@ -13,7 +13,7 @@ class Contract:
         self.distance = distance
 
 
-def transform_data_A(filename, num_contracts_per_row=5, batch_mode=False):
+def transform_data_A(filename, num_contracts_per_row=5, batch_mode=False, use_rolling_rows=True):
     """
     Function to transform a file of new contracts into a training dataset.
     :param filename: file path for the file outputted by Sajas,
@@ -43,9 +43,12 @@ def transform_data_A(filename, num_contracts_per_row=5, batch_mode=False):
             ))
 
     ## Data preparation
-    train_data = contracts_to_rolling_rows(contracts, classes, num_contracts_per_row)
+    if use_rolling_rows:
+        train_data = contracts_to_rolling_rows(contracts, classes, num_contracts_per_row)
+    else:
+        train_data = contracts_to_data_rows(contracts, classes, num_contracts_per_row)
 
-    data_to_csv(train_data, filename)
+    data_to_csv(train_data, filename + ('_rolling' if use_rolling_rows else '_even-split'))
 
 
 def contracts_to_data_rows(contracts, classes, num_contracts_per_row):
@@ -102,27 +105,8 @@ def data_to_csv(train_data, filename):
     df = df.sample(frac=1)
 
     ## Export data to file
-    df.to_csv(filename + '_transformed')
+    df.to_csv(filename + '.csv')
 
-
-def transform_data_B(filename, batch_mode=False):
-    filename_env_vars = filename + "_env_vars"
-    filename_data = filename + "_ticks_consumers"
-
-    file = open(filename, "r")
-    data = file.readlines()
-    file.close()
-
-    headers, body = split_header_data(data)
-    file = open(filename_env_vars, "w")
-    for elem in headers:
-        file.write(elem)
-    file.close()
-
-    file = open(filename_data, "w")
-    for elem in body:
-        file.write(elem)
-    file.close()
 
 def split_header_data(data):
     return data[0:NUM_ENV_VARS], data[NUM_ENV_VARS+2:]
@@ -130,13 +114,14 @@ def split_header_data(data):
 
 if __name__ == "__main__":
 
-    if len(sys.argv) != 3 and len(sys.argv) != 4:
-        print("Usage: python %s <filename> <scene: A/B> [batch_mode: 1/0]" % sys.argv[0])
+    if len(sys.argv) < 3 or len(sys.argv) > 4:
+        print("Usage: python %s <filename> <batch_mode: 1/0> [use_rolling_rows: 1/0]" % sys.argv[0])
         sys.exit(1)
 
     filename = sys.argv[1]
-    scene = sys.argv[2].upper()
-    batch_mode = True if (len(sys.argv) == 4 and int(sys.argv[3]) == 1) else False
+    batch_mode = True if int(sys.argv[2]) == 1 else False
+    use_rolling_rows = True if (len(sys.argv) == 4 and int(sys.argv[3]) == 1) else False
     print('Running script ' + ('in NOT' if not batch_mode else 'IN') + ' batch mode.')
 
-    transform_data_A(filename, batch_mode=batch_mode) if scene == "A" else transform_data_B(filename, batch_mode=batch_mode)
+    transform_data_A(filename, batch_mode=batch_mode, use_rolling_rows=use_rolling_rows)
+
