@@ -1,4 +1,7 @@
 from sklearn.ensemble import RandomForestClassifier, GradientBoostingClassifier
+from sklearn.neural_network import MLPClassifier
+from sklearn.naive_bayes import MultinomialNB
+from sklearn.tree import DecisionTreeClassifier
 from sklearn.metrics import accuracy_score, classification_report, log_loss, hamming_loss, f1_score
 from sklearn.metrics import recall_score
 from sklearn.metrics import precision_score
@@ -21,7 +24,9 @@ def integer_array_to_categorical(arr, n_classes):
 
 """ fetch the dataset to use in prediction """
 def get_aiad_dataset():
-    path_to_csv = "../logs/sceneA___rolling_columns_joined.csv"
+    # path_to_csv = "../logs/joined_datasets_rolling.csv"
+    path_to_csv = "../logs/joined_datasets_even-split.csv"
+
     df = pd.read_csv(path_to_csv)
     y = df["Unnamed: 0"].values
     x = df.drop(["Unnamed: 0"], axis=1).values
@@ -42,7 +47,7 @@ def get_aiad_dataset():
         _x_test = x[test_index]
         _y_test = y[test_index]
 
-    return _classes, _x_train, _y_train, _x_test, _y_test
+    return _classes, _x_train, _y_train, _x_test, _y_test, le
 
 
 def get_random_forest_prediction(x_train, y_train, x_test):
@@ -52,6 +57,7 @@ def get_random_forest_prediction(x_train, y_train, x_test):
         max_depth=100,
         max_features=None,
         n_jobs=2,
+
         verbose=2
     )
 
@@ -65,9 +71,10 @@ def get_gradient_boosting_prediction(x_train, y_train, x_test):
         loss='deviance',
         learning_rate=0.01,
         n_estimators=5,
-        max_depth=100,
+        max_depth=20,
         max_features=None,
         criterion='mse',
+
         verbose=2
     )
 
@@ -76,12 +83,51 @@ def get_gradient_boosting_prediction(x_train, y_train, x_test):
     return list(gb.predict(x_test))
 
 
+def get_naive_bayes_prediction(x_train, y_train, x_test):
+    nb = MultinomialNB(
+    )
+
+    nb.fit(x_train, y_train)
+
+    return list(nb.predict(x_test))
+
+
+def get_decision_tree_prediction(x_train, y_train, x_test):
+    dt = DecisionTreeClassifier(
+        criterion='entropy',
+        splitter='best',
+        max_depth=85,
+    )
+
+    dt.fit(x_train, y_train)
+
+    return list(dt.predict(x_test))
+
+def get_mlp_prediction(x_train, y_train, x_test):
+    mlp = MLPClassifier(
+        hidden_layer_sizes=(32,16,8,),
+        activation='relu',
+        solver='adam',
+        learning_rate='adaptive',
+        learning_rate_init=0.05,
+
+        verbose=2,
+    )
+
+    mlp.fit(x_train, y_train)
+
+    return list(mlp.predict(x_test))
+
 if __name__ == "__main__":
 
-    classes, x_train, y_train, x_test, y_test = get_aiad_dataset()
+    classes, x_train, y_train, x_test, y_test, le = get_aiad_dataset()
 
-    y_pred = get_random_forest_prediction(x_train, y_train, x_test)
-    # y_pred = get_gradient_boosting_prediction(x_train, y_train, x_test)
+    # y_pred = get_random_forest_prediction(x_train, y_train, x_test)
+    y_pred = get_gradient_boosting_prediction(x_train, y_train, x_test)
+    # y_pred = get_naive_bayes_prediction(x_train, y_train, x_test)
+    # y_pred = get_decision_tree_prediction(x_train, y_train, x_test)
+    # y_pred = get_mlp_prediction(x_train, y_train, x_test)
+
 
     json_data = {
         'acc': accuracy_score(y_pred, y_test),
@@ -90,7 +136,9 @@ if __name__ == "__main__":
         'f1score': f1_score(y_test, y_pred, labels=classes, average='weighted'),
         'lloss': log_loss(y_test, integer_array_to_categorical(y_pred, len(classes)), labels=classes),
         'hloss': hamming_loss(y_pred, y_test, labels=classes),
-        'conf_matrix': confusion_matrix(y_test, y_pred).tolist()
+        'conf_matrix': confusion_matrix(y_test, y_pred)
     }
+
+    print(le.inverse_transform([0,1,2]))
 
     pprint(json_data)
