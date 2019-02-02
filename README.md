@@ -8,8 +8,8 @@ Modelling an electricity market with JADE + Repast + Sajas :zap:
 ## Agent's Behaviours / Strategies
 ![behaviours](./docs/Behaviours.png)
 
-## Multi-Agent System Slides: [here](docs/AIAD\ -\ Slides\ aula\ (max\ 10).pdf) and [here](docs/AIAD\ -\ Slides\ aux\ (max\ 10).pdf)
-## Data-Mining Slides: [here](docs/AIAD\ 2\ -\ Slides\ aula\ (max\ 10).pdf) and [here](docs/AIAD\ 2\ -\ Slides\ aux\ (max\ 10).pdf)
+## Multi-Agent System Slides: [here](docs/AIAD_1_Slides.pdf) and [here](docs/AIAD_1_Slides_Aux.pdf)
+## Data-Mining Slides: [here](docs/AIAD_2_Slides.pdf) and [here](docs/AIAD_2_Slides_Aux.pdf)
 
 ## Authors:
 * @AndreFCruz
